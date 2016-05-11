@@ -78,6 +78,7 @@ uint8_t PortRead()
 //    
 //}
 
+/*
 void PortWriteByte(uint8_t b)
 {
     LATCbits.LATC5 = 1;
@@ -87,6 +88,7 @@ void PortWriteByte(uint8_t b)
     while(!TRMT);
     LATCbits.LATC5 = 0;
 }
+ */
 
 void PortWrite(uint8_t *buf, uint8_t buflen)
 {
@@ -159,6 +161,28 @@ void high_isr(void)
           return;
       }
 
+
+
+#endif
+
+}
+
+/* Low-priority interrupt routine */
+#if defined(__XC) || defined(HI_TECH_C)
+void low_priority interrupt low_isr(void)
+#elif defined (__18CXX)
+#pragma code low_isr=0x18
+#pragma interruptlow low_isr
+void low_isr(void)
+#else
+#error "Invalid compiler selection for implemented ISR routines"
+#endif
+{
+
+      /* This code stub shows general interrupt handling.  Note that these
+      conditional statements are not handled within 3 seperate if blocks.
+      Do not use a seperate if block for each interrupt flag to avoid run
+      time errors. */
       if (PIR1bits.RCIF && PIE1bits.RCIE)
       {
 //        while(!RCIF);
@@ -187,28 +211,6 @@ void high_isr(void)
         PIR1bits.RCIF = 0;
         return;
       }
-
-#endif
-
-}
-
-/* Low-priority interrupt routine */
-#if defined(__XC) || defined(HI_TECH_C)
-void low_priority interrupt low_isr(void)
-#elif defined (__18CXX)
-#pragma code low_isr=0x18
-#pragma interruptlow low_isr
-void low_isr(void)
-#else
-#error "Invalid compiler selection for implemented ISR routines"
-#endif
-{
-
-      /* This code stub shows general interrupt handling.  Note that these
-      conditional statements are not handled within 3 seperate if blocks.
-      Do not use a seperate if block for each interrupt flag to avoid run
-      time errors. */
-
 #if 0
 
       /* TODO Add Low Priority interrupt routine code here. */
