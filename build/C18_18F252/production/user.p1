@@ -2769,9 +2769,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.c: 135: PIE1bits.RCIE = 1;
 "135
 [e = . . _PIE1bits 0 5 -> -> 1 `i `uc ]
-[; ;user.c: 137: IPR1bits.RCIP = 1;
+[; ;user.c: 137: IPR1bits.RCIP = 0;
 "137
-[e = . . _IPR1bits 0 5 -> -> 1 `i `uc ]
+[e = . . _IPR1bits 0 5 -> -> 0 `i `uc ]
 [; ;user.c: 141: for (unsigned char i = 0; i < 15; i++)
 "141
 {

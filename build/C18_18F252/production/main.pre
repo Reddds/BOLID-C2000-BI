@@ -3174,17 +3174,14 @@ uint8_t currentEventType = 0;
 uint8_t curEventHour;
 uint8_t curEventMinute;
 uint8_t curEventType;
-uint8_t oldEventNum = 0xff;
+uint8_t currentAlarmedEventNum = 0xff;
 uint8_t curEventNum = 0xff;
 
 
 
 time_t eventResetSecond = 0;
 
-
-
-uint16_t *minutes;
-
+# 209
 uint8_t statusLedState = 0x00;
 
 # 233
@@ -3279,17 +3276,6 @@ break;
 }
 
 
-void UpdateStatusLeds()
-{
-LATB = statusLedState;
-
-LATCbits.LATC1 = 0;
-TRISCbits.RC1 = 0;
-LATCbits.LATC1 = 1;
-TRISCbits.RC1 = 1;
-}
-
-
 
 void LightStatusLed(uint8_t row, bool on, bool blink)
 {
@@ -3302,10 +3288,10 @@ return;
 }
 
 
-inline void pwm_init(void)
+void pwm_init(void)
 {
 
-# 413
+# 402
 CCP1CONbits.CCP1M = 0x0f;
 
 
@@ -3324,11 +3310,7 @@ TRISCbits.RC2 = 0;
 
 }
 
-void SetBuzzerFreq(uint16_t freq)
-{
-
-}
-
+# 425
 void SetBuzzerDuty(uint16_t dc)
 {
 
@@ -3340,7 +3322,7 @@ CCP1CONbits.DC1B1 = (dc & 0x02) != 0 ? 1 : 0;
 CCPR1L = (uint8_t)(dc >> 2);
 }
 
-# 459
+# 448
 void InitFromEeprom()
 {
 buzzeLoudDuration = ( EEADR = 2, (void)0, RD = 1, EEDATA);
@@ -3371,7 +3353,7 @@ SwitchOffAllLeds();
 LoadNextEvent();
 }
 
-# 497
+# 486
 uint8_t currentLedBlock = 0;
 unsigned long diffTime;
 unsigned long oldBlinkOnTime = 0;
@@ -3435,13 +3417,13 @@ currentLedBlock &= 0xFB;
 
 }
 
-# 567
+# 556
 void ResetEvent(bool state)
 {
-LightLed(oldEventNum + 1, state ? LED_GREEN : LED_RED, 0);
-oldEventNum = 0xff;
+LightLed(currentAlarmedEventNum + 1, state ? LED_GREEN : LED_RED, 0);
+currentAlarmedEventNum = 0xff;
 eventResetSecond = 0;
-_MODBUSInputRegs[2] = (((uint16_t)oldEventNum<<8)|curEventNum);
+_MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
 
 
 }
@@ -3454,14 +3436,14 @@ uint8_t hour, minute;
 if(!getHourMin(&hour, &minute))
 return;
 
-# 591
+# 580
 do
 {
 if(curEventNum == 0xff)
 curEventNum = 0;
 else
 curEventNum++;
-_MODBUSInputRegs[2] = (((uint16_t)oldEventNum<<8)|curEventNum);
+_MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
 if(curEventNum >= eventCount)
 return;
 
@@ -3487,7 +3469,7 @@ if(hour == 0 && minute == 0)
 {
 SwitchOffAllLeds();
 curEventNum = 0xff;
-_MODBUSInputRegs[2] = (((uint16_t)oldEventNum<<8)|curEventNum);
+_MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
 
 }
 
@@ -3495,30 +3477,30 @@ _MODBUSInputRegs[2] = (((uint16_t)oldEventNum<<8)|curEventNum);
 if(curEventHour == hour && curEventMinute == minute)
 {
 
-if(oldEventNum != 0xff)
+if(currentAlarmedEventNum != 0xff)
 {
-LightLed(oldEventNum + 1, LED_RED, 0);
+LightLed(currentAlarmedEventNum + 1, LED_RED, 0);
 }
 
 {
-oldEventNum = curEventNum;
+currentAlarmedEventNum = curEventNum;
 
 if(curEventType == 0)
 {
-LightLed(oldEventNum + 1, LED_GREEN, 1);
+LightLed(currentAlarmedEventNum + 1, LED_GREEN, 1);
 }
 else
 {
-LightLed(oldEventNum + 1, LED_RED, 1);
+LightLed(currentAlarmedEventNum + 1, LED_RED, 1);
 }
 eventResetSecond = *GetTime() + eventAcceptTime;
 LoadNextEvent();
 }
-_MODBUSInputRegs[2] = (((uint16_t)oldEventNum<<8)|curEventNum);
+_MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
 
 }
 
-# 667
+# 656
 }
 
 void main(void)
@@ -3533,13 +3515,13 @@ InitApp();
 
 InitFromEeprom();
 
-# 688
+# 677
 unsigned long lastMs = millis();
 
 
 pwm_init();
 
-# 697
+# 686
 unsigned long oldBuzzerOnTime = 0;
 uint8_t oldMinute = 0xff;
 
@@ -3551,16 +3533,9 @@ unsigned long curMs = millis();
 ProcessLightBlock(&curMs);
 
 
-if(PORTCbits.RC1 == 0)
+
+if(currentAlarmedEventNum != 0xff)
 {
-
-if(oldEventNum != 0xff)
-{
-ResetEvent(1);
-}
-
-
-
 diffTime = curMs - oldBuzzerOnTime;
 if(diffTime > buzzerOnOffPeriod)
 {
@@ -3573,19 +3548,26 @@ else if(IsBusserOn && diffTime > buzzerOnOffDuration)
 {
 T2CONbits.TMR2ON = 0; TRISCbits.TRISC2 = 1; IsBusserOn = 0;;
 }
-
 }
-else
+
+
+if(PORTCbits.RC1 == 0)
 {
-T2CONbits.TMR2ON = 0; TRISCbits.TRISC2 = 1; IsBusserOn = 0;;
+
+if(currentAlarmedEventNum != 0xff)
+{
+ResetEvent(1);
 }
 
+# 738
+}
 
+# 745
 if(curMs - lastMs >= 1000)
 {
 AddSecond();
 
-if(oldEventNum != 0xff && *GetTime() >= eventResetSecond)
+if(currentAlarmedEventNum != 0xff && *GetTime() >= eventResetSecond)
 {
 ResetEvent(0);
 }
@@ -3596,6 +3578,7 @@ uint8_t hour = 0, minute = 0;
 if(getHourMin(&hour, &minute) && oldMinute != minute)
 {
 _MODBUSInputRegs[1] = (((uint16_t)hour<<8)|minute);
+
 oldMinute = minute;
 ProcessDiary();
 }
@@ -3645,7 +3628,7 @@ if(*lastCommand == MODBUS_COM_WRITE_SINGLE_COIL || *lastCommand == MODBUS_COM_WR
 if ((0x0f >= lastAddress && 0x0f <= lastEndAddress) && (((_MODBUSCoils) >> (0x0f)) & 0x01))
 {
 
-# 801
+# 809
 #asm
                 RESET;
 #endasm 
@@ -3701,7 +3684,7 @@ SetBuzzerDuty(buzzeLoudDuration);
 PR2 = buzzerAlarmPeriod;
 if((3 >= lastAddress && 3 <= lastEndAddress)) { buzzerOnOffDuration = ((unsigned char)(((_MODBUSHoldingRegs[3])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (6); EEDATA = (buzzerOnOffDuration); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); (buzzerOnOffDuration <<= 8); buzzerOnOffPeriod = ((unsigned char)((_MODBUSHoldingRegs[3])&0xFF)); do{ while (WR) { continue; } EEADR = (7); EEDATA = (buzzerOnOffPeriod); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); (buzzerOnOffPeriod <<= 8); _MODBUSInputRegs[0] = 0x8080; };
 
-# 857
+# 865
 if((4 >= lastAddress && 4 <= lastEndAddress)) { eventAcceptTime = ((unsigned char)((_MODBUSHoldingRegs[4])&0xFF)); do{ while (WR) { continue; } EEADR = (10); EEDATA = (eventAcceptTime); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; _MODBUSInputRegs[4] = _MODBUSHoldingRegs[4]; _MODBUSInputRegs[0] = 0x8080; }
 if((5 >= lastAddress && 5 <= lastEndAddress)) { buzzeEscaladeTime = ((unsigned char)(((_MODBUSHoldingRegs[5])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (8); EEDATA = (buzzeEscaladeTime); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; buzzerStartDurationDiv = ((unsigned char)((_MODBUSHoldingRegs[5])&0xFF)); do{ while (WR) { continue; } EEADR = (9); EEDATA = (buzzerStartDurationDiv); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; _MODBUSInputRegs[0] = 0x8080; };
 if((6 >= lastAddress && 6 <= lastEndAddress)) { eveningTimeHour = ((unsigned char)(((_MODBUSHoldingRegs[6])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (11); EEDATA = (eveningTimeHour); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; morningTimeHour = ((unsigned char)((_MODBUSHoldingRegs[6])&0xFF)); do{ while (WR) { continue; } EEADR = (14); EEDATA = (morningTimeHour); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; _MODBUSInputRegs[0] = 0x8080; };
@@ -3709,7 +3692,7 @@ if((7 >= lastAddress && 7 <= lastEndAddress)) { nightStartHour = ((unsigned char
 
 if((8 >= lastAddress && 8 <= lastEndAddress)) { blinkDuration = ((unsigned char)(((_MODBUSHoldingRegs[8])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (15); EEDATA = (blinkDuration); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); (blinkDuration <<= 6); blinkPeriod = ((unsigned char)((_MODBUSHoldingRegs[8])&0xFF)); do{ while (WR) { continue; } EEADR = (16); EEDATA = (blinkPeriod); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); (blinkPeriod <<= 6); _MODBUSInputRegs[0] = 0x8080; };
 
-# 866
+# 874
 if((9 >= lastAddress && 9 <= lastEndAddress) && (11 >= lastAddress && 11 <= lastEndAddress))
 {
 uint16_t hourMin = _MODBUSHoldingRegs[9];

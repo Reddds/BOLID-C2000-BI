@@ -133,8 +133,8 @@ void InitApp(void)
     
     PortBegin();
     PIE1bits.RCIE = 1; // 
-    /* Make receive interrupt high priority */
-    IPR1bits.RCIP = 1;
+    /* Make receive interrupt low priority */
+    IPR1bits.RCIP = 0;
     
     
     	// Clearing buffers

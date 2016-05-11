@@ -3152,17 +3152,7 @@ return ret;
 return 0;
 }
 
-# 81
-void PortWriteByte(uint8_t b)
-{
-LATCbits.LATC5 = 1;
-_delay((unsigned long)((10)*(10000000L/4000000.0)));
-while(!TRMT);
-TXREG = b;
-while(!TRMT);
-LATCbits.LATC5 = 0;
-}
-
+# 93
 void PortWrite(uint8_t *buf, uint8_t buflen)
 {
 LATCbits.LATC5 = 1;
@@ -3176,13 +3166,13 @@ while(!TRMT);
 LATCbits.LATC5 = 0;
 }
 
-# 111
+# 113
 void interrupt high_isr(void)
 
-# 120
+# 122
 {
 
-# 132
+# 134
 if(PIR1bits.TMR1IF && PIE1bits.TMR1IE)
 {
 PIR1bits.TMR1IF = 0;
@@ -3213,6 +3203,17 @@ globalHours = 0;
 return;
 }
 
+# 168
+}
+
+
+
+void low_priority interrupt low_isr(void)
+
+# 180
+{
+
+# 186
 if (PIR1bits.RCIF && PIE1bits.RCIE)
 {
 
@@ -3242,18 +3243,7 @@ PIR1bits.RCIF = 0;
 return;
 }
 
-
-
-}
-
-
-
-void low_priority interrupt low_isr(void)
-
-# 205
-{
-
-# 232
+# 234
 }
 
 unsigned long millis()

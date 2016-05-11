@@ -56,7 +56,7 @@
  * USB/RS232/485 (via RTU protocol).
  */
 
-#define SLAVE_ID_STRING "Tablo s raspisaniem"
+#define SLAVE_ID_STRING "Tablo s raspisaniem turo"
 
 
 #define MODBUS_RESULT_SUCCESS 0x8080 // Result after executing user code

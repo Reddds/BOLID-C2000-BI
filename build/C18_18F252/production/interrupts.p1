@@ -2546,379 +2546,338 @@ Version 3.2 HI-TECH Software Intermediate Code
 "74
 [e :UE 253 ]
 }
-"81
-[v _PortWriteByte `(v ~T0 @X0 1 ef1`uc ]
-"82
-{
-[; ;interrupts.c: 81: void PortWriteByte(uint8_t b)
-[; ;interrupts.c: 82: {
-[e :U _PortWriteByte ]
-"81
-[v _b `uc ~T0 @X0 1 r1 ]
-"82
-[f ]
-[; ;interrupts.c: 83: LATCbits.LATC5 = 1;
-"83
-[e = . . _LATCbits 0 5 -> -> 1 `i `uc ]
-[; ;interrupts.c: 84: _delay((unsigned long)((10)*(10000000L/4000000.0)));
-"84
-[e ( __delay (1 -> * -> -> 10 `i `d / -> -> 10000000 `l `d .4000000.0 `ul ]
-[; ;interrupts.c: 85: while(!TRMT);
-"85
-[e $U 258  ]
-[e :U 259 ]
-[e :U 258 ]
-[e $ ! _TRMT 259  ]
-[e :U 260 ]
-[; ;interrupts.c: 86: TXREG = b;
-"86
-[e = _TXREG _b ]
-[; ;interrupts.c: 87: while(!TRMT);
-"87
-[e $U 261  ]
-[e :U 262 ]
-[e :U 261 ]
-[e $ ! _TRMT 262  ]
-[e :U 263 ]
-[; ;interrupts.c: 88: LATCbits.LATC5 = 0;
-"88
-[e = . . _LATCbits 0 5 -> -> 0 `i `uc ]
-[; ;interrupts.c: 89: }
-"89
-[e :UE 257 ]
-}
-"91
+"93
 [v _PortWrite `(v ~T0 @X0 1 ef2`*uc`uc ]
-"92
+"94
 {
-[; ;interrupts.c: 91: void PortWrite(uint8_t *buf, uint8_t buflen)
-[; ;interrupts.c: 92: {
+[; ;interrupts.c: 93: void PortWrite(uint8_t *buf, uint8_t buflen)
+[; ;interrupts.c: 94: {
 [e :U _PortWrite ]
-"91
+"93
 [v _buf `*uc ~T0 @X0 1 r1 ]
 [v _buflen `uc ~T0 @X0 1 r2 ]
-"92
-[f ]
-[; ;interrupts.c: 93: LATCbits.LATC5 = 1;
-"93
-[e = . . _LATCbits 0 5 -> -> 1 `i `uc ]
-[; ;interrupts.c: 94: _delay((unsigned long)((10)*(10000000L/4000000.0)));
 "94
-[e ( __delay (1 -> * -> -> 10 `i `d / -> -> 10000000 `l `d .4000000.0 `ul ]
-[; ;interrupts.c: 95: for(uint8_t i = 0; i < buflen; i++)
+[f ]
+[; ;interrupts.c: 95: LATCbits.LATC5 = 1;
 "95
+[e = . . _LATCbits 0 5 -> -> 1 `i `uc ]
+[; ;interrupts.c: 96: _delay((unsigned long)((10)*(10000000L/4000000.0)));
+"96
+[e ( __delay (1 -> * -> -> 10 `i `d / -> -> 10000000 `l `d .4000000.0 `ul ]
+[; ;interrupts.c: 97: for(uint8_t i = 0; i < buflen; i++)
+"97
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
-[e $U 268  ]
-"96
-[e :U 265 ]
-[; ;interrupts.c: 96: {
-{
-[; ;interrupts.c: 97: while(!TRMT);
-"97
-[e $U 269  ]
-[e :U 270 ]
-[e :U 269 ]
-[e $ ! _TRMT 270  ]
-[e :U 271 ]
-[; ;interrupts.c: 98: TXREG = buf[i];
+[e $U 261  ]
 "98
-[e = _TXREG *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux ]
-"99
-}
-"95
-[e ++ _i -> -> 1 `i `uc ]
-[e :U 268 ]
-[e $ < -> _i `i -> _buflen `i 265  ]
-[e :U 266 ]
-"99
-}
-[; ;interrupts.c: 99: }
-[; ;interrupts.c: 100: while(!TRMT);
-"100
-[e $U 272  ]
-[e :U 273 ]
-[e :U 272 ]
-[e $ ! _TRMT 273  ]
-[e :U 274 ]
-[; ;interrupts.c: 101: LATCbits.LATC5 = 0;
-"101
-[e = . . _LATCbits 0 5 -> -> 0 `i `uc ]
-[; ;interrupts.c: 102: }
-"102
-[e :UE 264 ]
-}
-[v F2368 `(v ~T0 @X0 1 tf ]
-"111
-[v _high_isr `IF2368 ~T0 @X0 1 e ]
-"120
+[e :U 258 ]
+[; ;interrupts.c: 98: {
 {
-[; ;interrupts.c: 111: void interrupt high_isr(void)
-[; ;interrupts.c: 120: {
+[; ;interrupts.c: 99: while(!TRMT);
+"99
+[e $U 262  ]
+[e :U 263 ]
+[e :U 262 ]
+[e $ ! _TRMT 263  ]
+[e :U 264 ]
+[; ;interrupts.c: 100: TXREG = buf[i];
+"100
+[e = _TXREG *U + _buf * -> _i `ux -> -> # *U _buf `ui `ux ]
+"101
+}
+"97
+[e ++ _i -> -> 1 `i `uc ]
+[e :U 261 ]
+[e $ < -> _i `i -> _buflen `i 258  ]
+[e :U 259 ]
+"101
+}
+[; ;interrupts.c: 101: }
+[; ;interrupts.c: 102: while(!TRMT);
+"102
+[e $U 265  ]
+[e :U 266 ]
+[e :U 265 ]
+[e $ ! _TRMT 266  ]
+[e :U 267 ]
+[; ;interrupts.c: 103: LATCbits.LATC5 = 0;
+"103
+[e = . . _LATCbits 0 5 -> -> 0 `i `uc ]
+[; ;interrupts.c: 104: }
+"104
+[e :UE 257 ]
+}
+[v F2366 `(v ~T0 @X0 1 tf ]
+"113
+[v _high_isr `IF2366 ~T0 @X0 1 e ]
+"122
+{
+[; ;interrupts.c: 113: void interrupt high_isr(void)
+[; ;interrupts.c: 122: {
 [e :U _high_isr ]
 [f ]
-[; ;interrupts.c: 132: if(PIR1bits.TMR1IF && PIE1bits.TMR1IE)
-"132
-[e $ ! && != -> . . _PIR1bits 0 0 `i -> -> -> 0 `i `Vuc `i != -> . . _PIE1bits 0 0 `i -> -> -> 0 `i `Vuc `i 276  ]
-[; ;interrupts.c: 133: {
-"133
-{
-[; ;interrupts.c: 134: PIR1bits.TMR1IF = 0;
+[; ;interrupts.c: 134: if(PIR1bits.TMR1IF && PIE1bits.TMR1IE)
 "134
-[e = . . _PIR1bits 0 0 -> -> 0 `i `uc ]
-[; ;interrupts.c: 135: millisecondsFromStart++;
+[e $ ! && != -> . . _PIR1bits 0 0 `i -> -> -> 0 `i `Vuc `i != -> . . _PIE1bits 0 0 `i -> -> -> 0 `i `Vuc `i 269  ]
+[; ;interrupts.c: 135: {
 "135
-[e ++ _millisecondsFromStart -> -> -> 1 `i `l `ul ]
-[; ;interrupts.c: 136: ((void)(TMR1H=((0x10000 - 10000000L/4 / 1000)>>8),TMR1L=((0x10000 - 10000000L/4 / 1000)&0xFF)));
+{
+[; ;interrupts.c: 136: PIR1bits.TMR1IF = 0;
 "136
-[e ; = _TMR1H -> >> - -> 65536 `l / / -> 10000000 `l -> -> 4 `i `l -> -> 1000 `i `l -> 8 `i `uc = _TMR1L -> & - -> 65536 `l / / -> 10000000 `l -> -> 4 `i `l -> -> 1000 `i `l -> -> 255 `i `l `uc ]
-[; ;interrupts.c: 137: return;
+[e = . . _PIR1bits 0 0 -> -> 0 `i `uc ]
+[; ;interrupts.c: 137: millisecondsFromStart++;
 "137
-[e $UE 275  ]
+[e ++ _millisecondsFromStart -> -> -> 1 `i `l `ul ]
+[; ;interrupts.c: 138: ((void)(TMR1H=((0x10000 - 10000000L/4 / 1000)>>8),TMR1L=((0x10000 - 10000000L/4 / 1000)&0xFF)));
 "138
-}
-[e :U 276 ]
-[; ;interrupts.c: 138: }
-[; ;interrupts.c: 140: if(INTCONbits.TMR0IF)
+[e ; = _TMR1H -> >> - -> 65536 `l / / -> 10000000 `l -> -> 4 `i `l -> -> 1000 `i `l -> 8 `i `uc = _TMR1L -> & - -> 65536 `l / / -> 10000000 `l -> -> 4 `i `l -> -> 1000 `i `l -> -> 255 `i `l `uc ]
+[; ;interrupts.c: 139: return;
+"139
+[e $UE 268  ]
 "140
-[e $ ! != -> . . _INTCONbits 0 2 `i -> -> -> 0 `i `Vuc `i 277  ]
-[; ;interrupts.c: 141: {
-"141
-{
-[; ;interrupts.c: 142: INTCONbits.TMR0IF = 0;
+}
+[e :U 269 ]
+[; ;interrupts.c: 140: }
+[; ;interrupts.c: 142: if(INTCONbits.TMR0IF)
 "142
-[e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]
-[; ;interrupts.c: 143: _6sCounter++;
+[e $ ! != -> . . _INTCONbits 0 2 `i -> -> -> 0 `i `Vuc `i 270  ]
+[; ;interrupts.c: 143: {
 "143
-[e ++ __6sCounter -> -> 1 `i `uc ]
-[; ;interrupts.c: 144: if(_6sCounter == 10)
+{
+[; ;interrupts.c: 144: INTCONbits.TMR0IF = 0;
 "144
-[e $ ! == -> __6sCounter `i -> 10 `i 278  ]
-[; ;interrupts.c: 145: {
+[e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]
+[; ;interrupts.c: 145: _6sCounter++;
 "145
-{
-[; ;interrupts.c: 146: _6sCounter = 0;
+[e ++ __6sCounter -> -> 1 `i `uc ]
+[; ;interrupts.c: 146: if(_6sCounter == 10)
 "146
-[e = __6sCounter -> -> 0 `i `uc ]
-[; ;interrupts.c: 147: globalMinutes++;
+[e $ ! == -> __6sCounter `i -> 10 `i 271  ]
+[; ;interrupts.c: 147: {
 "147
-[e ++ _globalMinutes -> -> 1 `i `uc ]
-[; ;interrupts.c: 148: if(globalMinutes == 60)
+{
+[; ;interrupts.c: 148: _6sCounter = 0;
 "148
-[e $ ! == -> _globalMinutes `i -> 60 `i 279  ]
-[; ;interrupts.c: 149: {
+[e = __6sCounter -> -> 0 `i `uc ]
+[; ;interrupts.c: 149: globalMinutes++;
 "149
-{
-[; ;interrupts.c: 150: globalMinutes = 0;
+[e ++ _globalMinutes -> -> 1 `i `uc ]
+[; ;interrupts.c: 150: if(globalMinutes == 60)
 "150
-[e = _globalMinutes -> -> 0 `i `uc ]
-[; ;interrupts.c: 151: globalHours++;
+[e $ ! == -> _globalMinutes `i -> 60 `i 272  ]
+[; ;interrupts.c: 151: {
 "151
-[e ++ _globalHours -> -> 1 `i `uc ]
-[; ;interrupts.c: 152: if(globalHours == 24)
-"152
-[e $ ! == -> _globalHours `i -> 24 `i 280  ]
-[; ;interrupts.c: 153: {
-"153
 {
-[; ;interrupts.c: 154: globalHours = 0;
+[; ;interrupts.c: 152: globalMinutes = 0;
+"152
+[e = _globalMinutes -> -> 0 `i `uc ]
+[; ;interrupts.c: 153: globalHours++;
+"153
+[e ++ _globalHours -> -> 1 `i `uc ]
+[; ;interrupts.c: 154: if(globalHours == 24)
 "154
-[e = _globalHours -> -> 0 `i `uc ]
+[e $ ! == -> _globalHours `i -> 24 `i 273  ]
+[; ;interrupts.c: 155: {
 "155
-}
-[e :U 280 ]
+{
+[; ;interrupts.c: 156: globalHours = 0;
 "156
-}
-[e :U 279 ]
+[e = _globalHours -> -> 0 `i `uc ]
 "157
 }
-[e :U 278 ]
-[; ;interrupts.c: 155: }
-[; ;interrupts.c: 156: }
-[; ;interrupts.c: 157: }
-[; ;interrupts.c: 158: ((void)(TMR0H=((0x10000 - (10000000L/4 * 6 / 256 + 0))>>8),TMR0L=((0x10000 - (10000000L/4 * 6 / 256 + 0))&0xFF)));
+[e :U 273 ]
 "158
-[e ; = _TMR0H -> >> - -> 65536 `l + / * / -> 10000000 `l -> -> 4 `i `l -> -> 6 `i `l -> -> 256 `i `l -> -> 0 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l + / * / -> 10000000 `l -> -> 4 `i `l -> -> 6 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 255 `i `l `uc ]
-[; ;interrupts.c: 159: return;
+}
+[e :U 272 ]
 "159
-[e $UE 275  ]
+}
+[e :U 271 ]
+[; ;interrupts.c: 157: }
+[; ;interrupts.c: 158: }
+[; ;interrupts.c: 159: }
+[; ;interrupts.c: 160: ((void)(TMR0H=((0x10000 - (10000000L/4 * 6 / 256 + 0))>>8),TMR0L=((0x10000 - (10000000L/4 * 6 / 256 + 0))&0xFF)));
 "160
-}
-[e :U 277 ]
-[; ;interrupts.c: 160: }
-[; ;interrupts.c: 162: if (PIR1bits.RCIF && PIE1bits.RCIE)
+[e ; = _TMR0H -> >> - -> 65536 `l + / * / -> 10000000 `l -> -> 4 `i `l -> -> 6 `i `l -> -> 256 `i `l -> -> 0 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l + / * / -> 10000000 `l -> -> 4 `i `l -> -> 6 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 255 `i `l `uc ]
+[; ;interrupts.c: 161: return;
+"161
+[e $UE 268  ]
 "162
-[e $ ! && != -> . . _PIR1bits 0 5 `i -> -> -> 0 `i `Vuc `i != -> . . _PIE1bits 0 5 `i -> -> -> 0 `i `Vuc `i 281  ]
-[; ;interrupts.c: 163: {
-"163
-{
-[; ;interrupts.c: 168: if(UartBufferLen == 256u)
+}
+[e :U 270 ]
+[; ;interrupts.c: 162: }
+[; ;interrupts.c: 168: }
 "168
-[e $ ! == -> _UartBufferLen `ui -> 256 `ui 282  ]
-[; ;interrupts.c: 169: {
-"169
-{
-[; ;interrupts.c: 170: while(!RCIF);
-"170
-[e $U 283  ]
-[e :U 284 ]
-[e :U 283 ]
-[e $ ! _RCIF 284  ]
-[e :U 285 ]
-[; ;interrupts.c: 171: PIR1bits.RCIF = 0;
-"171
-[e = . . _PIR1bits 0 5 -> -> 0 `i `uc ]
-[; ;interrupts.c: 172: return;
+[e :UE 268 ]
+}
+[v F2371 `(v ~T0 @X0 1 tf ]
 "172
-[e $UE 275  ]
-"173
-}
-[e :U 282 ]
-[; ;interrupts.c: 173: }
-[; ;interrupts.c: 175: while(!RCIF);
-"175
-[e $U 286  ]
-[e :U 287 ]
-[e :U 286 ]
-[e $ ! _RCIF 287  ]
-[e :U 288 ]
-"176
-[v _c `uc ~T0 @X0 1 a ]
-[; ;interrupts.c: 176: uint8_t c = RCREG;
-[e = _c _RCREG ]
-[; ;interrupts.c: 179: UartRingBuffer[UartBufferHead] = c;
-"179
-[e = *U + &U _UartRingBuffer * -> _UartBufferHead `ux -> -> # *U &U _UartRingBuffer `ui `ux _c ]
-[; ;interrupts.c: 180: UartBufferLen++;
+[v _low_isr `ILF2371 ~T0 @X0 1 e ]
 "180
-[e ++ _UartBufferLen -> -> 1 `i `uc ]
-[; ;interrupts.c: 181: if(UartBufferHead == 256u - 1)
-"181
-[e $ ! == -> _UartBufferHead `ui - -> 256 `ui -> -> 1 `i `ui 289  ]
-[; ;interrupts.c: 182: UartBufferHead = 0;
-"182
-[e = _UartBufferHead -> -> 0 `i `uc ]
-[e $U 290  ]
-"183
-[e :U 289 ]
-[; ;interrupts.c: 183: else
-[; ;interrupts.c: 184: UartBufferHead++;
-"184
-[e ++ _UartBufferHead -> -> 1 `i `uc ]
-[e :U 290 ]
-[; ;interrupts.c: 187: PIR1bits.RCIF = 0;
-"187
-[e = . . _PIR1bits 0 5 -> -> 0 `i `uc ]
-[; ;interrupts.c: 188: return;
-"188
-[e $UE 275  ]
-"189
-}
-[e :U 281 ]
-[; ;interrupts.c: 189: }
-[; ;interrupts.c: 193: }
-"193
-[e :UE 275 ]
-}
-[v F2374 `(v ~T0 @X0 1 tf ]
-"197
-[v _low_isr `ILF2374 ~T0 @X0 1 e ]
-"205
 {
-[; ;interrupts.c: 197: void low_priority interrupt low_isr(void)
-[; ;interrupts.c: 205: {
+[; ;interrupts.c: 172: void low_priority interrupt low_isr(void)
+[; ;interrupts.c: 180: {
 [e :U _low_isr ]
 [f ]
-[; ;interrupts.c: 232: }
-"232
-[e :UE 291 ]
-}
-"234
-[v _millis `(ul ~T0 @X0 1 ef ]
-"235
+[; ;interrupts.c: 186: if (PIR1bits.RCIF && PIE1bits.RCIE)
+"186
+[e $ ! && != -> . . _PIR1bits 0 5 `i -> -> -> 0 `i `Vuc `i != -> . . _PIE1bits 0 5 `i -> -> -> 0 `i `Vuc `i 275  ]
+[; ;interrupts.c: 187: {
+"187
 {
-[; ;interrupts.c: 234: unsigned long millis()
-[; ;interrupts.c: 235: {
+[; ;interrupts.c: 192: if(UartBufferLen == 256u)
+"192
+[e $ ! == -> _UartBufferLen `ui -> 256 `ui 276  ]
+[; ;interrupts.c: 193: {
+"193
+{
+[; ;interrupts.c: 194: while(!RCIF);
+"194
+[e $U 277  ]
+[e :U 278 ]
+[e :U 277 ]
+[e $ ! _RCIF 278  ]
+[e :U 279 ]
+[; ;interrupts.c: 195: PIR1bits.RCIF = 0;
+"195
+[e = . . _PIR1bits 0 5 -> -> 0 `i `uc ]
+[; ;interrupts.c: 196: return;
+"196
+[e $UE 274  ]
+"197
+}
+[e :U 276 ]
+[; ;interrupts.c: 197: }
+[; ;interrupts.c: 199: while(!RCIF);
+"199
+[e $U 280  ]
+[e :U 281 ]
+[e :U 280 ]
+[e $ ! _RCIF 281  ]
+[e :U 282 ]
+"200
+[v _c `uc ~T0 @X0 1 a ]
+[; ;interrupts.c: 200: uint8_t c = RCREG;
+[e = _c _RCREG ]
+[; ;interrupts.c: 203: UartRingBuffer[UartBufferHead] = c;
+"203
+[e = *U + &U _UartRingBuffer * -> _UartBufferHead `ux -> -> # *U &U _UartRingBuffer `ui `ux _c ]
+[; ;interrupts.c: 204: UartBufferLen++;
+"204
+[e ++ _UartBufferLen -> -> 1 `i `uc ]
+[; ;interrupts.c: 205: if(UartBufferHead == 256u - 1)
+"205
+[e $ ! == -> _UartBufferHead `ui - -> 256 `ui -> -> 1 `i `ui 283  ]
+[; ;interrupts.c: 206: UartBufferHead = 0;
+"206
+[e = _UartBufferHead -> -> 0 `i `uc ]
+[e $U 284  ]
+"207
+[e :U 283 ]
+[; ;interrupts.c: 207: else
+[; ;interrupts.c: 208: UartBufferHead++;
+"208
+[e ++ _UartBufferHead -> -> 1 `i `uc ]
+[e :U 284 ]
+[; ;interrupts.c: 211: PIR1bits.RCIF = 0;
+"211
+[e = . . _PIR1bits 0 5 -> -> 0 `i `uc ]
+[; ;interrupts.c: 212: return;
+"212
+[e $UE 274  ]
+"213
+}
+[e :U 275 ]
+[; ;interrupts.c: 213: }
+[; ;interrupts.c: 234: }
+"234
+[e :UE 274 ]
+}
+"236
+[v _millis `(ul ~T0 @X0 1 ef ]
+"237
+{
+[; ;interrupts.c: 236: unsigned long millis()
+[; ;interrupts.c: 237: {
 [e :U _millis ]
 [f ]
-[; ;interrupts.c: 237: (INTCONbits.GIE = 0);
-"237
-[e = . . _INTCONbits 1 7 -> -> 0 `i `uc ]
-"238
-[v _ret `ul ~T0 @X0 1 a ]
-[; ;interrupts.c: 238: unsigned long ret = millisecondsFromStart;
-[e = _ret _millisecondsFromStart ]
-[; ;interrupts.c: 239: (INTCONbits.GIE = 1);
+[; ;interrupts.c: 239: (INTCONbits.GIE = 0);
 "239
-[e = . . _INTCONbits 1 7 -> -> 1 `i `uc ]
-[; ;interrupts.c: 240: return ret;
+[e = . . _INTCONbits 1 7 -> -> 0 `i `uc ]
 "240
-[e ) _ret ]
-[e $UE 292  ]
-[; ;interrupts.c: 241: }
+[v _ret `ul ~T0 @X0 1 a ]
+[; ;interrupts.c: 240: unsigned long ret = millisecondsFromStart;
+[e = _ret _millisecondsFromStart ]
+[; ;interrupts.c: 241: (INTCONbits.GIE = 1);
 "241
-[e :UE 292 ]
+[e = . . _INTCONbits 1 7 -> -> 1 `i `uc ]
+[; ;interrupts.c: 242: return ret;
+"242
+[e ) _ret ]
+[e $UE 285  ]
+[; ;interrupts.c: 243: }
+"243
+[e :UE 285 ]
 }
-"243
+"245
 [v _getHourMin `(uc ~T0 @X0 1 ef2`*uc`*uc ]
-"244
+"246
 {
-[; ;interrupts.c: 243: bool getHourMin(uint8_t *hour, uint8_t *min)
-[; ;interrupts.c: 244: {
+[; ;interrupts.c: 245: bool getHourMin(uint8_t *hour, uint8_t *min)
+[; ;interrupts.c: 246: {
 [e :U _getHourMin ]
-"243
+"245
 [v _hour `*uc ~T0 @X0 1 r1 ]
 [v _min `*uc ~T0 @X0 1 r2 ]
-"244
-[f ]
-[; ;interrupts.c: 245: if(globalHours == 0xFF)
-"245
-[e $ ! == -> _globalHours `i -> 255 `i 294  ]
-[; ;interrupts.c: 246: return 0;
 "246
-[e ) -> -> 0 `i `uc ]
-[e $UE 293  ]
-[e :U 294 ]
-[; ;interrupts.c: 247: (INTCONbits.GIE = 0);
+[f ]
+[; ;interrupts.c: 247: if(globalHours == 0xFF)
 "247
-[e = . . _INTCONbits 1 7 -> -> 0 `i `uc ]
-[; ;interrupts.c: 248: *hour = globalHours;
+[e $ ! == -> _globalHours `i -> 255 `i 287  ]
+[; ;interrupts.c: 248: return 0;
 "248
-[e = *U _hour _globalHours ]
-[; ;interrupts.c: 249: *min = globalMinutes;
+[e ) -> -> 0 `i `uc ]
+[e $UE 286  ]
+[e :U 287 ]
+[; ;interrupts.c: 249: (INTCONbits.GIE = 0);
 "249
-[e = *U _min _globalMinutes ]
-[; ;interrupts.c: 250: (INTCONbits.GIE = 1);
+[e = . . _INTCONbits 1 7 -> -> 0 `i `uc ]
+[; ;interrupts.c: 250: *hour = globalHours;
 "250
-[e = . . _INTCONbits 1 7 -> -> 1 `i `uc ]
-[; ;interrupts.c: 251: return 1;
+[e = *U _hour _globalHours ]
+[; ;interrupts.c: 251: *min = globalMinutes;
 "251
-[e ) -> -> 1 `i `uc ]
-[e $UE 293  ]
-[; ;interrupts.c: 252: }
+[e = *U _min _globalMinutes ]
+[; ;interrupts.c: 252: (INTCONbits.GIE = 1);
 "252
-[e :UE 293 ]
+[e = . . _INTCONbits 1 7 -> -> 1 `i `uc ]
+[; ;interrupts.c: 253: return 1;
+"253
+[e ) -> -> 1 `i `uc ]
+[e $UE 286  ]
+[; ;interrupts.c: 254: }
+"254
+[e :UE 286 ]
 }
-"254
+"256
 [v _SetHourMin `(v ~T0 @X0 1 ef2`*i`*i ]
-"255
+"257
 {
-[; ;interrupts.c: 254: void SetHourMin(int *newHour, int *newMin)
-[; ;interrupts.c: 255: {
+[; ;interrupts.c: 256: void SetHourMin(int *newHour, int *newMin)
+[; ;interrupts.c: 257: {
 [e :U _SetHourMin ]
-"254
+"256
 [v _newHour `*i ~T0 @X0 1 r1 ]
 [v _newMin `*i ~T0 @X0 1 r2 ]
-"255
-[f ]
-[; ;interrupts.c: 256: globalHours = *newHour;
-"256
-[e = _globalHours -> *U _newHour `uc ]
-[; ;interrupts.c: 257: globalMinutes = *newMin;
 "257
-[e = _globalMinutes -> *U _newMin `uc ]
-[; ;interrupts.c: 258: }
+[f ]
+[; ;interrupts.c: 258: globalHours = *newHour;
 "258
-[e :UE 295 ]
+[e = _globalHours -> *U _newHour `uc ]
+[; ;interrupts.c: 259: globalMinutes = *newMin;
+"259
+[e = _globalMinutes -> *U _newMin `uc ]
+[; ;interrupts.c: 260: }
+"260
+[e :UE 288 ]
 }

@@ -3222,7 +3222,7 @@ InitUartBuffer();
 PortBegin();
 PIE1bits.RCIE = 1;
 
-IPR1bits.RCIP = 1;
+IPR1bits.RCIP = 0;
 
 
 

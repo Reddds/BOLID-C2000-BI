@@ -195,7 +195,7 @@ uint8_t currentEventType = 0; // Alarm(1) Info(0)
 uint8_t curEventHour;
 uint8_t curEventMinute;
 uint8_t curEventType; // 0 - info 1 - alarm
-uint8_t oldEventNum = 0xff;
+uint8_t currentAlarmedEventNum = 0xff;
 uint8_t curEventNum = 0xff;
 //EVENT_PROCESS_STATES_t curEventProcessState = CUR_EVENT_NOT_PROCESSED;
 //uint8_t oldEventEndAlarmHour = HOUR_NOT_SET;
@@ -204,7 +204,7 @@ time_t eventResetSecond = 0; // Absolute second? before? to reset event
 
 
 // Minutes from midnight
-uint16_t *minutes;// = MINUTES_NOT_SET;
+//uint16_t *minutes;// = MINUTES_NOT_SET;
 
 uint8_t statusLedState = 0x00;
 
@@ -375,17 +375,6 @@ void LightLed(uint8_t ledNum, LED_STATES ledState, bool blink)
 }
 
 
-void UpdateStatusLeds()
-{
-    LATB = statusLedState;
-    
-    LATCbits.LATC1 = 0;
-    TRISCbits.RC1 = 0; 
-    LATCbits.LATC1 = 1;
-    TRISCbits.RC1 = 1; 
-}
-
-
 // light on|off status diodes
 void LightStatusLed(uint8_t row, bool on, bool blink)
 {
@@ -398,7 +387,7 @@ void LightStatusLed(uint8_t row, bool on, bool blink)
 }
 
 
-inline void pwm_init(void) 
+void pwm_init(void) 
 {
     // See the Microchip datasheet for information on how to calculate
     // appropriate values for PR2 and the prescaler, and how many bits
@@ -427,11 +416,11 @@ inline void pwm_init(void)
     // Turn on Timer 2
     //T2CONbits.TMR2ON = 1;
 }
-
+/*
 void SetBuzzerFreq(uint16_t freq)
 {
     
-}
+}*/
 // 0 .. 3FF
 void SetBuzzerDuty(uint16_t dc) 
 {
@@ -566,10 +555,10 @@ void ProcessLightBlock(unsigned long *curMs)
 // state: true - user pressed reset button
 void ResetEvent(bool state)
 {
-    LightLed(oldEventNum + 1, state ? LED_GREEN : LED_RED, false);  
-    oldEventNum = 0xff;
+    LightLed(currentAlarmedEventNum + 1, state ? LED_GREEN : LED_RED, false);  
+    currentAlarmedEventNum = 0xff;
     eventResetSecond = 0;
-    _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(oldEventNum, curEventNum);
+    _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
     
     //curEventProcessState = CUR_EVENT_NOT_PROCESSED;
 }
@@ -594,7 +583,7 @@ void LoadNextEvent()
             curEventNum = 0;
         else 
             curEventNum++;    
-        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(oldEventNum, curEventNum);
+        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
         if(curEventNum >= eventCount)
             return;
         // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
@@ -620,7 +609,7 @@ void ProcessDiary()
     {
         SwitchOffAllLeds(); //TODO process if event alarmed yet
         curEventNum = 0xff;
-        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(oldEventNum, curEventNum);
+        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
 
     }
     
@@ -628,26 +617,26 @@ void ProcessDiary()
     if(curEventHour == hour && curEventMinute == minute) // Event is equal
     {
         // old Event Is Alarmd yet
-        if(oldEventNum != 0xff)
+        if(currentAlarmedEventNum != 0xff)
         {
-            LightLed(oldEventNum + 1, LED_RED, false);  
+            LightLed(currentAlarmedEventNum + 1, LED_RED, false);  
         }
         
         {
-            oldEventNum = curEventNum;
+            currentAlarmedEventNum = curEventNum;
             //curEventProcessState == CUR_EVENT_ALARMED;
             if(curEventType == 0)
             {
-                LightLed(oldEventNum + 1, LED_GREEN, true);  
+                LightLed(currentAlarmedEventNum + 1, LED_GREEN, true);  
             }
             else
             {
-                LightLed(oldEventNum + 1, LED_RED, true);  
+                LightLed(currentAlarmedEventNum + 1, LED_RED, true);  
             }
             eventResetSecond = *GetTime() + eventAcceptTime;
             LoadNextEvent();
         }
-        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(oldEventNum, curEventNum);
+        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
 
     }
 //        
@@ -705,16 +694,9 @@ void main(void)
         ProcessLightBlock(&curMs);
         //LATCbits.LATC0 = PORTCbits.RC3;
         
-        if(BUTTON_RESET == 0)
+        
+        if(currentAlarmedEventNum != 0xff)
         {
-            // reset alarmed event
-            if(oldEventNum != 0xff)
-            {
-                ResetEvent(true);
-            }
-            
-            
-            
             diffTime = curMs - oldBuzzerOnTime;
             if(diffTime > buzzerOnOffPeriod)
             {
@@ -727,19 +709,44 @@ void main(void)
             {
                 StopBuzzer;
             }
+        }
+        
+        
+        if(BUTTON_RESET == 0)
+        {
+            // reset alarmed event
+            if(currentAlarmedEventNum != 0xff)
+            {
+                ResetEvent(true);
+            }
+            
+            
+            
+//            diffTime = curMs - oldBuzzerOnTime;
+//            if(diffTime > buzzerOnOffPeriod)
+//            {
+//                SetBuzzerDuty(buzzeLoudDuration); //!!!!!
+//                PR2 = buzzerAlarmPeriod;
+//                StartBuzzer;
+//                oldBuzzerOnTime = curMs;
+//            }
+//            else if(IsBusserOn && diffTime > buzzerOnOffDuration)
+//            {
+//                StopBuzzer;
+//            }
                 
         }
-        else
-        {
-            StopBuzzer;
-        }
+//        else
+//        {
+//            StopBuzzer;
+//        }
 
         
         if(curMs - lastMs >= 1000)
         {            
             AddSecond();
             
-            if(oldEventNum != 0xff && *GetTime() >= eventResetSecond)
+            if(currentAlarmedEventNum != 0xff && *GetTime() >= eventResetSecond)
             {
                 ResetEvent(false);
             }
@@ -750,6 +757,7 @@ void main(void)
             if(getHourMin(&hour, &minute) && oldMinute != minute)
             {
                 _MODBUSInputRegs[INPUT_REG_CURRENT_HOUR_MIN] = word(hour, minute);
+                
                 oldMinute = minute;
                 ProcessDiary();
             }
