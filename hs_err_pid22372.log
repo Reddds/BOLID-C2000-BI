@@ -1,0 +1,148 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 1048576 bytes for AllocateHeap
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (memory/allocation.inline.hpp:61), pid=22372, tid=6168
+#
+# JRE version:  (8.0_65-b17) (build )
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.65-b01 mixed mode windows-amd64 compressed oops)
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000000002312800):  JavaThread "Unknown thread" [_thread_in_vm, id=6168, stack(0x0000000002110000,0x0000000002210000)]
+
+Stack: [0x0000000002110000,0x0000000002210000]
+[error occurred during error reporting (printing stack bounds), id 0xc0000005]
+
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0x0000000002312800 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=6168, stack(0x0000000002110000,0x0000000002210000)]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap:
+ PSYoungGen      total 76288K, used 1310K [0x000000076b180000, 0x0000000770680000, 0x00000007c0000000)
+  eden space 65536K, 2% used [0x000000076b180000,0x000000076b2c7af0,0x000000076f180000)
+  from space 10752K, 0% used [0x000000076fc00000,0x000000076fc00000,0x0000000770680000)
+  to   space 10752K, 0% used [0x000000076f180000,0x000000076f180000,0x000000076fc00000)
+ ParOldGen       total 175104K, used 0K [0x00000006c1400000, 0x00000006cbf00000, 0x000000076b180000)
+  object space 175104K, 0% used [0x00000006c1400000,0x00000006c1400000,0x00000006cbf00000)
+ Metaspace       used 771K, capacity 4480K, committed 4480K, reserved 1056768K
+  class space    used 75K, capacity 384K, committed 384K, reserved 1048576K
+
+Card table byte_map: [0x00000000117d0000,0x0000000011fd0000] byte_map_base: 0x000000000e1c6000
+
+Marking Bits: (ParMarkBitMap*) 0x000000006a14a5b0
+ Begin Bits: [0x0000000012d20000, 0x0000000016cd0000)
+ End Bits:   [0x0000000016cd0000, 0x000000001ac80000)
+
+Polling page: 0x00000000008a0000
+
+CodeCache: size=245760Kb used=328Kb max_used=328Kb free=245431Kb
+ bounds [0x0000000002410000, 0x0000000002680000, 0x0000000011410000]
+ total_blobs=57 nmethods=0 adapters=37
+ compilation: enabled
+
+Compilation events (0 events):
+No events
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+Events (10 events):
+Event: 0.045 loading class java/lang/Short
+Event: 0.045 loading class java/lang/Short done
+Event: 0.045 loading class java/lang/Integer
+Event: 0.045 loading class java/lang/Integer done
+Event: 0.045 loading class java/lang/Long
+Event: 0.045 loading class java/lang/Long done
+Event: 0.046 loading class java/lang/NullPointerException
+Event: 0.046 loading class java/lang/NullPointerException done
+Event: 0.046 loading class java/lang/ArithmeticException
+Event: 0.046 loading class java/lang/ArithmeticException done
+
+
+Dynamic libraries:
+0x00007ff7ede10000 - 0x00007ff7ede47000 	C:\Program Files (x86)\Microchip\MPLABX\v3.26\sys\java\jre1.8.0_65\bin\java.exe
+0x00007ffa550e0000 - 0x00007ffa552a2000 	C:\WINDOWS\SYSTEM32\ntdll.dll
+0x00007ffa53020000 - 0x00007ffa530cd000 	C:\WINDOWS\system32\KERNEL32.DLL
+0x00007ffa52590000 - 0x00007ffa5276d000 	C:\WINDOWS\system32\KERNELBASE.dll
+0x00007ffa535d0000 - 0x00007ffa53676000 	C:\WINDOWS\system32\ADVAPI32.dll
+0x00007ffa54c90000 - 0x00007ffa54d2d000 	C:\WINDOWS\system32\msvcrt.dll
+0x00007ffa536c0000 - 0x00007ffa5371b000 	C:\WINDOWS\system32\sechost.dll
+0x00007ffa534a0000 - 0x00007ffa535c6000 	C:\WINDOWS\system32\RPCRT4.dll
+0x00007ffa54f30000 - 0x00007ffa5507e000 	C:\WINDOWS\system32\USER32.dll
+0x00007ffa54da0000 - 0x00007ffa54f26000 	C:\WINDOWS\system32\GDI32.dll
+0x00007ffa4c2f0000 - 0x00007ffa4c564000 	C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.10240.16384_none_f41f7b285750ef43\COMCTL32.dll
+0x00007ffa53680000 - 0x00007ffa536b6000 	C:\WINDOWS\system32\IMM32.DLL
+0x00007ffa52a00000 - 0x00007ffa52b5c000 	C:\WINDOWS\system32\MSCTF.dll
+0x000000006a1d0000 - 0x000000006a2a2000 	C:\Program Files (x86)\Microchip\MPLABX\v3.26\sys\java\jre1.8.0_65\bin\msvcr100.dll
+0x0000000069940000 - 0x000000006a1c9000 	C:\Program Files (x86)\Microchip\MPLABX\v3.26\sys\java\jre1.8.0_65\bin\server\jvm.dll
+0x00007ffa52770000 - 0x00007ffa52778000 	C:\WINDOWS\system32\PSAPI.DLL
+0x00007ffa31730000 - 0x00007ffa31739000 	C:\WINDOWS\SYSTEM32\WSOCK32.dll
+0x00007ffa4f850000 - 0x00007ffa4f873000 	C:\WINDOWS\SYSTEM32\WINMM.dll
+0x00007ffa53430000 - 0x00007ffa53499000 	C:\WINDOWS\system32\WS2_32.dll
+0x00007ffa54d90000 - 0x00007ffa54d98000 	C:\WINDOWS\system32\NSI.dll
+0x00007ffa4c8a0000 - 0x00007ffa4c8aa000 	C:\WINDOWS\SYSTEM32\VERSION.dll
+0x00007ffa4f730000 - 0x00007ffa4f75c000 	C:\WINDOWS\SYSTEM32\WINMMBASE.dll
+0x00007ffa51ce0000 - 0x00007ffa51d24000 	C:\WINDOWS\system32\cfgmgr32.dll
+0x00007ffa50460000 - 0x00007ffa50487000 	C:\WINDOWS\SYSTEM32\DEVOBJ.dll
+0x000000006ab80000 - 0x000000006ab8f000 	C:\Program Files (x86)\Microchip\MPLABX\v3.26\sys\java\jre1.8.0_65\bin\verify.dll
+0x000000006ab50000 - 0x000000006ab79000 	C:\Program Files (x86)\Microchip\MPLABX\v3.26\sys\java\jre1.8.0_65\bin\java.dll
+0x000000006ab30000 - 0x000000006ab46000 	C:\Program Files (x86)\Microchip\MPLABX\v3.26\sys\java\jre1.8.0_65\bin\zip.dll
+
+VM Arguments:
+java_command: C:/Program Files (x86)/Microchip/MPLABX/v3.26/mplab_ide/mplab_ide/modules/../../bin/extractobjectdependencies.jar -d build/C18_18F252/production/configuration_bits.o
+java_class_path (initial): C:/Program Files (x86)/Microchip/MPLABX/v3.26/mplab_ide/mplab_ide/modules/../../bin/extractobjectdependencies.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+USERNAME=denis
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 60 Stepping 3, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 10.0 , 64 bit Build 10240 (10.0.10240.16384)
+
+CPU:total 8 (4 cores per cpu, 2 threads per core) family 6 model 60 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, lzcnt, ht, tsc, tscinvbit, bmi1, bmi2
+
+Memory: 4k page, physical 16687384k(3749672k free), swap 16687384k(5772k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.65-b01) for windows-amd64 JRE (1.8.0_65-b17), built on Oct  6 2015 16:39:20 by "java_re" with MS VC++ 10.0 (VS2010)
+
+time: Fri Apr 22 12:03:39 2016
+elapsed time: 0 seconds (0d 0h 0m 0s)
+

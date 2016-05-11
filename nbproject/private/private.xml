@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>ModbusRtu.h</url>
+            <bookmark id="1">
+                <name/>
+                <line>106</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/denis/MPLABXProjects/pic18_c_template_1.X/main.c</file>
+            <file>file:/C:/Users/denis/MPLABXProjects/pic18_c_template_1.X/user.h</file>
+            <file>file:/C:/Users/denis/MPLABXProjects/pic18_c_template_1.X/ModbusRtu.c</file>
+            <file>file:/C:/Users/denis/MPLABXProjects/pic18_c_template_1.X/interrupts.h</file>
+            <file>file:/C:/Users/denis/MPLABXProjects/pic18_c_template_1.X/system.h</file>
+            <file>file:/C:/Users/denis/MPLABXProjects/pic18_c_template_1.X/system.c</file>
+            <file>file:/C:/Users/denis/MPLABXProjects/pic18_c_template_1.X/interrupts.c</file>
+            <file>file:/C:/Users/denis/MPLABXProjects/pic18_c_template_1.X/ModbusRtu.h</file>
+            <file>file:/C:/Users/denis/MPLABXProjects/pic18_c_template_1.X/user.c</file>
+        </group>
+    </open-files>
+</project-private>
