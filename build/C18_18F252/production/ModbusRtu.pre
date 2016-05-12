@@ -2955,22 +2955,27 @@ typedef unsigned char bool;
 # 107
 void ConfigureOscillator(void);
 
-# 71 "ModbusRtu.h"
-typedef enum
+# 91 "ModbusRtu.h"
+enum MB_FC
 {
-MODBUS_COM_NONE = 0,
-MODBUS_COM_READ_COILS = 1,
-MODBUS_COM_READ_HOLDING = 3,
-MODBUS_COM_WRITE_SINGLE_COIL = 5,
-MODBUS_COM_WRITE_SINGLE_REGISTER,
-MODBUS_COM_WRITE_MULTIPLE_COILS = 15,
-MODBUS_COM_WRITE_MULTIPLE_REGISTERS = 16,
-MODBUS_COM_WRITE_FILE_RECORD = 21
-} MODBUS_COMMANDS_t;
+MB_FC_NONE = 0,
+MB_FC_READ_COILS = 1,
+MB_FC_READ_DISCRETE_INPUT = 2,
+MB_FC_READ_REGISTERS = 3,
+MB_FC_READ_INPUT_REGISTER = 4,
+MB_FC_WRITE_COIL = 5,
+MB_FC_WRITE_REGISTER = 6,
+MB_FC_READ_EXCEPTION_STATUS = 7,
+MB_FC_WRITE_MULTIPLE_COILS = 15,
+MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
+MB_FC_REPORT_SLAVE_ID = 17,
+MB_FC_WRITE_FILE_RECORD = 21,
+MB_FC_READ_DEVICE_ID = 43
+};
 
 
 
-Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
+void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
 void ModbusBegin(long u32speed);
 
 void ModbusSetTimeOut( uint16_t u16timeout);
@@ -2990,7 +2995,8 @@ uint8_t ModbusGetState();
 uint8_t ModbusGetLastError();
 void ModbusSetID( uint8_t u8id );
 void ModbusEnd();
-MODBUS_COMMANDS_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
 
 # 4 "C:\Program Files (x86)\Microchip\xc8\v1.37\include\__size_t.h"
 typedef unsigned size_t;
@@ -3081,6 +3087,15 @@ NB_LO,
 BYTE_CNT
 };
 
+enum MEI_MESSAGE
+{
+MEI_ID = 0,
+MEI_FUNC,
+MEI_TYPE,
+MEI_READ_DEV_ID,
+MEI_OBJ_ID
+};
+
 enum FILE_MESSAGE
 {
 FILE_DATA_LEN = 2,
@@ -3094,21 +3109,7 @@ FILE_REC_LEN_LO,
 FILE_FIRST_BYTE
 };
 
-# 70
-enum MB_FC
-{
-MB_FC_NONE = 0,
-MB_FC_READ_COILS = 1,
-MB_FC_READ_DISCRETE_INPUT = 2,
-MB_FC_READ_REGISTERS = 3,
-MB_FC_READ_INPUT_REGISTER = 4,
-MB_FC_WRITE_COIL = 5,
-MB_FC_WRITE_REGISTER = 6,
-MB_FC_WRITE_MULTIPLE_COILS = 15,
-MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
-MB_FC_REPORT_SLAVE_ID = 17,
-MB_FC_WRITE_FILE_RECORD = 21
-};
+
 
 enum COM_STATES
 {
@@ -3142,13 +3143,15 @@ MB_FC_READ_REGISTERS,
 MB_FC_READ_INPUT_REGISTER,
 MB_FC_WRITE_COIL,
 MB_FC_WRITE_REGISTER,
+MB_FC_READ_EXCEPTION_STATUS,
 MB_FC_WRITE_MULTIPLE_COILS,
 MB_FC_WRITE_MULTIPLE_REGISTERS,
 MB_FC_REPORT_SLAVE_ID,
-MB_FC_WRITE_FILE_RECORD
+MB_FC_WRITE_FILE_RECORD,
+MB_FC_READ_DEVICE_ID
 };
 
-# 127
+# 116
 uint8_t _u8id;
 uint8_t _u8serno;
 uint8_t _u8txenpin;
@@ -3162,8 +3165,9 @@ uint8_t _inputRegsCount, _holdingRegsCount;
 uint16_t _u16InCnt, _u16OutCnt, _u16errCnt;
 uint16_t _u16timeOut;
 uint32_t _u32time, _u32timeOut;
+uint8_t _exceptionStatus = 0;
 
-MODBUS_COMMANDS_t _lastCommand = 0;
+uint8_t _lastCommand = 0;
 uint16_t _lastAddress = 0;
 uint16_t _lastCount = 0;
 
@@ -3179,24 +3183,32 @@ int8_t ModbusProcess_FC1(uint16_t regs);
 int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size);
 int8_t ModbusProcess_FC5(uint16_t *regs);
 int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size);
+int8_t ModbusProcess_FC7();
 int8_t ModbusProcess_FC15(uint16_t *regs);
 int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size);
 int8_t ModbusProcess_FC17();
 
 int8_t ModbusProcess_FC21();
+int8_t ModbusProcess_FC43();
 void ModbusBuildException(uint8_t u8exception);
 
-# 178
-Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
+# 170
+void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
 {
 ModbusInit(u8id, u8serno, u8txenpin);
 }
 
-# 409
+void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value)
+{
+(value ? ((_exceptionStatus) |= ((unsigned short)1 << (bitNum))) : ((_exceptionStatus) &= ~((unsigned short)1 << (bitNum))));
+}
+
+# 404
 uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
 uint16_t *holdingRegs, const uint8_t holdingRegsCount)
 {
-_lastCommand = MODBUS_COM_NONE;
+_lastCommand = MB_FC_NONE;
+
 
 
 _inputRegsCount = inputRegsCount;
@@ -3262,6 +3274,8 @@ case MB_FC_WRITE_COIL:
 return ModbusProcess_FC5(coils);
 case MB_FC_WRITE_REGISTER:
 return ModbusProcess_FC6(holdingRegs, holdingRegsCount);
+case MB_FC_READ_EXCEPTION_STATUS:
+return ModbusProcess_FC7();
 case MB_FC_WRITE_MULTIPLE_COILS:
 return ModbusProcess_FC15(coils);
 case MB_FC_WRITE_MULTIPLE_REGISTERS:
@@ -3270,6 +3284,8 @@ case MB_FC_REPORT_SLAVE_ID:
 return ModbusProcess_FC17();
 case MB_FC_WRITE_FILE_RECORD:
 return ModbusProcess_FC21();
+case MB_FC_READ_DEVICE_ID:
+return ModbusProcess_FC43();
 default:
 break;
 }
@@ -3456,11 +3472,21 @@ unsigned long recLenBytes = ((_au8Buffer[ FILE_REC_LEN_HI ] << 8) | _au8Buffer[ 
 if (startAddrBytes + recLenBytes >= 256)
 return EXC_ADDR_RANGE;
 break;
+case MB_FC_READ_DEVICE_ID:
+if(_au8Buffer[ MEI_TYPE ] != 0x0E)
+return EXC_FUNC_CODE;
+uint8_t readDevId = _au8Buffer[ MEI_READ_DEV_ID ];
+if(readDevId != 0x01 && readDevId != 0x02 && readDevId != 0x04)
+return EXC_REGS_QUANT;
+if(readDevId == 0x04 && _au8Buffer[ MEI_OBJ_ID ] > 0x06)
+return EXC_ADDR_RANGE;
+break;
 }
+_lastCommand = _au8Buffer[ FUNC ];
 return 0;
 }
 
-# 829
+# 839
 void ModbusBuildException(uint8_t u8exception)
 {
 uint8_t u8func = _au8Buffer[ FUNC ];
@@ -3471,8 +3497,8 @@ _au8Buffer[ 2 ] = u8exception;
 _u8BufferSize = EXCEPTION_SIZE;
 }
 
-# 876
-MODBUS_COMMANDS_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
+# 886
+uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
 {
 if (address != (0))
 *address = _lastAddress;
@@ -3481,11 +3507,9 @@ if (count != (0))
 return &_lastCommand;
 }
 
-# 893
+# 903
 int8_t ModbusProcess_FC1(uint16_t regs)
 {
-_lastCommand = MODBUS_COM_READ_COILS;
-
 
 uint8_t u8currentBit, u8bytesno, u8bitsno;
 uint8_t u8CopyBufferSize;
@@ -3514,7 +3538,7 @@ u8currentBit = (uint8_t) u16coil;
 
 ((((regs) >> (u8currentBit)) & 0x01) ? ((_au8Buffer[ _u8BufferSize ]) |= ((unsigned short)1 << (u8bitsno))) : ((_au8Buffer[ _u8BufferSize ]) &= ~((unsigned short)1 << (u8bitsno))));
 
-# 927
+# 935
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3532,11 +3556,9 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 952
+# 960
 int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size)
 {
-_lastCommand = MODBUS_COM_READ_HOLDING;
-
 uint8_t u8StartAdd = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 _lastAddress = u8StartAdd;
 uint16_t u16regsno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
@@ -3560,11 +3582,9 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 987
+# 993
 int8_t ModbusProcess_FC5(uint16_t *regs)
 {
-_lastCommand = MODBUS_COM_WRITE_SINGLE_COIL;
-
 
 uint8_t u8currentBit;
 uint8_t u8CopyBufferSize;
@@ -3578,7 +3598,7 @@ u8currentBit = (uint8_t) (u16coil % 16);
 
 (_au8Buffer[ NB_HI ] == 0xff ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 1009
+# 1013
 _u8BufferSize = 6;
 u8CopyBufferSize = _u8BufferSize + 2;
 ModbusSendTxBuffer();
@@ -3586,11 +3606,9 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1024
+# 1028
 int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
 {
-_lastCommand = MODBUS_COM_WRITE_SINGLE_REGISTER;
-
 uint16_t u16add = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 _lastAddress = u16add;
 _lastCount = 1;
@@ -3608,10 +3626,19 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1053
+
+int8_t ModbusProcess_FC7()
+{
+_au8Buffer[ 2 ] = _exceptionStatus;
+_u8BufferSize = 3;
+uint8_t u8CopyBufferSize = _u8BufferSize;
+ModbusSendTxBuffer();
+return u8CopyBufferSize;
+}
+
+# 1064
 int8_t ModbusProcess_FC15(uint16_t *regs)
 {
-_lastCommand = MODBUS_COM_WRITE_MULTIPLE_COILS;
 
 uint8_t u8currentBit, u8frameByte, u8bitsno;
 uint8_t u8CopyBufferSize;
@@ -3636,10 +3663,10 @@ u8currentBit = (uint8_t) u16coil;
 
 bTemp = (((_au8Buffer[ u8frameByte ]) >> (u8bitsno)) & 0x01);
 
-# 1082
+# 1092
 (bTemp ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 1087
+# 1097
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3657,10 +3684,9 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1112
+# 1122
 int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size)
 {
-_lastCommand = MODBUS_COM_WRITE_MULTIPLE_REGISTERS;
 
 uint16_t u16StartAdd = _au8Buffer[ ADD_HI ] << 8 | _au8Buffer[ ADD_LO ];
 _lastAddress = u16StartAdd;
@@ -3680,7 +3706,7 @@ for (i = 0; i < u8regsno && (u16StartAdd + i) < u8size; i++)
 {
 temp = (((uint16_t)_au8Buffer[ (BYTE_CNT + 1) + i * 2 ]<<8)|_au8Buffer[ (BYTE_CNT + 2) + i * 2 ]);
 
-# 1136
+# 1145
 regs[ u16StartAdd + i ] = temp;
 }
 u8CopyBufferSize = _u8BufferSize + 2;
@@ -3689,7 +3715,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1152
+# 1161
 int8_t ModbusProcess_FC17()
 {
 _au8Buffer[ 2 ] = sizeof("Tablo s raspisaniem turo") + 1 + 1;
@@ -3699,7 +3725,6 @@ _u8BufferSize = 3;
 for(uint8_t i = 0; i < sizeof("Tablo s raspisaniem turo"); i++, _u8BufferSize++)
 _au8Buffer[_u8BufferSize] = "Tablo s raspisaniem turo"[i];
 
-# 1178
 _au8Buffer[_u8BufferSize++] = '!';
 _au8Buffer[_u8BufferSize++] = '>';
 uint8_t u8CopyBufferSize = _u8BufferSize;
@@ -3708,10 +3733,9 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1194
+# 1186
 int8_t ModbusProcess_FC21()
 {
-_lastCommand = MODBUS_COM_WRITE_FILE_RECORD;
 
 
 int8_t requestDataLen = _au8Buffer[ FILE_DATA_LEN ];
@@ -3723,7 +3747,7 @@ _lastCount = recLenBytes;
 uint8_t u8CopyBufferSize;
 uint8_t i;
 
-# 1212
+# 1203
 _u8BufferSize = requestDataLen + 1;
 
 
@@ -3739,3 +3763,81 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
+void CopyStringToBuffer(uint8_t objId, const char *src, uint8_t len)
+{
+len--;
+_au8Buffer[_u8BufferSize++] = objId;
+_au8Buffer[_u8BufferSize++] = len;
+for(uint8_t i = 0; i < len; i++, _u8BufferSize++)
+_au8Buffer[_u8BufferSize] = src[i];
+}
+
+int8_t ModbusProcess_FC43()
+{
+uint8_t devIdCode = _au8Buffer[ 3 ];
+
+# 1237
+uint8_t objId = _au8Buffer[ 4 ];
+
+# 1248
+_au8Buffer[ 5 ] = 0x00;
+_au8Buffer[ 6 ] = 0x00;
+
+_u8BufferSize = 8;
+switch(devIdCode)
+{
+case 0x01:
+_au8Buffer[ 4 ] = 0x81;
+_au8Buffer[ 7 ] = 3;
+CopyStringToBuffer(0x00, "BOLID", sizeof("BOLID"));
+CopyStringToBuffer(0x01, "C2000-BI", sizeof("C2000-BI"));
+CopyStringToBuffer(0x02, "1.01", sizeof("1.01"));
+break;
+case 0x02:
+_au8Buffer[ 4 ] = 0x82;
+_au8Buffer[ 7 ] = 4;
+CopyStringToBuffer(0x03, "http://bolid.ru", sizeof("http://bolid.ru"));
+CopyStringToBuffer(0x04, "Tablo s raspisaniem", sizeof("Tablo s raspisaniem"));
+CopyStringToBuffer(0x05, "MMM", sizeof("MMM"));
+CopyStringToBuffer(0x06, "Raspisanie", sizeof("Raspisanie"));
+break;
+case 0x04:
+_au8Buffer[ 7 ] = 1;
+switch(objId)
+{
+case 0x00:
+_au8Buffer[ 4 ] = 0x81;
+CopyStringToBuffer(objId, "BOLID", sizeof("BOLID"));
+break;
+case 0x01:
+_au8Buffer[ 4 ] = 0x81;
+CopyStringToBuffer(objId, "C2000-BI", sizeof("C2000-BI"));
+break;
+case 0x02:
+_au8Buffer[ 4 ] = 0x81;
+CopyStringToBuffer(objId, "1.01", sizeof("1.01"));
+break;
+case 0x03:
+_au8Buffer[ 4 ] = 0x82;
+CopyStringToBuffer(objId, "http://bolid.ru", sizeof("http://bolid.ru"));
+break;
+case 0x04:
+_au8Buffer[ 4 ] = 0x82;
+CopyStringToBuffer(objId, "Tablo s raspisaniem", sizeof("Tablo s raspisaniem"));
+break;
+case 0x05:
+_au8Buffer[ 4 ] = 0x82;
+CopyStringToBuffer(objId, "MMM", sizeof("MMM"));
+break;
+case 0x06:
+_au8Buffer[ 4 ] = 0x82;
+CopyStringToBuffer(objId, "Raspisanie", sizeof("Raspisanie"));
+break;
+}
+break;
+}
+uint8_t u8CopyBufferSize = _u8BufferSize;
+ModbusSendTxBuffer();
+
+return u8CopyBufferSize;
+}

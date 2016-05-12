@@ -2617,33 +2617,39 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.h: 73: unsigned long millis();
 [; ;interrupts.h: 75: bool getHourMin(uint8_t *hour, uint8_t *min);
 [; ;interrupts.h: 76: void SetHourMin(int *newHour, int *newMin);
-[; ;ModbusRtu.h: 71: typedef enum
-[; ;ModbusRtu.h: 72: {
-[; ;ModbusRtu.h: 73: MODBUS_COM_NONE = 0,
-[; ;ModbusRtu.h: 74: MODBUS_COM_READ_COILS = 1,
-[; ;ModbusRtu.h: 75: MODBUS_COM_READ_HOLDING = 3,
-[; ;ModbusRtu.h: 76: MODBUS_COM_WRITE_SINGLE_COIL = 5,
-[; ;ModbusRtu.h: 77: MODBUS_COM_WRITE_SINGLE_REGISTER,
-[; ;ModbusRtu.h: 78: MODBUS_COM_WRITE_MULTIPLE_COILS = 15,
-[; ;ModbusRtu.h: 79: MODBUS_COM_WRITE_MULTIPLE_REGISTERS = 16,
-[; ;ModbusRtu.h: 80: MODBUS_COM_WRITE_FILE_RECORD = 21
-[; ;ModbusRtu.h: 81: } MODBUS_COMMANDS_t;
-[; ;ModbusRtu.h: 85: Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
-[; ;ModbusRtu.h: 86: void ModbusBegin(long u32speed);
-[; ;ModbusRtu.h: 88: void ModbusSetTimeOut( uint16_t u16timeout);
-[; ;ModbusRtu.h: 89: uint16_t ModbusGetTimeOut();
-[; ;ModbusRtu.h: 90: boolean ModbusGetTimeOutState();
-[; ;ModbusRtu.h: 94: int8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
-[; ;ModbusRtu.h: 95: uint16_t *holdingRegs, const uint8_t holdingRegsCount);
-[; ;ModbusRtu.h: 97: uint16_t ModbusGetInCnt();
-[; ;ModbusRtu.h: 98: uint16_t ModbusGetOutCnt();
-[; ;ModbusRtu.h: 99: uint16_t ModbusGetErrCnt();
-[; ;ModbusRtu.h: 100: uint8_t ModbusGetID();
-[; ;ModbusRtu.h: 101: uint8_t ModbusGetState();
-[; ;ModbusRtu.h: 102: uint8_t ModbusGetLastError();
-[; ;ModbusRtu.h: 103: void ModbusSetID( uint8_t u8id );
-[; ;ModbusRtu.h: 104: void ModbusEnd();
-[; ;ModbusRtu.h: 105: MODBUS_COMMANDS_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+[; ;ModbusRtu.h: 91: enum MB_FC
+[; ;ModbusRtu.h: 92: {
+[; ;ModbusRtu.h: 93: MB_FC_NONE = 0,
+[; ;ModbusRtu.h: 94: MB_FC_READ_COILS = 1,
+[; ;ModbusRtu.h: 95: MB_FC_READ_DISCRETE_INPUT = 2,
+[; ;ModbusRtu.h: 96: MB_FC_READ_REGISTERS = 3,
+[; ;ModbusRtu.h: 97: MB_FC_READ_INPUT_REGISTER = 4,
+[; ;ModbusRtu.h: 98: MB_FC_WRITE_COIL = 5,
+[; ;ModbusRtu.h: 99: MB_FC_WRITE_REGISTER = 6,
+[; ;ModbusRtu.h: 100: MB_FC_READ_EXCEPTION_STATUS = 7,
+[; ;ModbusRtu.h: 101: MB_FC_WRITE_MULTIPLE_COILS = 15,
+[; ;ModbusRtu.h: 102: MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
+[; ;ModbusRtu.h: 103: MB_FC_REPORT_SLAVE_ID = 17,
+[; ;ModbusRtu.h: 104: MB_FC_WRITE_FILE_RECORD = 21,
+[; ;ModbusRtu.h: 105: MB_FC_READ_DEVICE_ID = 43
+[; ;ModbusRtu.h: 106: };
+[; ;ModbusRtu.h: 110: void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
+[; ;ModbusRtu.h: 111: void ModbusBegin(long u32speed);
+[; ;ModbusRtu.h: 113: void ModbusSetTimeOut( uint16_t u16timeout);
+[; ;ModbusRtu.h: 114: uint16_t ModbusGetTimeOut();
+[; ;ModbusRtu.h: 115: boolean ModbusGetTimeOutState();
+[; ;ModbusRtu.h: 119: int8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
+[; ;ModbusRtu.h: 120: uint16_t *holdingRegs, const uint8_t holdingRegsCount);
+[; ;ModbusRtu.h: 122: uint16_t ModbusGetInCnt();
+[; ;ModbusRtu.h: 123: uint16_t ModbusGetOutCnt();
+[; ;ModbusRtu.h: 124: uint16_t ModbusGetErrCnt();
+[; ;ModbusRtu.h: 125: uint8_t ModbusGetID();
+[; ;ModbusRtu.h: 126: uint8_t ModbusGetState();
+[; ;ModbusRtu.h: 127: uint8_t ModbusGetLastError();
+[; ;ModbusRtu.h: 128: void ModbusSetID( uint8_t u8id );
+[; ;ModbusRtu.h: 129: void ModbusEnd();
+[; ;ModbusRtu.h: 130: uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+[; ;ModbusRtu.h: 131: void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
 "42 user.c
 [v _currentTime `l ~T0 @X0 1 e ]
 [i _currentTime

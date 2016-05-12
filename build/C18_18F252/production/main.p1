@@ -85,9 +85,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [n S61 . . . . ]
 "1339
 [v _TRISCbits `VS61 ~T0 @X0 0 e@3988 ]
-"345 main.c
-[c E2426 0 1 2 .. ]
-[n E2426 . LED_OFF LED_GREEN LED_RED  ]
+"353 main.c
+[c E2433 0 1 2 .. ]
+[n E2433 . LED_OFF LED_GREEN LED_RED  ]
 "2781 C:\Program Files (x86)\Microchip\xc8\v1.37\include\pic18f252.h
 [s S142 :4 `uc 1 :2 `uc 1 ]
 [n S142 . CCP1M DC1B ]
@@ -123,9 +123,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _RD `Vb ~T0 @X0 0 e@32048 ]
 "1961
 [v _EEDATA `Vuc ~T0 @X0 0 e@4008 ]
-"85 ModbusRtu.h
-[v _Modbus `(i ~T0 @X0 0 ef3`uc`uc`uc ]
-"256 main.c
+"110 ModbusRtu.h
+[v _Modbus `(v ~T0 @X0 0 ef3`uc`uc`uc ]
+"264 main.c
 [v _LoadNextEvent `(v ~T0 @X0 0 ef ]
 "486 C:\Program Files (x86)\Microchip\xc8\v1.37\include\pic18f252.h
 [v _LATA `Vuc ~T0 @X0 0 e@3977 ]
@@ -164,9 +164,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _PORTCbits `VS12 ~T0 @X0 0 e@3970 ]
 "83 user.h
 [v _AddSecond `(v ~T0 @X0 0 ef ]
-"94 ModbusRtu.h
+"119 ModbusRtu.h
 [v _ModbusPoll `(c ~T0 @X0 0 ef6`ui`*ui`*ui`Cuc`*ui`Cuc ]
-"254 main.c
+"262 main.c
 [v _io_poll `(v ~T0 @X0 0 ef ]
 "9 C:\Program Files (x86)\Microchip\xc8\v1.37\include\time.h
 [s S250 `i 1 `i 1 `i 1 `i 1 `i 1 `i 1 `i 1 `i 1 `i 1 ]
@@ -177,11 +177,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _mktime `(l ~T0 @X0 0 ef1`*S250 ]
 "81 user.h
 [v _SetTime `(v ~T0 @X0 0 ef1`*l ]
-"799 main.c
-[c E2336 0 1 3 5 6 15 16 21 .. ]
-[n E2336 . MODBUS_COM_NONE MODBUS_COM_READ_COILS MODBUS_COM_READ_HOLDING MODBUS_COM_WRITE_SINGLE_COIL MODBUS_COM_WRITE_SINGLE_REGISTER MODBUS_COM_WRITE_MULTIPLE_COILS MODBUS_COM_WRITE_MULTIPLE_REGISTERS MODBUS_COM_WRITE_FILE_RECORD  ]
-"105 ModbusRtu.h
-[v _ModbusGetLastCommand `(*E2336 ~T0 @X0 0 ef2`*ui`*ui ]
+"130 ModbusRtu.h
+[v _ModbusGetLastCommand `(*uc ~T0 @X0 0 ef2`*ui`*ui ]
+"819 main.c
+[c E2336 0 1 2 3 4 5 6 7 15 16 17 21 43 .. ]
+[n E2336 MB_FC MB_FC_NONE MB_FC_READ_COILS MB_FC_READ_DISCRETE_INPUT MB_FC_READ_REGISTERS MB_FC_READ_INPUT_REGISTER MB_FC_WRITE_COIL MB_FC_WRITE_REGISTER MB_FC_READ_EXCEPTION_STATUS MB_FC_WRITE_MULTIPLE_COILS MB_FC_WRITE_MULTIPLE_REGISTERS MB_FC_REPORT_SLAVE_ID MB_FC_WRITE_FILE_RECORD MB_FC_READ_DEVICE_ID  ]
+"131 ModbusRtu.h
+[v _ModbusSetExceptionStatusBit `(v ~T0 @X0 0 ef2`uc`uc ]
 "5807 C:\Program Files (x86)\Microchip\xc8\v1.37\include\pic18f252.h
 [v _WR `Vb ~T0 @X0 0 e@32049 ]
 "5053
@@ -2504,33 +2506,39 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.h: 81: void SetTime(time_t *newTime);
 [; ;user.h: 83: void AddSecond();
 [; ;user.h: 84: time_t *GetTime();
-[; ;ModbusRtu.h: 71: typedef enum
-[; ;ModbusRtu.h: 72: {
-[; ;ModbusRtu.h: 73: MODBUS_COM_NONE = 0,
-[; ;ModbusRtu.h: 74: MODBUS_COM_READ_COILS = 1,
-[; ;ModbusRtu.h: 75: MODBUS_COM_READ_HOLDING = 3,
-[; ;ModbusRtu.h: 76: MODBUS_COM_WRITE_SINGLE_COIL = 5,
-[; ;ModbusRtu.h: 77: MODBUS_COM_WRITE_SINGLE_REGISTER,
-[; ;ModbusRtu.h: 78: MODBUS_COM_WRITE_MULTIPLE_COILS = 15,
-[; ;ModbusRtu.h: 79: MODBUS_COM_WRITE_MULTIPLE_REGISTERS = 16,
-[; ;ModbusRtu.h: 80: MODBUS_COM_WRITE_FILE_RECORD = 21
-[; ;ModbusRtu.h: 81: } MODBUS_COMMANDS_t;
-[; ;ModbusRtu.h: 85: Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
-[; ;ModbusRtu.h: 86: void ModbusBegin(long u32speed);
-[; ;ModbusRtu.h: 88: void ModbusSetTimeOut( uint16_t u16timeout);
-[; ;ModbusRtu.h: 89: uint16_t ModbusGetTimeOut();
-[; ;ModbusRtu.h: 90: boolean ModbusGetTimeOutState();
-[; ;ModbusRtu.h: 94: int8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
-[; ;ModbusRtu.h: 95: uint16_t *holdingRegs, const uint8_t holdingRegsCount);
-[; ;ModbusRtu.h: 97: uint16_t ModbusGetInCnt();
-[; ;ModbusRtu.h: 98: uint16_t ModbusGetOutCnt();
-[; ;ModbusRtu.h: 99: uint16_t ModbusGetErrCnt();
-[; ;ModbusRtu.h: 100: uint8_t ModbusGetID();
-[; ;ModbusRtu.h: 101: uint8_t ModbusGetState();
-[; ;ModbusRtu.h: 102: uint8_t ModbusGetLastError();
-[; ;ModbusRtu.h: 103: void ModbusSetID( uint8_t u8id );
-[; ;ModbusRtu.h: 104: void ModbusEnd();
-[; ;ModbusRtu.h: 105: MODBUS_COMMANDS_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+[; ;ModbusRtu.h: 91: enum MB_FC
+[; ;ModbusRtu.h: 92: {
+[; ;ModbusRtu.h: 93: MB_FC_NONE = 0,
+[; ;ModbusRtu.h: 94: MB_FC_READ_COILS = 1,
+[; ;ModbusRtu.h: 95: MB_FC_READ_DISCRETE_INPUT = 2,
+[; ;ModbusRtu.h: 96: MB_FC_READ_REGISTERS = 3,
+[; ;ModbusRtu.h: 97: MB_FC_READ_INPUT_REGISTER = 4,
+[; ;ModbusRtu.h: 98: MB_FC_WRITE_COIL = 5,
+[; ;ModbusRtu.h: 99: MB_FC_WRITE_REGISTER = 6,
+[; ;ModbusRtu.h: 100: MB_FC_READ_EXCEPTION_STATUS = 7,
+[; ;ModbusRtu.h: 101: MB_FC_WRITE_MULTIPLE_COILS = 15,
+[; ;ModbusRtu.h: 102: MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
+[; ;ModbusRtu.h: 103: MB_FC_REPORT_SLAVE_ID = 17,
+[; ;ModbusRtu.h: 104: MB_FC_WRITE_FILE_RECORD = 21,
+[; ;ModbusRtu.h: 105: MB_FC_READ_DEVICE_ID = 43
+[; ;ModbusRtu.h: 106: };
+[; ;ModbusRtu.h: 110: void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
+[; ;ModbusRtu.h: 111: void ModbusBegin(long u32speed);
+[; ;ModbusRtu.h: 113: void ModbusSetTimeOut( uint16_t u16timeout);
+[; ;ModbusRtu.h: 114: uint16_t ModbusGetTimeOut();
+[; ;ModbusRtu.h: 115: boolean ModbusGetTimeOutState();
+[; ;ModbusRtu.h: 119: int8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
+[; ;ModbusRtu.h: 120: uint16_t *holdingRegs, const uint8_t holdingRegsCount);
+[; ;ModbusRtu.h: 122: uint16_t ModbusGetInCnt();
+[; ;ModbusRtu.h: 123: uint16_t ModbusGetOutCnt();
+[; ;ModbusRtu.h: 124: uint16_t ModbusGetErrCnt();
+[; ;ModbusRtu.h: 125: uint8_t ModbusGetID();
+[; ;ModbusRtu.h: 126: uint8_t ModbusGetState();
+[; ;ModbusRtu.h: 127: uint8_t ModbusGetLastError();
+[; ;ModbusRtu.h: 128: void ModbusSetID( uint8_t u8id );
+[; ;ModbusRtu.h: 129: void ModbusEnd();
+[; ;ModbusRtu.h: 130: uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+[; ;ModbusRtu.h: 131: void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
 [; ;interrupts.h: 66: void InitUartBuffer();
 [; ;interrupts.h: 68: uint8_t PortAvailable();
 [; ;interrupts.h: 70: uint8_t PortRead();
@@ -2545,614 +2553,614 @@ Version 3.2 HI-TECH Software Intermediate Code
 -> -> 0 `i `uc
 ]
 [; ;main.c: 44: bool IsBusserOn = 0;
-"153
+"161
 [v _modbusState `ui ~T0 @X0 1 e ]
-[; ;main.c: 153: uint16_t modbusState;
-"175
+[; ;main.c: 161: uint16_t modbusState;
+"183
 [v _buzzerOnOffDuration `ui ~T0 @X0 1 e ]
 [i _buzzerOnOffDuration
 -> -> 256 `i `ui
 ]
-[; ;main.c: 175: uint16_t buzzerOnOffDuration = 0x100;
-"176
+[; ;main.c: 183: uint16_t buzzerOnOffDuration = 0x100;
+"184
 [v _buzzerOnOffPeriod `ui ~T0 @X0 1 e ]
 [i _buzzerOnOffPeriod
 -> -> 1024 `i `ui
 ]
-[; ;main.c: 176: uint16_t buzzerOnOffPeriod = 0x400;
-"177
-[v _buzzeLoudDuration `uc ~T0 @X0 1 e ]
-[; ;main.c: 177: uint8_t buzzeLoudDuration;
-"178
-[v _buzzeQuietDuration `uc ~T0 @X0 1 e ]
-[; ;main.c: 178: uint8_t buzzeQuietDuration;
-"179
-[v _buzzerInfoPeriod `uc ~T0 @X0 1 e ]
-[; ;main.c: 179: uint8_t buzzerInfoPeriod;
-"180
-[v _buzzerAlarmPeriod `uc ~T0 @X0 1 e ]
-[; ;main.c: 180: uint8_t buzzerAlarmPeriod;
-"181
-[v _buzzeEscaladeTime `uc ~T0 @X0 1 e ]
-[; ;main.c: 181: uint8_t buzzeEscaladeTime;
-"182
-[v _buzzerStartDurationDiv `uc ~T0 @X0 1 e ]
-[; ;main.c: 182: uint8_t buzzerStartDurationDiv;
-"183
-[v _eventAcceptTime `uc ~T0 @X0 1 e ]
-[; ;main.c: 183: uint8_t eventAcceptTime;
-"184
-[v _eveningTimeHour `uc ~T0 @X0 1 e ]
-[; ;main.c: 184: uint8_t eveningTimeHour;
+[; ;main.c: 184: uint16_t buzzerOnOffPeriod = 0x400;
 "185
-[v _nightStartHour `uc ~T0 @X0 1 e ]
-[; ;main.c: 185: uint8_t nightStartHour;
+[v _buzzeLoudDuration `uc ~T0 @X0 1 e ]
+[; ;main.c: 185: uint8_t buzzeLoudDuration;
 "186
-[v _nightEndHour `uc ~T0 @X0 1 e ]
-[; ;main.c: 186: uint8_t nightEndHour;
+[v _buzzeQuietDuration `uc ~T0 @X0 1 e ]
+[; ;main.c: 186: uint8_t buzzeQuietDuration;
 "187
-[v _morningTimeHour `uc ~T0 @X0 1 e ]
-[; ;main.c: 187: uint8_t morningTimeHour;
+[v _buzzerInfoPeriod `uc ~T0 @X0 1 e ]
+[; ;main.c: 187: uint8_t buzzerInfoPeriod;
+"188
+[v _buzzerAlarmPeriod `uc ~T0 @X0 1 e ]
+[; ;main.c: 188: uint8_t buzzerAlarmPeriod;
 "189
-[v _eventCount `uc ~T0 @X0 1 e ]
-[; ;main.c: 189: uint8_t eventCount;
+[v _buzzeEscaladeTime `uc ~T0 @X0 1 e ]
+[; ;main.c: 189: uint8_t buzzeEscaladeTime;
 "190
+[v _buzzerStartDurationDiv `uc ~T0 @X0 1 e ]
+[; ;main.c: 190: uint8_t buzzerStartDurationDiv;
+"191
+[v _eventAcceptTime `uc ~T0 @X0 1 e ]
+[; ;main.c: 191: uint8_t eventAcceptTime;
+"192
+[v _eveningTimeHour `uc ~T0 @X0 1 e ]
+[; ;main.c: 192: uint8_t eveningTimeHour;
+"193
+[v _nightStartHour `uc ~T0 @X0 1 e ]
+[; ;main.c: 193: uint8_t nightStartHour;
+"194
+[v _nightEndHour `uc ~T0 @X0 1 e ]
+[; ;main.c: 194: uint8_t nightEndHour;
+"195
+[v _morningTimeHour `uc ~T0 @X0 1 e ]
+[; ;main.c: 195: uint8_t morningTimeHour;
+"197
+[v _eventCount `uc ~T0 @X0 1 e ]
+[; ;main.c: 197: uint8_t eventCount;
+"198
 [v _currentEvent `uc ~T0 @X0 1 e ]
 [i _currentEvent
 -> -> 0 `i `uc
 ]
-[; ;main.c: 190: uint8_t currentEvent = 0;
-"191
+[; ;main.c: 198: uint8_t currentEvent = 0;
+"199
 [v _currentEventMinetesFromMidnight `ui ~T0 @X0 1 e ]
 [i _currentEventMinetesFromMidnight
 -> -> 0 `i `ui
 ]
-[; ;main.c: 191: uint16_t currentEventMinetesFromMidnight = 0;
-"192
+[; ;main.c: 199: uint16_t currentEventMinetesFromMidnight = 0;
+"200
 [v _currentEventType `uc ~T0 @X0 1 e ]
 [i _currentEventType
 -> -> 0 `i `uc
 ]
-[; ;main.c: 192: uint8_t currentEventType = 0;
-"195
+[; ;main.c: 200: uint8_t currentEventType = 0;
+"203
 [v _curEventHour `uc ~T0 @X0 1 e ]
-[; ;main.c: 195: uint8_t curEventHour;
-"196
+[; ;main.c: 203: uint8_t curEventHour;
+"204
 [v _curEventMinute `uc ~T0 @X0 1 e ]
-[; ;main.c: 196: uint8_t curEventMinute;
-"197
+[; ;main.c: 204: uint8_t curEventMinute;
+"205
 [v _curEventType `uc ~T0 @X0 1 e ]
-[; ;main.c: 197: uint8_t curEventType;
-"198
+[; ;main.c: 205: uint8_t curEventType;
+"206
 [v _currentAlarmedEventNum `uc ~T0 @X0 1 e ]
 [i _currentAlarmedEventNum
 -> -> 255 `i `uc
 ]
-[; ;main.c: 198: uint8_t currentAlarmedEventNum = 0xff;
-"199
+[; ;main.c: 206: uint8_t currentAlarmedEventNum = 0xff;
+"207
 [v _curEventNum `uc ~T0 @X0 1 e ]
 [i _curEventNum
 -> -> 255 `i `uc
 ]
-[; ;main.c: 199: uint8_t curEventNum = 0xff;
-"203
+[; ;main.c: 207: uint8_t curEventNum = 0xff;
+"211
 [v _eventResetSecond `l ~T0 @X0 1 e ]
 [i _eventResetSecond
 -> -> 0 `i `l
 ]
-[; ;main.c: 203: time_t eventResetSecond = 0;
-"209
+[; ;main.c: 211: time_t eventResetSecond = 0;
+"217
 [v _statusLedState `uc ~T0 @X0 1 e ]
 [i _statusLedState
 -> -> 0 `i `uc
 ]
-[; ;main.c: 209: uint8_t statusLedState = 0x00;
-"233
+[; ;main.c: 217: uint8_t statusLedState = 0x00;
+"241
 [v _ledStatuses `uc ~T0 @X0 -> 16 `i e ]
-[; ;main.c: 233: uint8_t ledStatuses[16];
-"235
+[; ;main.c: 241: uint8_t ledStatuses[16];
+"243
 [v _blinkDuration `ui ~T0 @X0 1 e ]
-[; ;main.c: 235: uint16_t blinkDuration;
-"236
+[; ;main.c: 243: uint16_t blinkDuration;
+"244
 [v _blinkPeriod `ui ~T0 @X0 1 e ]
-[; ;main.c: 236: uint16_t blinkPeriod;
-"238
+[; ;main.c: 244: uint16_t blinkPeriod;
+"246
 [v _ledBlink `uc ~T0 @X0 -> 16 `i e ]
-[; ;main.c: 238: uint8_t ledBlink[16];
-[; ;main.c: 254: void io_poll();
-[; ;main.c: 255: void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth);
-[; ;main.c: 256: void LoadNextEvent();
-[; ;main.c: 257: typedef enum {LED_OFF, LED_GREEN, LED_RED} LED_STATES;
-"260
-[v _UpdateLedRegister `(v ~T0 @X0 1 ef1`uc ]
-"261
-{
-[; ;main.c: 260: void UpdateLedRegister(uint8_t regIndex)
-[; ;main.c: 261: {
-[e :U _UpdateLedRegister ]
-"260
-[v _regIndex `uc ~T0 @X0 1 r1 ]
-"261
-[f ]
-[; ;main.c: 262: switch(regIndex)
-"262
-[e $U 253  ]
-[; ;main.c: 263: {
-"263
-{
-[; ;main.c: 264: case 0:
-"264
-[e :U 254 ]
-[; ;main.c: 265: LATAbits.LATA4 = 0;
-"265
-[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
-[; ;main.c: 266: TRISAbits.RA4 = 0;
-"266
-[e = . . _TRISAbits 1 4 -> -> 0 `i `uc ]
-[; ;main.c: 267: LATAbits.LATA4 = 1;
-"267
-[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
-[; ;main.c: 268: TRISAbits.RA4 = 1;
+[; ;main.c: 246: uint8_t ledBlink[16];
+[; ;main.c: 262: void io_poll();
+[; ;main.c: 263: void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth);
+[; ;main.c: 264: void LoadNextEvent();
+[; ;main.c: 265: typedef enum {LED_OFF, LED_GREEN, LED_RED} LED_STATES;
 "268
-[e = . . _TRISAbits 1 4 -> -> 1 `i `uc ]
-[; ;main.c: 269: break;
+[v _UpdateLedRegister `(v ~T0 @X0 1 ef1`uc ]
 "269
-[e $U 252  ]
-[; ;main.c: 270: case 1:
+{
+[; ;main.c: 268: void UpdateLedRegister(uint8_t regIndex)
+[; ;main.c: 269: {
+[e :U _UpdateLedRegister ]
+"268
+[v _regIndex `uc ~T0 @X0 1 r1 ]
+"269
+[f ]
+[; ;main.c: 270: switch(regIndex)
 "270
-[e :U 255 ]
-[; ;main.c: 271: LATCbits.LATC3 = 0;
+[e $U 253  ]
+[; ;main.c: 271: {
 "271
-[e = . . _LATCbits 0 3 -> -> 0 `i `uc ]
-[; ;main.c: 272: TRISCbits.RC3 = 0;
+{
+[; ;main.c: 272: case 0:
 "272
-[e = . . _TRISCbits 1 3 -> -> 0 `i `uc ]
-[; ;main.c: 273: LATCbits.LATC3 = 1;
+[e :U 254 ]
+[; ;main.c: 273: LATAbits.LATA4 = 0;
 "273
-[e = . . _LATCbits 0 3 -> -> 1 `i `uc ]
-[; ;main.c: 274: TRISCbits.RC3 = 1;
+[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
+[; ;main.c: 274: TRISAbits.RA4 = 0;
 "274
-[e = . . _TRISCbits 1 3 -> -> 1 `i `uc ]
-[; ;main.c: 275: break;
+[e = . . _TRISAbits 1 4 -> -> 0 `i `uc ]
+[; ;main.c: 275: LATAbits.LATA4 = 1;
 "275
-[e $U 252  ]
-[; ;main.c: 276: case 2:
+[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
+[; ;main.c: 276: TRISAbits.RA4 = 1;
 "276
-[e :U 256 ]
-[; ;main.c: 277: LATCbits.LATC0 = 0;
+[e = . . _TRISAbits 1 4 -> -> 1 `i `uc ]
+[; ;main.c: 277: break;
 "277
-[e = . . _LATCbits 0 0 -> -> 0 `i `uc ]
-[; ;main.c: 278: TRISCbits.RC0 = 0;
+[e $U 252  ]
+[; ;main.c: 278: case 1:
 "278
-[e = . . _TRISCbits 1 0 -> -> 0 `i `uc ]
-[; ;main.c: 279: LATCbits.LATC0 = 1;
+[e :U 255 ]
+[; ;main.c: 279: LATCbits.LATC3 = 0;
 "279
-[e = . . _LATCbits 0 0 -> -> 1 `i `uc ]
-[; ;main.c: 280: TRISCbits.RC0 = 1;
+[e = . . _LATCbits 0 3 -> -> 0 `i `uc ]
+[; ;main.c: 280: TRISCbits.RC3 = 0;
 "280
-[e = . . _TRISCbits 1 0 -> -> 1 `i `uc ]
-[; ;main.c: 281: break;
+[e = . . _TRISCbits 1 3 -> -> 0 `i `uc ]
+[; ;main.c: 281: LATCbits.LATC3 = 1;
 "281
-[e $U 252  ]
-[; ;main.c: 282: case 3:
+[e = . . _LATCbits 0 3 -> -> 1 `i `uc ]
+[; ;main.c: 282: TRISCbits.RC3 = 1;
 "282
-[e :U 257 ]
-[; ;main.c: 283: LATCbits.LATC1 = 0;
+[e = . . _TRISCbits 1 3 -> -> 1 `i `uc ]
+[; ;main.c: 283: break;
 "283
-[e = . . _LATCbits 0 1 -> -> 0 `i `uc ]
-[; ;main.c: 284: TRISCbits.RC1 = 0;
+[e $U 252  ]
+[; ;main.c: 284: case 2:
 "284
-[e = . . _TRISCbits 1 1 -> -> 0 `i `uc ]
-[; ;main.c: 285: LATCbits.LATC1 = 1;
+[e :U 256 ]
+[; ;main.c: 285: LATCbits.LATC0 = 0;
 "285
-[e = . . _LATCbits 0 1 -> -> 1 `i `uc ]
-[; ;main.c: 286: TRISCbits.RC1 = 1;
+[e = . . _LATCbits 0 0 -> -> 0 `i `uc ]
+[; ;main.c: 286: TRISCbits.RC0 = 0;
 "286
-[e = . . _TRISCbits 1 1 -> -> 1 `i `uc ]
-[; ;main.c: 287: break;
+[e = . . _TRISCbits 1 0 -> -> 0 `i `uc ]
+[; ;main.c: 287: LATCbits.LATC0 = 1;
 "287
-[e $U 252  ]
+[e = . . _LATCbits 0 0 -> -> 1 `i `uc ]
+[; ;main.c: 288: TRISCbits.RC0 = 1;
 "288
-}
-[; ;main.c: 288: }
+[e = . . _TRISCbits 1 0 -> -> 1 `i `uc ]
+[; ;main.c: 289: break;
+"289
 [e $U 252  ]
-"262
+[; ;main.c: 290: case 3:
+"290
+[e :U 257 ]
+[; ;main.c: 291: LATCbits.LATC1 = 0;
+"291
+[e = . . _LATCbits 0 1 -> -> 0 `i `uc ]
+[; ;main.c: 292: TRISCbits.RC1 = 0;
+"292
+[e = . . _TRISCbits 1 1 -> -> 0 `i `uc ]
+[; ;main.c: 293: LATCbits.LATC1 = 1;
+"293
+[e = . . _LATCbits 0 1 -> -> 1 `i `uc ]
+[; ;main.c: 294: TRISCbits.RC1 = 1;
+"294
+[e = . . _TRISCbits 1 1 -> -> 1 `i `uc ]
+[; ;main.c: 295: break;
+"295
+[e $U 252  ]
+"296
+}
+[; ;main.c: 296: }
+[e $U 252  ]
+"270
 [e :U 253 ]
 [e [\ _regIndex , $ -> -> 0 `i `uc 254
  , $ -> -> 1 `i `uc 255
  , $ -> -> 2 `i `uc 256
  , $ -> -> 3 `i `uc 257
  252 ]
-"288
+"296
 [e :U 252 ]
-[; ;main.c: 289: }
-"289
+[; ;main.c: 297: }
+"297
 [e :UE 251 ]
 }
-"333
+"341
 [v _SwitchOffAllLeds `(v ~T0 @X0 1 ef ]
-"334
+"342
 {
-[; ;main.c: 333: void SwitchOffAllLeds()
-[; ;main.c: 334: {
+[; ;main.c: 341: void SwitchOffAllLeds()
+[; ;main.c: 342: {
 [e :U _SwitchOffAllLeds ]
 [f ]
-[; ;main.c: 335: for(uint8_t i = 0; i < 16 - 1; i++)
-"335
+[; ;main.c: 343: for(uint8_t i = 0; i < 16 - 1; i++)
+"343
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i - -> 16 `i -> 1 `i 259  ]
 [e $U 260  ]
-"336
+"344
 [e :U 259 ]
-[; ;main.c: 336: {
+[; ;main.c: 344: {
 {
-[; ;main.c: 337: ledStatuses[i] = 0;
-"337
+[; ;main.c: 345: ledStatuses[i] = 0;
+"345
 [e = *U + &U _ledStatuses * -> _i `ux -> -> # *U &U _ledStatuses `ui `ux -> -> 0 `i `uc ]
-[; ;main.c: 338: ledBlink[i] = 0;
-"338
+[; ;main.c: 346: ledBlink[i] = 0;
+"346
 [e = *U + &U _ledBlink * -> _i `ux -> -> # *U &U _ledBlink `ui `ux -> -> 0 `i `uc ]
-"339
+"347
 }
-"335
+"343
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i - -> 16 `i -> 1 `i 259  ]
 [e :U 260 ]
-"339
+"347
 }
-[; ;main.c: 339: }
-[; ;main.c: 340: }
-"340
+[; ;main.c: 347: }
+[; ;main.c: 348: }
+"348
 [e :UE 258 ]
 }
-"344
-[v _LightLed `(v ~T0 @X0 1 ef3`uc`E2426`uc ]
-"345
+"352
+[v _LightLed `(v ~T0 @X0 1 ef3`uc`E2433`uc ]
+"353
 {
-[; ;main.c: 344: void LightLed(uint8_t ledNum, LED_STATES ledState, bool blink)
-[; ;main.c: 345: {
+[; ;main.c: 352: void LightLed(uint8_t ledNum, LED_STATES ledState, bool blink)
+[; ;main.c: 353: {
 [e :U _LightLed ]
-"344
+"352
 [v _ledNum `uc ~T0 @X0 1 r1 ]
-[v _ledState `E2426 ~T0 @X0 1 r2 ]
+[v _ledState `E2433 ~T0 @X0 1 r2 ]
 [v _blink `uc ~T0 @X0 1 r3 ]
-"345
+"353
 [f ]
-[; ;main.c: 346: if(ledNum < 1 || ledNum > 60)
-"346
+[; ;main.c: 354: if(ledNum < 1 || ledNum > 60)
+"354
 [e $ ! || < -> _ledNum `i -> 1 `i > -> _ledNum `i -> 60 `i 263  ]
-[; ;main.c: 347: return;
-"347
+[; ;main.c: 355: return;
+"355
 [e $UE 262  ]
 [e :U 263 ]
-[; ;main.c: 348: ledNum--;
-"348
-[e -- _ledNum -> -> 1 `i `uc ]
-"350
-[v _ststusIndex `uc ~T0 @X0 1 a ]
-[; ;main.c: 350: uint8_t ststusIndex = ledNum >> 2;
-[e = _ststusIndex -> >> -> _ledNum `i -> 2 `i `uc ]
-"351
-[v _statusShift `uc ~T0 @X0 1 a ]
-[; ;main.c: 351: uint8_t statusShift = (ledNum & 0x03) << 1;
-[e = _statusShift -> << & -> _ledNum `i -> 3 `i -> 1 `i `uc ]
-[; ;main.c: 353: switch(ledState)
-"353
-[e $U 265  ]
-[; ;main.c: 354: {
-"354
-{
-[; ;main.c: 355: case LED_OFF:
-"355
-[e :U 266 ]
-[; ;main.c: 356: ((ledStatuses[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1)));
+[; ;main.c: 356: ledNum--;
 "356
-[e =& *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> ~ << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc ]
-[; ;main.c: 357: ((ledStatuses[ststusIndex]) &= ~((unsigned short)1 << (statusShift)));
-"357
-[e =& *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc ]
-[; ;main.c: 358: ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1)));
+[e -- _ledNum -> -> 1 `i `uc ]
 "358
-[e =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc ]
-[; ;main.c: 359: ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift)));
+[v _ststusIndex `uc ~T0 @X0 1 a ]
+[; ;main.c: 358: uint8_t ststusIndex = ledNum >> 2;
+[e = _ststusIndex -> >> -> _ledNum `i -> 2 `i `uc ]
 "359
-[e =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc ]
-[; ;main.c: 360: break;
-"360
-[e $U 264  ]
-[; ;main.c: 361: case LED_GREEN:
+[v _statusShift `uc ~T0 @X0 1 a ]
+[; ;main.c: 359: uint8_t statusShift = (ledNum & 0x03) << 1;
+[e = _statusShift -> << & -> _ledNum `i -> 3 `i -> 1 `i `uc ]
+[; ;main.c: 361: switch(ledState)
 "361
-[e :U 267 ]
-[; ;main.c: 362: ((ledStatuses[ststusIndex]) |= ((unsigned short)1 << (statusShift + 1)));
+[e $U 265  ]
+[; ;main.c: 362: {
 "362
-[e =| *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc ]
-[; ;main.c: 363: ((ledStatuses[ststusIndex]) &= ~((unsigned short)1 << (statusShift)));
+{
+[; ;main.c: 363: case LED_OFF:
 "363
-[e =& *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc ]
-[; ;main.c: 364: (blink ? ((ledBlink[ststusIndex]) |= ((unsigned short)1 << (statusShift + 1))) : ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1))));
+[e :U 266 ]
+[; ;main.c: 364: ((ledStatuses[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1)));
 "364
-[e ? != -> _blink `i -> -> -> 0 `i `uc `i : -> =| *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc `i -> =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc `i ]
-[; ;main.c: 365: ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift)));
-"365
-[e =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc ]
-[; ;main.c: 366: break;
-"366
-[e $U 264  ]
-[; ;main.c: 367: case LED_RED:
-"367
-[e :U 268 ]
-[; ;main.c: 368: ((ledStatuses[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1)));
-"368
 [e =& *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> ~ << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc ]
-[; ;main.c: 369: ((ledStatuses[ststusIndex]) |= ((unsigned short)1 << (statusShift)));
-"369
-[e =| *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> << -> -> -> 1 `i `us `ui _statusShift `uc ]
-[; ;main.c: 370: ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1)));
-"370
+[; ;main.c: 365: ((ledStatuses[ststusIndex]) &= ~((unsigned short)1 << (statusShift)));
+"365
+[e =& *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc ]
+[; ;main.c: 366: ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1)));
+"366
 [e =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc ]
-[; ;main.c: 371: (blink ? ((ledBlink[ststusIndex]) |= ((unsigned short)1 << (statusShift))) : ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift))));
+[; ;main.c: 367: ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift)));
+"367
+[e =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc ]
+[; ;main.c: 368: break;
+"368
+[e $U 264  ]
+[; ;main.c: 369: case LED_GREEN:
+"369
+[e :U 267 ]
+[; ;main.c: 370: ((ledStatuses[ststusIndex]) |= ((unsigned short)1 << (statusShift + 1)));
+"370
+[e =| *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc ]
+[; ;main.c: 371: ((ledStatuses[ststusIndex]) &= ~((unsigned short)1 << (statusShift)));
 "371
-[e ? != -> _blink `i -> -> -> 0 `i `uc `i : -> =| *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> << -> -> -> 1 `i `us `ui _statusShift `uc `i -> =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc `i ]
-[; ;main.c: 372: break;
+[e =& *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc ]
+[; ;main.c: 372: (blink ? ((ledBlink[ststusIndex]) |= ((unsigned short)1 << (statusShift + 1))) : ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1))));
 "372
-[e $U 264  ]
+[e ? != -> _blink `i -> -> -> 0 `i `uc `i : -> =| *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc `i -> =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc `i ]
+[; ;main.c: 373: ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift)));
 "373
-}
-[; ;main.c: 373: }
+[e =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc ]
+[; ;main.c: 374: break;
+"374
 [e $U 264  ]
-"353
-[e :U 265 ]
-[e [\ _ledState , $ . `E2426 0 266
- , $ . `E2426 1 267
- , $ . `E2426 2 268
- 264 ]
-"373
-[e :U 264 ]
-[; ;main.c: 375: }
+[; ;main.c: 375: case LED_RED:
 "375
+[e :U 268 ]
+[; ;main.c: 376: ((ledStatuses[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1)));
+"376
+[e =& *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> ~ << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc ]
+[; ;main.c: 377: ((ledStatuses[ststusIndex]) |= ((unsigned short)1 << (statusShift)));
+"377
+[e =| *U + &U _ledStatuses * -> _ststusIndex `ux -> -> # *U &U _ledStatuses `ui `ux -> << -> -> -> 1 `i `us `ui _statusShift `uc ]
+[; ;main.c: 378: ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift + 1)));
+"378
+[e =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui + -> _statusShift `i -> 1 `i `uc ]
+[; ;main.c: 379: (blink ? ((ledBlink[ststusIndex]) |= ((unsigned short)1 << (statusShift))) : ((ledBlink[ststusIndex]) &= ~((unsigned short)1 << (statusShift))));
+"379
+[e ? != -> _blink `i -> -> -> 0 `i `uc `i : -> =| *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> << -> -> -> 1 `i `us `ui _statusShift `uc `i -> =& *U + &U _ledBlink * -> _ststusIndex `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui _statusShift `uc `i ]
+[; ;main.c: 380: break;
+"380
+[e $U 264  ]
+"381
+}
+[; ;main.c: 381: }
+[e $U 264  ]
+"361
+[e :U 265 ]
+[e [\ _ledState , $ . `E2433 0 266
+ , $ . `E2433 1 267
+ , $ . `E2433 2 268
+ 264 ]
+"381
+[e :U 264 ]
+[; ;main.c: 383: }
+"383
 [e :UE 262 ]
 }
-"379
+"387
 [v _LightStatusLed `(v ~T0 @X0 1 ef3`uc`uc`uc ]
-"380
+"388
 {
-[; ;main.c: 379: void LightStatusLed(uint8_t row, bool on, bool blink)
-[; ;main.c: 380: {
+[; ;main.c: 387: void LightStatusLed(uint8_t row, bool on, bool blink)
+[; ;main.c: 388: {
 [e :U _LightStatusLed ]
-"379
+"387
 [v _row `uc ~T0 @X0 1 r1 ]
 [v _on `uc ~T0 @X0 1 r2 ]
 [v _blink `uc ~T0 @X0 1 r3 ]
-"380
+"388
 [f ]
-[; ;main.c: 381: if(row > 7)
-"381
+[; ;main.c: 389: if(row > 7)
+"389
 [e $ ! > -> _row `i -> 7 `i 270  ]
-[; ;main.c: 382: return;
-"382
+[; ;main.c: 390: return;
+"390
 [e $UE 269  ]
 [e :U 270 ]
-[; ;main.c: 383: (on ? ((ledStatuses[16-1]) |= ((unsigned short)1 << (row))) : ((ledStatuses[16-1]) &= ~((unsigned short)1 << (row))));
-"383
+[; ;main.c: 391: (on ? ((ledStatuses[16-1]) |= ((unsigned short)1 << (row))) : ((ledStatuses[16-1]) &= ~((unsigned short)1 << (row))));
+"391
 [e ? != -> _on `i -> -> -> 0 `i `uc `i : -> =| *U + &U _ledStatuses * -> -> - -> 16 `i -> 1 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux -> << -> -> -> 1 `i `us `ui _row `uc `i -> =& *U + &U _ledStatuses * -> -> - -> 16 `i -> 1 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux -> ~ << -> -> -> 1 `i `us `ui _row `uc `i ]
-[; ;main.c: 384: (blink ? ((ledBlink[16-1]) |= ((unsigned short)1 << (row))) : ((ledBlink[16-1]) &= ~((unsigned short)1 << (row))));
-"384
+[; ;main.c: 392: (blink ? ((ledBlink[16-1]) |= ((unsigned short)1 << (row))) : ((ledBlink[16-1]) &= ~((unsigned short)1 << (row))));
+"392
 [e ? != -> _blink `i -> -> -> 0 `i `uc `i : -> =| *U + &U _ledBlink * -> -> - -> 16 `i -> 1 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux -> << -> -> -> 1 `i `us `ui _row `uc `i -> =& *U + &U _ledBlink * -> -> - -> 16 `i -> 1 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux -> ~ << -> -> -> 1 `i `us `ui _row `uc `i ]
-[; ;main.c: 385: (on ? ((_MODBUSCoils) |= ((unsigned short)1 << (row))) : ((_MODBUSCoils) &= ~((unsigned short)1 << (row))));
-"385
+[; ;main.c: 393: (on ? ((_MODBUSCoils) |= ((unsigned short)1 << (row))) : ((_MODBUSCoils) &= ~((unsigned short)1 << (row))));
+"393
 [e ? != -> _on `i -> -> -> 0 `i `uc `i : =| __MODBUSCoils << -> -> -> 1 `i `us `ui _row =& __MODBUSCoils ~ << -> -> -> 1 `i `us `ui _row ]
-[; ;main.c: 387: }
-"387
+[; ;main.c: 395: }
+"395
 [e :UE 269 ]
 }
-"390
+"398
 [v _pwm_init `(v ~T0 @X0 1 ef ]
-"391
+"399
 {
-[; ;main.c: 390: void pwm_init(void)
-[; ;main.c: 391: {
+[; ;main.c: 398: void pwm_init(void)
+[; ;main.c: 399: {
 [e :U _pwm_init ]
 [f ]
-[; ;main.c: 402: CCP1CONbits.CCP1M = 0x0f;
-"402
-[e = . . _CCP1CONbits 0 0 -> -> 15 `i `uc ]
-[; ;main.c: 407: PR2 = 255;
-"407
-[e = _PR2 -> -> 255 `i `uc ]
-[; ;main.c: 410: T2CONbits.T2CKPS1 = 1;
+[; ;main.c: 410: CCP1CONbits.CCP1M = 0x0f;
 "410
-[e = . . _T2CONbits 1 1 -> -> 1 `i `uc ]
-[; ;main.c: 411: T2CONbits.T2CKPS0 = 0;
-"411
-[e = . . _T2CONbits 1 0 -> -> 0 `i `uc ]
-[; ;main.c: 414: TRISCbits.RC2 = 0;
-"414
-[e = . . _TRISCbits 1 2 -> -> 0 `i `uc ]
-[; ;main.c: 418: }
+[e = . . _CCP1CONbits 0 0 -> -> 15 `i `uc ]
+[; ;main.c: 415: PR2 = 255;
+"415
+[e = _PR2 -> -> 255 `i `uc ]
+[; ;main.c: 418: T2CONbits.T2CKPS1 = 1;
 "418
+[e = . . _T2CONbits 1 1 -> -> 1 `i `uc ]
+[; ;main.c: 419: T2CONbits.T2CKPS0 = 0;
+"419
+[e = . . _T2CONbits 1 0 -> -> 0 `i `uc ]
+[; ;main.c: 422: TRISCbits.RC2 = 0;
+"422
+[e = . . _TRISCbits 1 2 -> -> 0 `i `uc ]
+[; ;main.c: 426: }
+"426
 [e :UE 271 ]
 }
-"425
-[v _SetBuzzerDuty `(v ~T0 @X0 1 ef1`ui ]
-"426
-{
-[; ;main.c: 425: void SetBuzzerDuty(uint16_t dc)
-[; ;main.c: 426: {
-[e :U _SetBuzzerDuty ]
-"425
-[v _dc `ui ~T0 @X0 1 r1 ]
-"426
-[f ]
-[; ;main.c: 430: CCP1CONbits.DC1B0 = (dc & 0x01) != 0 ? 1 : 0;
-"430
-[e = . . _CCP1CONbits 1 4 -> ? != & _dc -> -> 1 `i `ui -> -> 0 `i `ui : -> 1 `i -> 0 `i `uc ]
-[; ;main.c: 431: CCP1CONbits.DC1B1 = (dc & 0x02) != 0 ? 1 : 0;
-"431
-[e = . . _CCP1CONbits 1 5 -> ? != & _dc -> -> 2 `i `ui -> -> 0 `i `ui : -> 1 `i -> 0 `i `uc ]
-[; ;main.c: 433: CCPR1L = (uint8_t)(dc >> 2);
 "433
-[e = _CCPR1L -> >> _dc -> 2 `i `uc ]
-[; ;main.c: 434: }
+[v _SetBuzzerDuty `(v ~T0 @X0 1 ef1`ui ]
 "434
+{
+[; ;main.c: 433: void SetBuzzerDuty(uint16_t dc)
+[; ;main.c: 434: {
+[e :U _SetBuzzerDuty ]
+"433
+[v _dc `ui ~T0 @X0 1 r1 ]
+"434
+[f ]
+[; ;main.c: 438: CCP1CONbits.DC1B0 = (dc & 0x01) != 0 ? 1 : 0;
+"438
+[e = . . _CCP1CONbits 1 4 -> ? != & _dc -> -> 1 `i `ui -> -> 0 `i `ui : -> 1 `i -> 0 `i `uc ]
+[; ;main.c: 439: CCP1CONbits.DC1B1 = (dc & 0x02) != 0 ? 1 : 0;
+"439
+[e = . . _CCP1CONbits 1 5 -> ? != & _dc -> -> 2 `i `ui -> -> 0 `i `ui : -> 1 `i -> 0 `i `uc ]
+[; ;main.c: 441: CCPR1L = (uint8_t)(dc >> 2);
+"441
+[e = _CCPR1L -> >> _dc -> 2 `i `uc ]
+[; ;main.c: 442: }
+"442
 [e :UE 272 ]
 }
-"448
+"456
 [v _InitFromEeprom `(v ~T0 @X0 1 ef ]
-"449
+"457
 {
-[; ;main.c: 448: void InitFromEeprom()
-[; ;main.c: 449: {
+[; ;main.c: 456: void InitFromEeprom()
+[; ;main.c: 457: {
 [e :U _InitFromEeprom ]
 [f ]
-[; ;main.c: 450: buzzeLoudDuration = ( EEADR = 2, (void)0, RD = 1, EEDATA);
-"450
-[e = _buzzeLoudDuration ; ; ; = _EEADR -> -> 2 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 451: buzzeQuietDuration = ( EEADR = 3, (void)0, RD = 1, EEDATA);
-"451
-[e = _buzzeQuietDuration ; ; ; = _EEADR -> -> 3 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 452: buzzerInfoPeriod = ( EEADR = 4, (void)0, RD = 1, EEDATA);
-"452
-[e = _buzzerInfoPeriod ; ; ; = _EEADR -> -> 4 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 453: buzzerAlarmPeriod = ( EEADR = 5, (void)0, RD = 1, EEDATA);
-"453
-[e = _buzzerAlarmPeriod ; ; ; = _EEADR -> -> 5 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 454: buzzerOnOffDuration = (((uint16_t)( EEADR = 6, (void)0, RD = 1, EEDATA)<<8)|0);
-"454
-[e = _buzzerOnOffDuration | << -> ; ; ; = _EEADR -> -> 6 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA `ui -> 8 `i -> -> 0 `i `ui ]
-[; ;main.c: 455: buzzerOnOffPeriod = (((uint16_t)( EEADR = 7, (void)0, RD = 1, EEDATA)<<8)|0);
-"455
-[e = _buzzerOnOffPeriod | << -> ; ; ; = _EEADR -> -> 7 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA `ui -> 8 `i -> -> 0 `i `ui ]
-[; ;main.c: 456: buzzeEscaladeTime = ( EEADR = 8, (void)0, RD = 1, EEDATA);
-"456
-[e = _buzzeEscaladeTime ; ; ; = _EEADR -> -> 8 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 457: buzzerStartDurationDiv = ( EEADR = 9, (void)0, RD = 1, EEDATA);
-"457
-[e = _buzzerStartDurationDiv ; ; ; = _EEADR -> -> 9 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 458: eventAcceptTime = ( EEADR = 10, (void)0, RD = 1, EEDATA);
+[; ;main.c: 458: buzzeLoudDuration = ( EEADR = 2, (void)0, RD = 1, EEDATA);
 "458
-[e = _eventAcceptTime ; ; ; = _EEADR -> -> 10 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 459: eveningTimeHour = ( EEADR = 11, (void)0, RD = 1, EEDATA);
+[e = _buzzeLoudDuration ; ; ; = _EEADR -> -> 2 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 459: buzzeQuietDuration = ( EEADR = 3, (void)0, RD = 1, EEDATA);
 "459
-[e = _eveningTimeHour ; ; ; = _EEADR -> -> 11 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 460: nightStartHour = ( EEADR = 12, (void)0, RD = 1, EEDATA);
+[e = _buzzeQuietDuration ; ; ; = _EEADR -> -> 3 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 460: buzzerInfoPeriod = ( EEADR = 4, (void)0, RD = 1, EEDATA);
 "460
-[e = _nightStartHour ; ; ; = _EEADR -> -> 12 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 461: nightEndHour = ( EEADR = 13, (void)0, RD = 1, EEDATA);
+[e = _buzzerInfoPeriod ; ; ; = _EEADR -> -> 4 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 461: buzzerAlarmPeriod = ( EEADR = 5, (void)0, RD = 1, EEDATA);
 "461
-[e = _nightEndHour ; ; ; = _EEADR -> -> 13 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 462: morningTimeHour = ( EEADR = 14, (void)0, RD = 1, EEDATA);
+[e = _buzzerAlarmPeriod ; ; ; = _EEADR -> -> 5 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 462: buzzerOnOffDuration = (((uint16_t)( EEADR = 6, (void)0, RD = 1, EEDATA)<<8)|0);
 "462
-[e = _morningTimeHour ; ; ; = _EEADR -> -> 14 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 463: blinkDuration = ((uint16_t)( EEADR = 15, (void)0, RD = 1, EEDATA)) << 6;
+[e = _buzzerOnOffDuration | << -> ; ; ; = _EEADR -> -> 6 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA `ui -> 8 `i -> -> 0 `i `ui ]
+[; ;main.c: 463: buzzerOnOffPeriod = (((uint16_t)( EEADR = 7, (void)0, RD = 1, EEDATA)<<8)|0);
 "463
-[e = _blinkDuration << -> ; ; ; = _EEADR -> -> 15 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA `ui -> 6 `i ]
-[; ;main.c: 464: blinkPeriod = ((uint16_t)( EEADR = 16, (void)0, RD = 1, EEDATA)) << 6;
+[e = _buzzerOnOffPeriod | << -> ; ; ; = _EEADR -> -> 7 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA `ui -> 8 `i -> -> 0 `i `ui ]
+[; ;main.c: 464: buzzeEscaladeTime = ( EEADR = 8, (void)0, RD = 1, EEDATA);
 "464
-[e = _blinkPeriod << -> ; ; ; = _EEADR -> -> 16 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA `ui -> 6 `i ]
-[; ;main.c: 466: eventCount = ( EEADR = 18, (void)0, RD = 1, EEDATA);
+[e = _buzzeEscaladeTime ; ; ; = _EEADR -> -> 8 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 465: buzzerStartDurationDiv = ( EEADR = 9, (void)0, RD = 1, EEDATA);
+"465
+[e = _buzzerStartDurationDiv ; ; ; = _EEADR -> -> 9 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 466: eventAcceptTime = ( EEADR = 10, (void)0, RD = 1, EEDATA);
 "466
-[e = _eventCount ; ; ; = _EEADR -> -> 18 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 468: SetBuzzerDuty(buzzeLoudDuration);
+[e = _eventAcceptTime ; ; ; = _EEADR -> -> 10 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 467: eveningTimeHour = ( EEADR = 11, (void)0, RD = 1, EEDATA);
+"467
+[e = _eveningTimeHour ; ; ; = _EEADR -> -> 11 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 468: nightStartHour = ( EEADR = 12, (void)0, RD = 1, EEDATA);
 "468
-[e ( _SetBuzzerDuty (1 -> _buzzeLoudDuration `ui ]
-[; ;main.c: 469: PR2 = buzzerAlarmPeriod;
+[e = _nightStartHour ; ; ; = _EEADR -> -> 12 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 469: nightEndHour = ( EEADR = 13, (void)0, RD = 1, EEDATA);
 "469
-[e = _PR2 _buzzerAlarmPeriod ]
-[; ;main.c: 472: Modbus(( EEADR = 1, (void)0, RD = 1, EEDATA), 0, 0);
+[e = _nightEndHour ; ; ; = _EEADR -> -> 13 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 470: morningTimeHour = ( EEADR = 14, (void)0, RD = 1, EEDATA);
+"470
+[e = _morningTimeHour ; ; ; = _EEADR -> -> 14 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 471: blinkDuration = ((uint16_t)( EEADR = 15, (void)0, RD = 1, EEDATA)) << 6;
+"471
+[e = _blinkDuration << -> ; ; ; = _EEADR -> -> 15 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA `ui -> 6 `i ]
+[; ;main.c: 472: blinkPeriod = ((uint16_t)( EEADR = 16, (void)0, RD = 1, EEDATA)) << 6;
 "472
-[e ( _Modbus (3 , , ; ; ; = _EEADR -> -> 1 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA -> -> 0 `i `uc -> -> 0 `i `uc ]
-[; ;main.c: 473: SwitchOffAllLeds();
-"473
-[e ( _SwitchOffAllLeds ..  ]
-[; ;main.c: 475: LoadNextEvent();
-"475
-[e ( _LoadNextEvent ..  ]
-[; ;main.c: 476: }
+[e = _blinkPeriod << -> ; ; ; = _EEADR -> -> 16 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA `ui -> 6 `i ]
+[; ;main.c: 474: eventCount = ( EEADR = 18, (void)0, RD = 1, EEDATA);
+"474
+[e = _eventCount ; ; ; = _EEADR -> -> 18 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
+[; ;main.c: 476: SetBuzzerDuty(buzzeLoudDuration);
 "476
+[e ( _SetBuzzerDuty (1 -> _buzzeLoudDuration `ui ]
+[; ;main.c: 477: PR2 = buzzerAlarmPeriod;
+"477
+[e = _PR2 _buzzerAlarmPeriod ]
+[; ;main.c: 480: Modbus(( EEADR = 1, (void)0, RD = 1, EEDATA), 0, 0);
+"480
+[e ( _Modbus (3 , , ; ; ; = _EEADR -> -> 1 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA -> -> 0 `i `uc -> -> 0 `i `uc ]
+[; ;main.c: 481: SwitchOffAllLeds();
+"481
+[e ( _SwitchOffAllLeds ..  ]
+[; ;main.c: 483: LoadNextEvent();
+"483
+[e ( _LoadNextEvent ..  ]
+[; ;main.c: 484: }
+"484
 [e :UE 273 ]
 }
-"486
+"494
 [v _currentLedBlock `uc ~T0 @X0 1 e ]
 [i _currentLedBlock
 -> -> 0 `i `uc
 ]
-[; ;main.c: 486: uint8_t currentLedBlock = 0;
-"487
+[; ;main.c: 494: uint8_t currentLedBlock = 0;
+"495
 [v _diffTime `ul ~T0 @X0 1 e ]
-[; ;main.c: 487: unsigned long diffTime;
-"488
+[; ;main.c: 495: unsigned long diffTime;
+"496
 [v _oldBlinkOnTime `ul ~T0 @X0 1 e ]
 [i _oldBlinkOnTime
 -> -> -> 0 `i `l `ul
 ]
-[; ;main.c: 488: unsigned long oldBlinkOnTime = 0;
-"489
+[; ;main.c: 496: unsigned long oldBlinkOnTime = 0;
+"497
 [v _blinkOn `uc ~T0 @X0 1 e ]
 [i _blinkOn
 -> -> 0 `i `uc
 ]
-[; ;main.c: 489: bool blinkOn = 0;
-"491
-[v _ProcessLightBlock `(v ~T0 @X0 1 ef1`*ul ]
-"492
-{
-[; ;main.c: 491: void ProcessLightBlock(unsigned long *curMs)
-[; ;main.c: 492: {
-[e :U _ProcessLightBlock ]
-"491
-[v _curMs `*ul ~T0 @X0 1 r1 ]
-"492
-[f ]
-[; ;main.c: 493: diffTime = *curMs - oldBlinkOnTime;
-"493
-[e = _diffTime - *U _curMs _oldBlinkOnTime ]
-[; ;main.c: 494: if(diffTime > blinkPeriod)
-"494
-[e $ ! > _diffTime -> _blinkPeriod `ul 275  ]
-[; ;main.c: 495: {
-"495
-{
-[; ;main.c: 496: blinkOn = 1;
-"496
-[e = _blinkOn -> -> 1 `i `uc ]
-[; ;main.c: 497: oldBlinkOnTime = *curMs;
-"497
-[e = _oldBlinkOnTime *U _curMs ]
-"498
-}
-[; ;main.c: 498: }
-[e $U 276  ]
+[; ;main.c: 497: bool blinkOn = 0;
 "499
-[e :U 275 ]
-[; ;main.c: 499: else if(blinkOn && diffTime > blinkDuration)
-[e $ ! && != -> _blinkOn `i -> -> -> 0 `i `uc `i > _diffTime -> _blinkDuration `ul 277  ]
-[; ;main.c: 500: {
+[v _ProcessLightBlock `(v ~T0 @X0 1 ef1`*ul ]
 "500
 {
-[; ;main.c: 501: blinkOn = 0;
+[; ;main.c: 499: void ProcessLightBlock(unsigned long *curMs)
+[; ;main.c: 500: {
+[e :U _ProcessLightBlock ]
+"499
+[v _curMs `*ul ~T0 @X0 1 r1 ]
+"500
+[f ]
+[; ;main.c: 501: diffTime = *curMs - oldBlinkOnTime;
 "501
-[e = _blinkOn -> -> 0 `i `uc ]
+[e = _diffTime - *U _curMs _oldBlinkOnTime ]
+[; ;main.c: 502: if(diffTime > blinkPeriod)
 "502
+[e $ ! > _diffTime -> _blinkPeriod `ul 275  ]
+[; ;main.c: 503: {
+"503
+{
+[; ;main.c: 504: blinkOn = 1;
+"504
+[e = _blinkOn -> -> 1 `i `uc ]
+[; ;main.c: 505: oldBlinkOnTime = *curMs;
+"505
+[e = _oldBlinkOnTime *U _curMs ]
+"506
+}
+[; ;main.c: 506: }
+[e $U 276  ]
+"507
+[e :U 275 ]
+[; ;main.c: 507: else if(blinkOn && diffTime > blinkDuration)
+[e $ ! && != -> _blinkOn `i -> -> -> 0 `i `uc `i > _diffTime -> _blinkDuration `ul 277  ]
+[; ;main.c: 508: {
+"508
+{
+[; ;main.c: 509: blinkOn = 0;
+"509
+[e = _blinkOn -> -> 0 `i `uc ]
+"510
 }
 [e :U 277 ]
-"506
+"514
 [e :U 276 ]
-[; ;main.c: 502: }
-[; ;main.c: 506: switch(currentLedBlock)
+[; ;main.c: 510: }
+[; ;main.c: 514: switch(currentLedBlock)
 [e $U 279  ]
-[; ;main.c: 507: {
-"507
+[; ;main.c: 515: {
+"515
 {
-[; ;main.c: 508: case 0:
-"508
+[; ;main.c: 516: case 0:
+"516
 [e :U 280 ]
-[; ;main.c: 509: LATA &= 0xF0;
-"509
+[; ;main.c: 517: LATA &= 0xF0;
+"517
 [e =& _LATA -> -> 240 `i `uc ]
-[; ;main.c: 510: if(blinkOn) LATB = ledStatuses[0]; else LATB = ledStatuses[0] ^ ledBlink[0]; UpdateLedRegister(0);
-"510
+[; ;main.c: 518: if(blinkOn) LATB = ledStatuses[0]; else LATB = ledStatuses[0] ^ ledBlink[0]; UpdateLedRegister(0);
+"518
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 281  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 0 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 282  ]
@@ -3160,8 +3168,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 0 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 0 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 282 ]
 [e ( _UpdateLedRegister (1 -> -> 0 `i `uc ]
-[; ;main.c: 511: if(blinkOn) LATB = ledStatuses[1]; else LATB = ledStatuses[1] ^ ledBlink[1]; UpdateLedRegister(1);
-"511
+[; ;main.c: 519: if(blinkOn) LATB = ledStatuses[1]; else LATB = ledStatuses[1] ^ ledBlink[1]; UpdateLedRegister(1);
+"519
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 283  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 1 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 284  ]
@@ -3169,8 +3177,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 1 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 1 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 284 ]
 [e ( _UpdateLedRegister (1 -> -> 1 `i `uc ]
-[; ;main.c: 512: if(blinkOn) LATB = ledStatuses[2]; else LATB = ledStatuses[2] ^ ledBlink[2]; UpdateLedRegister(2);
-"512
+[; ;main.c: 520: if(blinkOn) LATB = ledStatuses[2]; else LATB = ledStatuses[2] ^ ledBlink[2]; UpdateLedRegister(2);
+"520
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 285  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 2 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 286  ]
@@ -3178,8 +3186,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 2 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 2 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 286 ]
 [e ( _UpdateLedRegister (1 -> -> 2 `i `uc ]
-[; ;main.c: 513: if(blinkOn) LATB = ledStatuses[12]; else LATB = ledStatuses[12] ^ ledBlink[12]; UpdateLedRegister(3);
-"513
+[; ;main.c: 521: if(blinkOn) LATB = ledStatuses[12]; else LATB = ledStatuses[12] ^ ledBlink[12]; UpdateLedRegister(3);
+"521
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 287  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 12 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 288  ]
@@ -3187,20 +3195,20 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 12 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 12 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 288 ]
 [e ( _UpdateLedRegister (1 -> -> 3 `i `uc ]
-[; ;main.c: 514: LATAbits.LATA0 = 1;
-"514
+[; ;main.c: 522: LATAbits.LATA0 = 1;
+"522
 [e = . . _LATAbits 0 0 -> -> 1 `i `uc ]
-[; ;main.c: 515: break;
-"515
+[; ;main.c: 523: break;
+"523
 [e $U 278  ]
-[; ;main.c: 516: case 1:
-"516
+[; ;main.c: 524: case 1:
+"524
 [e :U 289 ]
-[; ;main.c: 517: LATA &= 0xF0;
-"517
+[; ;main.c: 525: LATA &= 0xF0;
+"525
 [e =& _LATA -> -> 240 `i `uc ]
-[; ;main.c: 518: if(blinkOn) LATB = ledStatuses[3]; else LATB = ledStatuses[3] ^ ledBlink[3]; UpdateLedRegister(0);
-"518
+[; ;main.c: 526: if(blinkOn) LATB = ledStatuses[3]; else LATB = ledStatuses[3] ^ ledBlink[3]; UpdateLedRegister(0);
+"526
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 290  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 3 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 291  ]
@@ -3208,8 +3216,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 3 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 3 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 291 ]
 [e ( _UpdateLedRegister (1 -> -> 0 `i `uc ]
-[; ;main.c: 519: if(blinkOn) LATB = ledStatuses[4]; else LATB = ledStatuses[4] ^ ledBlink[4]; UpdateLedRegister(1);
-"519
+[; ;main.c: 527: if(blinkOn) LATB = ledStatuses[4]; else LATB = ledStatuses[4] ^ ledBlink[4]; UpdateLedRegister(1);
+"527
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 292  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 4 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 293  ]
@@ -3217,8 +3225,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 4 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 4 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 293 ]
 [e ( _UpdateLedRegister (1 -> -> 1 `i `uc ]
-[; ;main.c: 520: if(blinkOn) LATB = ledStatuses[5]; else LATB = ledStatuses[5] ^ ledBlink[5]; UpdateLedRegister(2);
-"520
+[; ;main.c: 528: if(blinkOn) LATB = ledStatuses[5]; else LATB = ledStatuses[5] ^ ledBlink[5]; UpdateLedRegister(2);
+"528
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 294  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 5 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 295  ]
@@ -3226,8 +3234,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 5 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 5 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 295 ]
 [e ( _UpdateLedRegister (1 -> -> 2 `i `uc ]
-[; ;main.c: 521: if(blinkOn) LATB = ledStatuses[13]; else LATB = ledStatuses[13] ^ ledBlink[13]; UpdateLedRegister(3);
-"521
+[; ;main.c: 529: if(blinkOn) LATB = ledStatuses[13]; else LATB = ledStatuses[13] ^ ledBlink[13]; UpdateLedRegister(3);
+"529
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 296  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 13 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 297  ]
@@ -3235,20 +3243,20 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 13 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 13 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 297 ]
 [e ( _UpdateLedRegister (1 -> -> 3 `i `uc ]
-[; ;main.c: 522: LATAbits.LATA1 = 1;
-"522
+[; ;main.c: 530: LATAbits.LATA1 = 1;
+"530
 [e = . . _LATAbits 0 1 -> -> 1 `i `uc ]
-[; ;main.c: 523: break;
-"523
+[; ;main.c: 531: break;
+"531
 [e $U 278  ]
-[; ;main.c: 524: case 2:
-"524
+[; ;main.c: 532: case 2:
+"532
 [e :U 298 ]
-[; ;main.c: 525: LATA &= 0xF0;
-"525
+[; ;main.c: 533: LATA &= 0xF0;
+"533
 [e =& _LATA -> -> 240 `i `uc ]
-[; ;main.c: 526: if(blinkOn) LATB = ledStatuses[6]; else LATB = ledStatuses[6] ^ ledBlink[6]; UpdateLedRegister(0);
-"526
+[; ;main.c: 534: if(blinkOn) LATB = ledStatuses[6]; else LATB = ledStatuses[6] ^ ledBlink[6]; UpdateLedRegister(0);
+"534
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 299  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 6 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 300  ]
@@ -3256,8 +3264,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 6 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 6 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 300 ]
 [e ( _UpdateLedRegister (1 -> -> 0 `i `uc ]
-[; ;main.c: 527: if(blinkOn) LATB = ledStatuses[7]; else LATB = ledStatuses[7] ^ ledBlink[7]; UpdateLedRegister(1);
-"527
+[; ;main.c: 535: if(blinkOn) LATB = ledStatuses[7]; else LATB = ledStatuses[7] ^ ledBlink[7]; UpdateLedRegister(1);
+"535
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 301  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 7 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 302  ]
@@ -3265,8 +3273,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 7 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 7 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 302 ]
 [e ( _UpdateLedRegister (1 -> -> 1 `i `uc ]
-[; ;main.c: 528: if(blinkOn) LATB = ledStatuses[8]; else LATB = ledStatuses[8] ^ ledBlink[8]; UpdateLedRegister(2);
-"528
+[; ;main.c: 536: if(blinkOn) LATB = ledStatuses[8]; else LATB = ledStatuses[8] ^ ledBlink[8]; UpdateLedRegister(2);
+"536
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 303  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 8 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 304  ]
@@ -3274,8 +3282,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 8 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 8 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 304 ]
 [e ( _UpdateLedRegister (1 -> -> 2 `i `uc ]
-[; ;main.c: 529: if(blinkOn) LATB = ledStatuses[14]; else LATB = ledStatuses[14] ^ ledBlink[14]; UpdateLedRegister(3);
-"529
+[; ;main.c: 537: if(blinkOn) LATB = ledStatuses[14]; else LATB = ledStatuses[14] ^ ledBlink[14]; UpdateLedRegister(3);
+"537
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 305  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 14 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 306  ]
@@ -3283,20 +3291,20 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 14 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 14 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 306 ]
 [e ( _UpdateLedRegister (1 -> -> 3 `i `uc ]
-[; ;main.c: 530: LATAbits.LATA2 = 1;
-"530
+[; ;main.c: 538: LATAbits.LATA2 = 1;
+"538
 [e = . . _LATAbits 0 2 -> -> 1 `i `uc ]
-[; ;main.c: 531: break;
-"531
+[; ;main.c: 539: break;
+"539
 [e $U 278  ]
-[; ;main.c: 532: case 3:
-"532
+[; ;main.c: 540: case 3:
+"540
 [e :U 307 ]
-[; ;main.c: 533: LATA &= 0xF0;
-"533
+[; ;main.c: 541: LATA &= 0xF0;
+"541
 [e =& _LATA -> -> 240 `i `uc ]
-[; ;main.c: 534: if(blinkOn) LATB = ledStatuses[9]; else LATB = ledStatuses[9] ^ ledBlink[9]; UpdateLedRegister(0);
-"534
+[; ;main.c: 542: if(blinkOn) LATB = ledStatuses[9]; else LATB = ledStatuses[9] ^ ledBlink[9]; UpdateLedRegister(0);
+"542
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 308  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 9 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 309  ]
@@ -3304,8 +3312,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 9 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 9 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 309 ]
 [e ( _UpdateLedRegister (1 -> -> 0 `i `uc ]
-[; ;main.c: 535: if(blinkOn) LATB = ledStatuses[10]; else LATB = ledStatuses[10] ^ ledBlink[10]; UpdateLedRegister(1);
-"535
+[; ;main.c: 543: if(blinkOn) LATB = ledStatuses[10]; else LATB = ledStatuses[10] ^ ledBlink[10]; UpdateLedRegister(1);
+"543
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 310  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 10 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 311  ]
@@ -3313,8 +3321,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 10 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 10 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 311 ]
 [e ( _UpdateLedRegister (1 -> -> 1 `i `uc ]
-[; ;main.c: 536: if(blinkOn) LATB = ledStatuses[11]; else LATB = ledStatuses[11] ^ ledBlink[11]; UpdateLedRegister(2);
-"536
+[; ;main.c: 544: if(blinkOn) LATB = ledStatuses[11]; else LATB = ledStatuses[11] ^ ledBlink[11]; UpdateLedRegister(2);
+"544
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 312  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 11 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 313  ]
@@ -3322,8 +3330,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 11 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 11 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 313 ]
 [e ( _UpdateLedRegister (1 -> -> 2 `i `uc ]
-[; ;main.c: 537: if(blinkOn) LATB = ledStatuses[15]; else LATB = ledStatuses[15] ^ ledBlink[15]; UpdateLedRegister(3);
-"537
+[; ;main.c: 545: if(blinkOn) LATB = ledStatuses[15]; else LATB = ledStatuses[15] ^ ledBlink[15]; UpdateLedRegister(3);
+"545
 [e $ ! != -> _blinkOn `i -> -> -> 0 `i `uc `i 314  ]
 [e = _LATB *U + &U _ledStatuses * -> -> -> 15 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux ]
 [e $U 315  ]
@@ -3331,1395 +3339,887 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _LATB -> ^ -> *U + &U _ledStatuses * -> -> -> 15 `i `ui `ux -> -> # *U &U _ledStatuses `ui `ux `i -> *U + &U _ledBlink * -> -> -> 15 `i `ui `ux -> -> # *U &U _ledBlink `ui `ux `i `uc ]
 [e :U 315 ]
 [e ( _UpdateLedRegister (1 -> -> 3 `i `uc ]
-[; ;main.c: 538: LATAbits.LATA3 = 1;
-"538
+[; ;main.c: 546: LATAbits.LATA3 = 1;
+"546
 [e = . . _LATAbits 0 3 -> -> 1 `i `uc ]
-[; ;main.c: 539: break;
-"539
+[; ;main.c: 547: break;
+"547
 [e $U 278  ]
-"540
+"548
 }
-[; ;main.c: 540: }
+[; ;main.c: 548: }
 [e $U 278  ]
-"506
+"514
 [e :U 279 ]
 [e [\ _currentLedBlock , $ -> -> 0 `i `uc 280
  , $ -> -> 1 `i `uc 289
  , $ -> -> 2 `i `uc 298
  , $ -> -> 3 `i `uc 307
  278 ]
-"540
+"548
 [e :U 278 ]
-[; ;main.c: 542: currentLedBlock++;
-"542
+[; ;main.c: 550: currentLedBlock++;
+"550
 [e ++ _currentLedBlock -> -> 1 `i `uc ]
-[; ;main.c: 545: currentLedBlock &= 0xFB;
-"545
+[; ;main.c: 553: currentLedBlock &= 0xFB;
+"553
 [e =& _currentLedBlock -> -> 251 `i `uc ]
-[; ;main.c: 547: }
-"547
+[; ;main.c: 555: }
+"555
 [e :UE 274 ]
 }
-"556
-[v _ResetEvent `(v ~T0 @X0 1 ef1`uc ]
-"557
-{
-[; ;main.c: 556: void ResetEvent(bool state)
-[; ;main.c: 557: {
-[e :U _ResetEvent ]
-"556
-[v _state `uc ~T0 @X0 1 r1 ]
-"557
-[f ]
-[; ;main.c: 558: LightLed(currentAlarmedEventNum + 1, state ? LED_GREEN : LED_RED, 0);
-"558
-[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc -> ? != -> _state `i -> -> -> 0 `i `uc `i : -> . `E2426 1 `i -> . `E2426 2 `i `E2426 -> -> 0 `i `uc ]
-[; ;main.c: 559: currentAlarmedEventNum = 0xff;
-"559
-[e = _currentAlarmedEventNum -> -> 255 `i `uc ]
-[; ;main.c: 560: eventResetSecond = 0;
-"560
-[e = _eventResetSecond -> -> 0 `i `l ]
-[; ;main.c: 561: _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
-"561
-[e = *U + &U __MODBUSInputRegs * -> -> -> 2 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux | << -> _currentAlarmedEventNum `ui -> 8 `i -> _curEventNum `ui ]
-[; ;main.c: 564: }
 "564
+[v _ResetEvent `(v ~T0 @X0 1 ef1`uc ]
+"565
+{
+[; ;main.c: 564: void ResetEvent(bool state)
+[; ;main.c: 565: {
+[e :U _ResetEvent ]
+"564
+[v _state `uc ~T0 @X0 1 r1 ]
+"565
+[f ]
+[; ;main.c: 566: LightLed(currentAlarmedEventNum + 1, state ? LED_GREEN : LED_RED, 0);
+"566
+[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc -> ? != -> _state `i -> -> -> 0 `i `uc `i : -> . `E2433 1 `i -> . `E2433 2 `i `E2433 -> -> 0 `i `uc ]
+[; ;main.c: 567: currentAlarmedEventNum = 0xff;
+"567
+[e = _currentAlarmedEventNum -> -> 255 `i `uc ]
+[; ;main.c: 568: eventResetSecond = 0;
+"568
+[e = _eventResetSecond -> -> 0 `i `l ]
+[; ;main.c: 569: _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
+"569
+[e = *U + &U __MODBUSInputRegs * -> -> -> 2 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux | << -> _currentAlarmedEventNum `ui -> 8 `i -> _curEventNum `ui ]
+[; ;main.c: 572: }
+"572
 [e :UE 316 ]
 }
-"566
+"574
 [v _LoadNextEvent `(v ~T0 @X0 1 ef ]
-"567
+"575
 {
-[; ;main.c: 566: void LoadNextEvent()
-[; ;main.c: 567: {
+[; ;main.c: 574: void LoadNextEvent()
+[; ;main.c: 575: {
 [e :U _LoadNextEvent ]
 [f ]
-[; ;main.c: 568: if(eventCount == 0)
-"568
+[; ;main.c: 576: if(eventCount == 0)
+"576
 [e $ ! == -> _eventCount `i -> 0 `i 318  ]
-[; ;main.c: 569: return;
-"569
+[; ;main.c: 577: return;
+"577
 [e $UE 317  ]
 [e :U 318 ]
-"570
+"578
 [v _hour `uc ~T0 @X0 1 a ]
 [v _minute `uc ~T0 @X0 1 a ]
-[; ;main.c: 570: uint8_t hour, minute;
-[; ;main.c: 571: if(!getHourMin(&hour, &minute))
-"571
+[; ;main.c: 578: uint8_t hour, minute;
+[; ;main.c: 579: if(!getHourMin(&hour, &minute))
+"579
 [e $ ! ! != -> ( _getHourMin (2 , &U _hour &U _minute `i -> -> -> 0 `i `uc `i 319  ]
-[; ;main.c: 572: return;
-"572
+[; ;main.c: 580: return;
+"580
 [e $UE 317  ]
 [e :U 319 ]
-[; ;main.c: 580: do
-"580
+[; ;main.c: 588: do
+"588
 [e :U 322 ]
-[; ;main.c: 581: {
-"581
+[; ;main.c: 589: {
+"589
 {
-[; ;main.c: 582: if(curEventNum == 0xff)
-"582
+[; ;main.c: 590: if(curEventNum == 0xff)
+"590
 [e $ ! == -> _curEventNum `i -> 255 `i 323  ]
-[; ;main.c: 583: curEventNum = 0;
-"583
+[; ;main.c: 591: curEventNum = 0;
+"591
 [e = _curEventNum -> -> 0 `i `uc ]
 [e $U 324  ]
-"584
+"592
 [e :U 323 ]
-[; ;main.c: 584: else
-[; ;main.c: 585: curEventNum++;
-"585
+[; ;main.c: 592: else
+[; ;main.c: 593: curEventNum++;
+"593
 [e ++ _curEventNum -> -> 1 `i `uc ]
 [e :U 324 ]
-[; ;main.c: 586: _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
-"586
+[; ;main.c: 594: _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
+"594
 [e = *U + &U __MODBUSInputRegs * -> -> -> 2 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux | << -> _currentAlarmedEventNum `ui -> 8 `i -> _curEventNum `ui ]
-[; ;main.c: 587: if(curEventNum >= eventCount)
-"587
+[; ;main.c: 595: if(curEventNum >= eventCount)
+"595
 [e $ ! >= -> _curEventNum `i -> _eventCount `i 325  ]
-[; ;main.c: 588: return;
-"588
+[; ;main.c: 596: return;
+"596
 [e $UE 317  ]
 [e :U 325 ]
-"590
+"598
 [v _v1 `uc ~T0 @X0 1 a ]
-[; ;main.c: 590: uint8_t v1 = ( EEADR = 18 + 1 + curEventNum * 2, (void)0, RD = 1, EEDATA);
+[; ;main.c: 598: uint8_t v1 = ( EEADR = 18 + 1 + curEventNum * 2, (void)0, RD = 1, EEDATA);
 [e = _v1 ; ; ; = _EEADR -> + + -> 18 `i -> 1 `i * -> _curEventNum `i -> 2 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 591: curEventHour = v1 & 0x1F;
-"591
+[; ;main.c: 599: curEventHour = v1 & 0x1F;
+"599
 [e = _curEventHour -> & -> _v1 `i -> 31 `i `uc ]
-[; ;main.c: 592: curEventType = (((v1) >> (5)) & 0x01);
-"592
+[; ;main.c: 600: curEventType = (((v1) >> (5)) & 0x01);
+"600
 [e = _curEventType -> & >> -> _v1 `i -> 5 `i -> 1 `i `uc ]
-[; ;main.c: 593: curEventMinute = ( EEADR = 18 + 1 + curEventNum * 2 + 1, (void)0, RD = 1, EEDATA);
-"593
+[; ;main.c: 601: curEventMinute = ( EEADR = 18 + 1 + curEventNum * 2 + 1, (void)0, RD = 1, EEDATA);
+"601
 [e = _curEventMinute ; ; ; = _EEADR -> + + + -> 18 `i -> 1 `i * -> _curEventNum `i -> 2 `i -> 1 `i `uc -> -> 0 `i `v -> = _RD -> -> 1 `i `b `i _EEDATA ]
-[; ;main.c: 594: _MODBUSInputRegs[3] = (((uint16_t)curEventHour<<8)|curEventMinute);
-"594
+[; ;main.c: 602: _MODBUSInputRegs[3] = (((uint16_t)curEventHour<<8)|curEventMinute);
+"602
 [e = *U + &U __MODBUSInputRegs * -> -> -> 3 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux | << -> _curEventHour `ui -> 8 `i -> _curEventMinute `ui ]
-"595
+"603
 }
-[; ;main.c: 595: }while(curEventHour < hour || curEventMinute <= minute);
+[; ;main.c: 603: }while(curEventHour < hour || curEventMinute <= minute);
 [e $ || < -> _curEventHour `i -> _hour `i <= -> _curEventMinute `i -> _minute `i 322  ]
 [e :U 321 ]
-[; ;main.c: 597: }
-"597
+[; ;main.c: 605: }
+"605
 [e :UE 317 ]
 }
-"599
+"607
 [v _ProcessDiary `(v ~T0 @X0 1 ef ]
-"600
+"608
 {
-[; ;main.c: 599: void ProcessDiary()
-[; ;main.c: 600: {
+[; ;main.c: 607: void ProcessDiary()
+[; ;main.c: 608: {
 [e :U _ProcessDiary ]
 [f ]
-[; ;main.c: 602: if(curEventNum == 0xff)
-"602
+[; ;main.c: 610: if(curEventNum == 0xff)
+"610
 [e $ ! == -> _curEventNum `i -> 255 `i 327  ]
-[; ;main.c: 603: return;
-"603
+[; ;main.c: 611: return;
+"611
 [e $UE 326  ]
 [e :U 327 ]
-"604
+"612
 [v _hour `uc ~T0 @X0 1 a ]
 [v _minute `uc ~T0 @X0 1 a ]
-[; ;main.c: 604: uint8_t hour, minute;
-[; ;main.c: 605: if(!getHourMin(&hour, &minute))
-"605
+[; ;main.c: 612: uint8_t hour, minute;
+[; ;main.c: 613: if(!getHourMin(&hour, &minute))
+"613
 [e $ ! ! != -> ( _getHourMin (2 , &U _hour &U _minute `i -> -> -> 0 `i `uc `i 328  ]
-[; ;main.c: 606: return;
-"606
+[; ;main.c: 614: return;
+"614
 [e $UE 326  ]
 [e :U 328 ]
-[; ;main.c: 608: if(hour == 0 && minute == 0)
-"608
+[; ;main.c: 616: if(hour == 0 && minute == 0)
+"616
 [e $ ! && == -> _hour `i -> 0 `i == -> _minute `i -> 0 `i 329  ]
-[; ;main.c: 609: {
-"609
+[; ;main.c: 617: {
+"617
 {
-[; ;main.c: 610: SwitchOffAllLeds();
-"610
+[; ;main.c: 618: SwitchOffAllLeds();
+"618
 [e ( _SwitchOffAllLeds ..  ]
-[; ;main.c: 611: curEventNum = 0xff;
-"611
+[; ;main.c: 619: curEventNum = 0xff;
+"619
 [e = _curEventNum -> -> 255 `i `uc ]
-[; ;main.c: 612: _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
-"612
+[; ;main.c: 620: _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
+"620
 [e = *U + &U __MODBUSInputRegs * -> -> -> 2 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux | << -> _currentAlarmedEventNum `ui -> 8 `i -> _curEventNum `ui ]
-"614
+"622
 }
 [e :U 329 ]
-[; ;main.c: 614: }
-[; ;main.c: 617: if(curEventHour == hour && curEventMinute == minute)
-"617
-[e $ ! && == -> _curEventHour `i -> _hour `i == -> _curEventMinute `i -> _minute `i 330  ]
-[; ;main.c: 618: {
-"618
-{
-[; ;main.c: 620: if(currentAlarmedEventNum != 0xff)
-"620
-[e $ ! != -> _currentAlarmedEventNum `i -> 255 `i 331  ]
-[; ;main.c: 621: {
-"621
-{
-[; ;main.c: 622: LightLed(currentAlarmedEventNum + 1, LED_RED, 0);
-"622
-[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2426 2 -> -> 0 `i `uc ]
-"623
-}
-[e :U 331 ]
-[; ;main.c: 623: }
-[; ;main.c: 625: {
+[; ;main.c: 622: }
+[; ;main.c: 625: if(curEventHour == hour && curEventMinute == minute)
 "625
-{
-[; ;main.c: 626: currentAlarmedEventNum = curEventNum;
+[e $ ! && == -> _curEventHour `i -> _hour `i == -> _curEventMinute `i -> _minute `i 330  ]
+[; ;main.c: 626: {
 "626
-[e = _currentAlarmedEventNum _curEventNum ]
-[; ;main.c: 628: if(curEventType == 0)
+{
+[; ;main.c: 628: if(currentAlarmedEventNum != 0xff)
 "628
-[e $ ! == -> _curEventType `i -> 0 `i 332  ]
+[e $ ! != -> _currentAlarmedEventNum `i -> 255 `i 331  ]
 [; ;main.c: 629: {
 "629
 {
-[; ;main.c: 630: LightLed(currentAlarmedEventNum + 1, LED_GREEN, 1);
+[; ;main.c: 630: LightLed(currentAlarmedEventNum + 1, LED_RED, 0);
 "630
-[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2426 1 -> -> 1 `i `uc ]
+[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2433 2 -> -> 0 `i `uc ]
 "631
 }
+[e :U 331 ]
 [; ;main.c: 631: }
-[e $U 333  ]
-"632
-[e :U 332 ]
-[; ;main.c: 632: else
 [; ;main.c: 633: {
 "633
 {
-[; ;main.c: 634: LightLed(currentAlarmedEventNum + 1, LED_RED, 1);
+[; ;main.c: 634: currentAlarmedEventNum = curEventNum;
 "634
-[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2426 2 -> -> 1 `i `uc ]
-"635
+[e = _currentAlarmedEventNum _curEventNum ]
+[; ;main.c: 636: if(curEventType == 0)
+"636
+[e $ ! == -> _curEventType `i -> 0 `i 332  ]
+[; ;main.c: 637: {
+"637
+{
+[; ;main.c: 638: LightLed(currentAlarmedEventNum + 1, LED_GREEN, 1);
+"638
+[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2433 1 -> -> 1 `i `uc ]
+"639
+}
+[; ;main.c: 639: }
+[e $U 333  ]
+"640
+[e :U 332 ]
+[; ;main.c: 640: else
+[; ;main.c: 641: {
+"641
+{
+[; ;main.c: 642: LightLed(currentAlarmedEventNum + 1, LED_RED, 1);
+"642
+[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2433 2 -> -> 1 `i `uc ]
+"643
 }
 [e :U 333 ]
-[; ;main.c: 635: }
-[; ;main.c: 636: eventResetSecond = *GetTime() + eventAcceptTime;
-"636
+[; ;main.c: 643: }
+[; ;main.c: 644: eventResetSecond = *GetTime() + eventAcceptTime;
+"644
 [e = _eventResetSecond + *U ( _GetTime ..  -> _eventAcceptTime `l ]
-[; ;main.c: 637: LoadNextEvent();
-"637
+[; ;main.c: 645: LoadNextEvent();
+"645
 [e ( _LoadNextEvent ..  ]
-"638
+"646
 }
-[; ;main.c: 638: }
-[; ;main.c: 639: _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
-"639
+[; ;main.c: 646: }
+[; ;main.c: 647: _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
+"647
 [e = *U + &U __MODBUSInputRegs * -> -> -> 2 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux | << -> _currentAlarmedEventNum `ui -> 8 `i -> _curEventNum `ui ]
-"641
+"649
 }
 [e :U 330 ]
-[; ;main.c: 641: }
-[; ;main.c: 656: }
-"656
+[; ;main.c: 649: }
+[; ;main.c: 664: }
+"664
 [e :UE 326 ]
 }
-"658
+"666
 [v _main `(v ~T0 @X0 1 ef ]
-"659
+"667
 {
-[; ;main.c: 658: void main(void)
-[; ;main.c: 659: {
+[; ;main.c: 666: void main(void)
+[; ;main.c: 667: {
 [e :U _main ]
 [f ]
-[; ;main.c: 661: ConfigureOscillator();
-"661
+[; ;main.c: 669: ConfigureOscillator();
+"669
 [e ( _ConfigureOscillator ..  ]
-[; ;main.c: 664: InitApp();
-"664
+[; ;main.c: 672: InitApp();
+"672
 [e ( _InitApp ..  ]
-[; ;main.c: 668: InitFromEeprom();
-"668
+[; ;main.c: 676: InitFromEeprom();
+"676
 [e ( _InitFromEeprom ..  ]
-"677
+"685
 [v _lastMs `ul ~T0 @X0 1 a ]
-[; ;main.c: 677: unsigned long lastMs = millis();
+[; ;main.c: 685: unsigned long lastMs = millis();
 [e = _lastMs ( _millis ..  ]
-[; ;main.c: 680: pwm_init();
-"680
+[; ;main.c: 688: pwm_init();
+"688
 [e ( _pwm_init ..  ]
-"686
-[v _oldBuzzerOnTime `ul ~T0 @X0 1 a ]
-[; ;main.c: 686: unsigned long oldBuzzerOnTime = 0;
-[e = _oldBuzzerOnTime -> -> -> 0 `i `l `ul ]
-"687
-[v _oldMinute `uc ~T0 @X0 1 a ]
-[; ;main.c: 687: uint8_t oldMinute = 0xff;
-[e = _oldMinute -> -> 255 `i `uc ]
-[; ;main.c: 689: LightStatusLed(0x07, 1, 0);
-"689
-[e ( _LightStatusLed (3 , , -> -> 7 `i `uc -> -> 1 `i `uc -> -> 0 `i `uc ]
-[; ;main.c: 690: LightStatusLed(0x05, 1, 1);
-"690
-[e ( _LightStatusLed (3 , , -> -> 5 `i `uc -> -> 1 `i `uc -> -> 1 `i `uc ]
-[; ;main.c: 691: while(1)
-"691
-[e :U 336 ]
-[; ;main.c: 692: {
-"692
-{
-"693
-[v _curMs `ul ~T0 @X0 1 a ]
-[; ;main.c: 693: unsigned long curMs = millis();
-[e = _curMs ( _millis ..  ]
-[; ;main.c: 694: ProcessLightBlock(&curMs);
 "694
-[e ( _ProcessLightBlock (1 &U _curMs ]
-[; ;main.c: 698: if(currentAlarmedEventNum != 0xff)
+[v _oldBuzzerOnTime `ul ~T0 @X0 1 a ]
+[; ;main.c: 694: unsigned long oldBuzzerOnTime = 0;
+[e = _oldBuzzerOnTime -> -> -> 0 `i `l `ul ]
+"695
+[v _oldMinute `uc ~T0 @X0 1 a ]
+[; ;main.c: 695: uint8_t oldMinute = 0xff;
+[e = _oldMinute -> -> 255 `i `uc ]
+[; ;main.c: 697: LightStatusLed(0x07, 1, 0);
+"697
+[e ( _LightStatusLed (3 , , -> -> 7 `i `uc -> -> 1 `i `uc -> -> 0 `i `uc ]
+[; ;main.c: 698: LightStatusLed(0x05, 1, 1);
 "698
-[e $ ! != -> _currentAlarmedEventNum `i -> 255 `i 338  ]
-[; ;main.c: 699: {
+[e ( _LightStatusLed (3 , , -> -> 5 `i `uc -> -> 1 `i `uc -> -> 1 `i `uc ]
+[; ;main.c: 699: while(1)
 "699
-{
-[; ;main.c: 700: diffTime = curMs - oldBuzzerOnTime;
+[e :U 336 ]
+[; ;main.c: 700: {
 "700
-[e = _diffTime - _curMs _oldBuzzerOnTime ]
-[; ;main.c: 701: if(diffTime > buzzerOnOffPeriod)
-"701
-[e $ ! > _diffTime -> _buzzerOnOffPeriod `ul 339  ]
-[; ;main.c: 702: {
-"702
 {
-[; ;main.c: 703: SetBuzzerDuty(buzzeLoudDuration);
-"703
+"701
+[v _curMs `ul ~T0 @X0 1 a ]
+[; ;main.c: 701: unsigned long curMs = millis();
+[e = _curMs ( _millis ..  ]
+[; ;main.c: 702: ProcessLightBlock(&curMs);
+"702
+[e ( _ProcessLightBlock (1 &U _curMs ]
+[; ;main.c: 706: if(currentAlarmedEventNum != 0xff)
+"706
+[e $ ! != -> _currentAlarmedEventNum `i -> 255 `i 338  ]
+[; ;main.c: 707: {
+"707
+{
+[; ;main.c: 708: diffTime = curMs - oldBuzzerOnTime;
+"708
+[e = _diffTime - _curMs _oldBuzzerOnTime ]
+[; ;main.c: 709: if(diffTime > buzzerOnOffPeriod)
+"709
+[e $ ! > _diffTime -> _buzzerOnOffPeriod `ul 339  ]
+[; ;main.c: 710: {
+"710
+{
+[; ;main.c: 711: SetBuzzerDuty(buzzeLoudDuration);
+"711
 [e ( _SetBuzzerDuty (1 -> _buzzeLoudDuration `ui ]
-[; ;main.c: 704: PR2 = buzzerAlarmPeriod;
-"704
+[; ;main.c: 712: PR2 = buzzerAlarmPeriod;
+"712
 [e = _PR2 _buzzerAlarmPeriod ]
-[; ;main.c: 705: TRISCbits.TRISC2 = 0; T2CONbits.TMR2ON = 1; IsBusserOn = 1;;
-"705
+[; ;main.c: 713: TRISCbits.TRISC2 = 0; T2CONbits.TMR2ON = 1; IsBusserOn = 1;;
+"713
 [e = . . _TRISCbits 0 2 -> -> 0 `i `uc ]
 [e = . . _T2CONbits 0 1 -> -> 1 `i `uc ]
 [e = _IsBusserOn -> -> 1 `i `uc ]
-[; ;main.c: 706: oldBuzzerOnTime = curMs;
-"706
+[; ;main.c: 714: oldBuzzerOnTime = curMs;
+"714
 [e = _oldBuzzerOnTime _curMs ]
-"707
+"715
 }
-[; ;main.c: 707: }
+[; ;main.c: 715: }
 [e $U 340  ]
-"708
+"716
 [e :U 339 ]
-[; ;main.c: 708: else if(IsBusserOn && diffTime > buzzerOnOffDuration)
+[; ;main.c: 716: else if(IsBusserOn && diffTime > buzzerOnOffDuration)
 [e $ ! && != -> _IsBusserOn `i -> -> -> 0 `i `uc `i > _diffTime -> _buzzerOnOffDuration `ul 341  ]
-[; ;main.c: 709: {
-"709
+[; ;main.c: 717: {
+"717
 {
-[; ;main.c: 710: T2CONbits.TMR2ON = 0; TRISCbits.TRISC2 = 1; IsBusserOn = 0;;
-"710
+[; ;main.c: 718: T2CONbits.TMR2ON = 0; TRISCbits.TRISC2 = 1; IsBusserOn = 0;;
+"718
 [e = . . _T2CONbits 0 1 -> -> 0 `i `uc ]
 [e = . . _TRISCbits 0 2 -> -> 1 `i `uc ]
 [e = _IsBusserOn -> -> 0 `i `uc ]
-"711
+"719
 }
 [e :U 341 ]
-"712
+"720
 [e :U 340 ]
 }
 [e :U 338 ]
-[; ;main.c: 711: }
-[; ;main.c: 712: }
-[; ;main.c: 715: if(PORTCbits.RC1 == 0)
-"715
+[; ;main.c: 719: }
+[; ;main.c: 720: }
+[; ;main.c: 723: if(PORTCbits.RC1 == 0)
+"723
 [e $ ! == -> . . _PORTCbits 0 1 `i -> 0 `i 342  ]
-[; ;main.c: 716: {
-"716
+[; ;main.c: 724: {
+"724
 {
-[; ;main.c: 718: if(currentAlarmedEventNum != 0xff)
-"718
+[; ;main.c: 726: if(currentAlarmedEventNum != 0xff)
+"726
 [e $ ! != -> _currentAlarmedEventNum `i -> 255 `i 343  ]
-[; ;main.c: 719: {
-"719
+[; ;main.c: 727: {
+"727
 {
-[; ;main.c: 720: ResetEvent(1);
-"720
+[; ;main.c: 728: ResetEvent(1);
+"728
 [e ( _ResetEvent (1 -> -> 1 `i `uc ]
-"721
+"729
 }
 [e :U 343 ]
-"738
+"746
 }
 [e :U 342 ]
-[; ;main.c: 721: }
-[; ;main.c: 738: }
-[; ;main.c: 745: if(curMs - lastMs >= 1000)
-"745
+[; ;main.c: 729: }
+[; ;main.c: 746: }
+[; ;main.c: 753: if(curMs - lastMs >= 1000)
+"753
 [e $ ! >= - _curMs _lastMs -> -> -> 1000 `i `l `ul 344  ]
-[; ;main.c: 746: {
-"746
-{
-[; ;main.c: 747: AddSecond();
-"747
-[e ( _AddSecond ..  ]
-[; ;main.c: 749: if(currentAlarmedEventNum != 0xff && *GetTime() >= eventResetSecond)
-"749
-[e $ ! && != -> _currentAlarmedEventNum `i -> 255 `i >= *U ( _GetTime ..  _eventResetSecond 345  ]
-[; ;main.c: 750: {
-"750
-{
-[; ;main.c: 751: ResetEvent(0);
-"751
-[e ( _ResetEvent (1 -> -> 0 `i `uc ]
-"752
-}
-[e :U 345 ]
-[; ;main.c: 752: }
-[; ;main.c: 754: _MODBUSInputRegs[5] = *GetTime();
+[; ;main.c: 754: {
 "754
-[e = *U + &U __MODBUSInputRegs * -> -> -> 5 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> *U ( _GetTime ..  `ui ]
+{
+[; ;main.c: 755: AddSecond();
 "755
-[v _hour `uc ~T0 @X0 1 a ]
-[; ;main.c: 755: uint8_t hour = 0, minute = 0;
-[e = _hour -> -> 0 `i `uc ]
-[v _minute `uc ~T0 @X0 1 a ]
-[e = _minute -> -> 0 `i `uc ]
-[; ;main.c: 757: if(getHourMin(&hour, &minute) && oldMinute != minute)
+[e ( _AddSecond ..  ]
+[; ;main.c: 757: if(currentAlarmedEventNum != 0xff && *GetTime() >= eventResetSecond)
 "757
-[e $ ! && != -> ( _getHourMin (2 , &U _hour &U _minute `i -> -> -> 0 `i `uc `i != -> _oldMinute `i -> _minute `i 346  ]
+[e $ ! && != -> _currentAlarmedEventNum `i -> 255 `i >= *U ( _GetTime ..  _eventResetSecond 345  ]
 [; ;main.c: 758: {
 "758
 {
-[; ;main.c: 759: _MODBUSInputRegs[1] = (((uint16_t)hour<<8)|minute);
+[; ;main.c: 759: ResetEvent(0);
 "759
-[e = *U + &U __MODBUSInputRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux | << -> _hour `ui -> 8 `i -> _minute `ui ]
-[; ;main.c: 761: oldMinute = minute;
-"761
-[e = _oldMinute _minute ]
-[; ;main.c: 762: ProcessDiary();
+[e ( _ResetEvent (1 -> -> 0 `i `uc ]
+"760
+}
+[e :U 345 ]
+[; ;main.c: 760: }
+[; ;main.c: 762: _MODBUSInputRegs[5] = *GetTime();
 "762
-[e ( _ProcessDiary ..  ]
+[e = *U + &U __MODBUSInputRegs * -> -> -> 5 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> *U ( _GetTime ..  `ui ]
 "763
+[v _hour `uc ~T0 @X0 1 a ]
+[; ;main.c: 763: uint8_t hour = 0, minute = 0;
+[e = _hour -> -> 0 `i `uc ]
+[v _minute `uc ~T0 @X0 1 a ]
+[e = _minute -> -> 0 `i `uc ]
+[; ;main.c: 765: if(getHourMin(&hour, &minute) && oldMinute != minute)
+"765
+[e $ ! && != -> ( _getHourMin (2 , &U _hour &U _minute `i -> -> -> 0 `i `uc `i != -> _oldMinute `i -> _minute `i 346  ]
+[; ;main.c: 766: {
+"766
+{
+[; ;main.c: 767: _MODBUSInputRegs[1] = (((uint16_t)hour<<8)|minute);
+"767
+[e = *U + &U __MODBUSInputRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux | << -> _hour `ui -> 8 `i -> _minute `ui ]
+[; ;main.c: 769: oldMinute = minute;
+"769
+[e = _oldMinute _minute ]
+[; ;main.c: 770: ProcessDiary();
+"770
+[e ( _ProcessDiary ..  ]
+"771
 }
 [e :U 346 ]
-[; ;main.c: 763: }
-[; ;main.c: 765: _MODBUSInputRegs[4] = (((uint16_t)hour<<8)|minute);
-"765
+[; ;main.c: 771: }
+[; ;main.c: 773: _MODBUSInputRegs[4] = (((uint16_t)hour<<8)|minute);
+"773
 [e = *U + &U __MODBUSInputRegs * -> -> -> 4 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux | << -> _hour `ui -> 8 `i -> _minute `ui ]
-[; ;main.c: 767: lastMs = curMs;
-"767
+[; ;main.c: 775: lastMs = curMs;
+"775
 [e = _lastMs _curMs ]
-"769
+"777
 }
 [e :U 344 ]
-[; ;main.c: 769: }
-[; ;main.c: 770: modbusState = ModbusPoll(_MODBUSDiscreteInputs, &_MODBUSCoils, _MODBUSInputRegs, 15, _MODBUSHoldingRegs, 15);
-"770
+[; ;main.c: 777: }
+[; ;main.c: 778: modbusState = ModbusPoll(_MODBUSDiscreteInputs, &_MODBUSCoils, _MODBUSInputRegs, 15, _MODBUSHoldingRegs, 15);
+"778
 [e = _modbusState -> -> ( _ModbusPoll (4 , , , , , __MODBUSDiscreteInputs &U __MODBUSCoils &U __MODBUSInputRegs -> -> 15 `i `uc &U __MODBUSHoldingRegs -> -> 15 `i `uc `i `ui ]
-[; ;main.c: 771: io_poll();
-"771
+[; ;main.c: 779: io_poll();
+"779
 [e ( _io_poll ..  ]
-"772
+"780
 }
 [e :U 335 ]
-"691
+"699
 [e $U 336  ]
 [e :U 337 ]
-[; ;main.c: 772: }
-[; ;main.c: 775: }
-"775
+[; ;main.c: 780: }
+[; ;main.c: 783: }
+"783
 [e :UE 334 ]
 }
-"777
+"785
 [v _SetTimeFromRegs `(v ~T0 @X0 1 ef3`*ui`*ui`*ui ]
-"778
+"786
 {
-[; ;main.c: 777: void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth)
-[; ;main.c: 778: {
+[; ;main.c: 785: void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth)
+[; ;main.c: 786: {
 [e :U _SetTimeFromRegs ]
-"777
+"785
 [v _hourMin `*ui ~T0 @X0 1 r1 ]
 [v _daySec `*ui ~T0 @X0 1 r2 ]
 [v _yearMonth `*ui ~T0 @X0 1 r3 ]
-"778
-[f ]
-"779
-[v _newTime `S250 ~T0 @X0 1 a ]
-[; ;main.c: 779: struct tm newTime;
-[; ;main.c: 780: newTime.tm_year = (*yearMonth >> 8) + 100;
-"780
-[e = . _newTime 5 -> + >> *U _yearMonth -> 8 `i -> -> 100 `i `ui `i ]
-[; ;main.c: 781: newTime.tm_mon = *yearMonth & 0xFF;
-"781
-[e = . _newTime 4 -> & *U _yearMonth -> -> 255 `i `ui `i ]
-[; ;main.c: 782: newTime.tm_mday = *daySec >> 8;
-"782
-[e = . _newTime 3 -> >> *U _daySec -> 8 `i `i ]
-[; ;main.c: 783: newTime.tm_hour = *hourMin >> 8;
-"783
-[e = . _newTime 2 -> >> *U _hourMin -> 8 `i `i ]
-[; ;main.c: 784: newTime.tm_min = *hourMin & 0xFF;
-"784
-[e = . _newTime 1 -> & *U _hourMin -> -> 255 `i `ui `i ]
-[; ;main.c: 785: newTime.tm_sec = *daySec & 0xFF;
-"785
-[e = . _newTime 0 -> & *U _daySec -> -> 255 `i `ui `i ]
-[; ;main.c: 786: SetHourMin(&newTime.tm_hour, &newTime.tm_min);
 "786
-[e ( _SetHourMin (2 , &U . _newTime 2 &U . _newTime 1 ]
+[f ]
 "787
-[v _newRawTime `l ~T0 @X0 1 a ]
-[; ;main.c: 787: time_t newRawTime = mktime(&newTime);
-[e = _newRawTime ( _mktime (1 &U _newTime ]
-[; ;main.c: 788: SetTime(&newRawTime);
+[v _newTime `S250 ~T0 @X0 1 a ]
+[; ;main.c: 787: struct tm newTime;
+[; ;main.c: 788: newTime.tm_year = (*yearMonth >> 8) + 100;
 "788
-[e ( _SetTime (1 &U _newRawTime ]
-[; ;main.c: 789: LightStatusLed(0x05, 0, 0);
+[e = . _newTime 5 -> + >> *U _yearMonth -> 8 `i -> -> 100 `i `ui `i ]
+[; ;main.c: 789: newTime.tm_mon = *yearMonth & 0xFF;
 "789
-[e ( _LightStatusLed (3 , , -> -> 5 `i `uc -> -> 0 `i `uc -> -> 0 `i `uc ]
-[; ;main.c: 790: LoadNextEvent();
+[e = . _newTime 4 -> & *U _yearMonth -> -> 255 `i `ui `i ]
+[; ;main.c: 790: newTime.tm_mday = *daySec >> 8;
 "790
-[e ( _LoadNextEvent ..  ]
-[; ;main.c: 791: }
+[e = . _newTime 3 -> >> *U _daySec -> 8 `i `i ]
+[; ;main.c: 791: newTime.tm_hour = *hourMin >> 8;
 "791
+[e = . _newTime 2 -> >> *U _hourMin -> 8 `i `i ]
+[; ;main.c: 792: newTime.tm_min = *hourMin & 0xFF;
+"792
+[e = . _newTime 1 -> & *U _hourMin -> -> 255 `i `ui `i ]
+[; ;main.c: 793: newTime.tm_sec = *daySec & 0xFF;
+"793
+[e = . _newTime 0 -> & *U _daySec -> -> 255 `i `ui `i ]
+[; ;main.c: 794: SetHourMin(&newTime.tm_hour, &newTime.tm_min);
+"794
+[e ( _SetHourMin (2 , &U . _newTime 2 &U . _newTime 1 ]
+"795
+[v _newRawTime `l ~T0 @X0 1 a ]
+[; ;main.c: 795: time_t newRawTime = mktime(&newTime);
+[e = _newRawTime ( _mktime (1 &U _newTime ]
+[; ;main.c: 796: SetTime(&newRawTime);
+"796
+[e ( _SetTime (1 &U _newRawTime ]
+[; ;main.c: 797: LightStatusLed(0x05, 0, 0);
+"797
+[e ( _LightStatusLed (3 , , -> -> 5 `i `uc -> -> 0 `i `uc -> -> 0 `i `uc ]
+[; ;main.c: 798: LoadNextEvent();
+"798
+[e ( _LoadNextEvent ..  ]
+[; ;main.c: 799: }
+"799
 [e :UE 347 ]
 }
-"794
-[v _io_poll `(v ~T0 @X0 1 ef ]
-"795
+"802
+[v _SetTimeCommand `(v ~T0 @X0 1 ef ]
+"803
 {
-[; ;main.c: 794: void io_poll()
-[; ;main.c: 795: {
+[; ;main.c: 802: void SetTimeCommand()
+[; ;main.c: 803: {
+[e :U _SetTimeCommand ]
+[f ]
+"804
+[v _hourMin `ui ~T0 @X0 1 a ]
+[; ;main.c: 804: uint16_t hourMin = _MODBUSHoldingRegs[1];
+[e = _hourMin *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux ]
+"806
+[v _daySec `ui ~T0 @X0 1 a ]
+[; ;main.c: 806: uint16_t daySec = _MODBUSHoldingRegs[1 + 1];
+[e = _daySec *U + &U __MODBUSHoldingRegs * -> -> + -> 1 `i -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux ]
+"807
+[v _yearMonth `ui ~T0 @X0 1 a ]
+[; ;main.c: 807: uint16_t yearMonth = _MODBUSHoldingRegs[1 + 2];
+[e = _yearMonth *U + &U __MODBUSHoldingRegs * -> -> + -> 1 `i -> 2 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux ]
+[; ;main.c: 808: SetTimeFromRegs(&hourMin, &daySec, &yearMonth);
+"808
+[e ( _SetTimeFromRegs (3 , , &U _hourMin &U _daySec &U _yearMonth ]
+[; ;main.c: 809: ((_MODBUSDiscreteInputs) |= ((unsigned short)1 << (0x00)));
+"809
+[e =| __MODBUSDiscreteInputs << -> -> -> 1 `i `us `ui -> 0 `i ]
+[; ;main.c: 811: }
+"811
+[e :UE 348 ]
+}
+"813
+[v _io_poll `(v ~T0 @X0 1 ef ]
+"814
+{
+[; ;main.c: 813: void io_poll()
+[; ;main.c: 814: {
 [e :U _io_poll ]
 [f ]
-"796
-[v _lastAddress `ui ~T0 @X0 1 a ]
-"797
-[v _lastEndAddress `ui ~T0 @X0 1 a ]
-"799
-[v _lastCommand `*E2336 ~T0 @X0 1 a ]
-[; ;main.c: 796: uint16_t lastAddress;
-[; ;main.c: 797: uint16_t lastEndAddress;
-[; ;main.c: 799: MODBUS_COMMANDS_t *lastCommand = ModbusGetLastCommand(&lastAddress, &lastEndAddress);
-[e = _lastCommand ( _ModbusGetLastCommand (2 , &U _lastAddress &U _lastEndAddress ]
-[; ;main.c: 800: if(*lastCommand == MODBUS_COM_NONE)
-"800
-[e $ ! == -> *U _lastCommand `i -> . `E2336 0 `i 349  ]
-[; ;main.c: 801: return;
-"801
-[e $UE 348  ]
-[e :U 349 ]
-[; ;main.c: 803: lastEndAddress += lastAddress - 1;
-"803
-[e =+ _lastEndAddress - _lastAddress -> -> 1 `i `ui ]
-[; ;main.c: 805: if(*lastCommand == MODBUS_COM_WRITE_SINGLE_COIL || *lastCommand == MODBUS_COM_WRITE_MULTIPLE_COILS)
-"805
-[e $ ! || == -> *U _lastCommand `i -> . `E2336 3 `i == -> *U _lastCommand `i -> . `E2336 5 `i 350  ]
-[; ;main.c: 806: {
-"806
-{
-[; ;main.c: 807: if ((0x0f >= lastAddress && 0x0f <= lastEndAddress) && (((_MODBUSCoils) >> (0x0f)) & 0x01))
-"807
-[e $ ! && && >= -> -> 15 `i `ui _lastAddress <= -> -> 15 `i `ui _lastEndAddress != & >> __MODBUSCoils -> 15 `i -> -> 1 `i `ui -> -> 0 `i `ui 351  ]
-[; ;main.c: 808: {
-"808
-{
-"810
-[; <"                 RESET; ;# ">
-[; ;main.c: 812: return;
-"812
-[e $UE 348  ]
-"813
-}
-[e :U 351 ]
-[; ;main.c: 813: }
-[; ;main.c: 814: if ((0x09 >= lastAddress && 0x09 <= lastEndAddress) && (((_MODBUSCoils) >> (0x09)) & 0x01))
-"814
-[e $ ! && && >= -> -> 9 `i `ui _lastAddress <= -> -> 9 `i `ui _lastEndAddress != & >> __MODBUSCoils -> 9 `i -> -> 1 `i `ui -> -> 0 `i `ui 352  ]
-[; ;main.c: 815: {
 "815
-{
-[; ;main.c: 816: eventCount = 0;
+[v _lastAddress `ui ~T0 @X0 1 a ]
 "816
-[e = _eventCount -> -> 0 `i `uc ]
-[; ;main.c: 817: _MODBUSInputRegs[0] = 0x8080;
-"817
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-[; ;main.c: 818: return;
+[v _lastEndAddress `ui ~T0 @X0 1 a ]
 "818
-[e $UE 348  ]
+[v _lastCommand `*uc ~T0 @X0 1 a ]
+[; ;main.c: 815: uint16_t lastAddress;
+[; ;main.c: 816: uint16_t lastEndAddress;
+[; ;main.c: 818: uint8_t *lastCommand = ModbusGetLastCommand(&lastAddress, &lastEndAddress);
+[e = _lastCommand ( _ModbusGetLastCommand (2 , &U _lastAddress &U _lastEndAddress ]
+[; ;main.c: 819: if(*lastCommand == MB_FC_NONE)
 "819
-}
-[e :U 352 ]
-[; ;main.c: 819: }
+[e $ ! == -> *U _lastCommand `i -> . `E2336 0 `i 350  ]
 [; ;main.c: 820: return;
 "820
-[e $UE 348  ]
-"821
-}
+[e $UE 349  ]
 [e :U 350 ]
+[; ;main.c: 822: lastEndAddress += lastAddress - 1;
 "822
-[v _v1 `uc ~T0 @X0 1 a ]
-[; ;main.c: 821: }
-[; ;main.c: 822: uint8_t v1;
-[; ;main.c: 823: if(*lastCommand == MODBUS_COM_WRITE_SINGLE_REGISTER || *lastCommand == MODBUS_COM_WRITE_MULTIPLE_REGISTERS)
-"823
-[e $ ! || == -> *U _lastCommand `i -> . `E2336 4 `i == -> *U _lastCommand `i -> . `E2336 6 `i 353  ]
-[; ;main.c: 824: {
+[e =+ _lastEndAddress - _lastAddress -> -> 1 `i `ui ]
 "824
-{
-[; ;main.c: 826: if((13 >= lastAddress && 13 <= lastEndAddress) && _MODBUSHoldingRegs[13] > 0)
+[v _v1 `uc ~T0 @X0 1 a ]
+[; ;main.c: 824: uint8_t v1;
+[; ;main.c: 825: if(*lastCommand == MB_FC_WRITE_REGISTER || *lastCommand == MB_FC_WRITE_MULTIPLE_REGISTERS)
+"825
+[e $ ! || == -> *U _lastCommand `i -> . `E2336 6 `i == -> *U _lastCommand `i -> . `E2336 9 `i 351  ]
+[; ;main.c: 826: {
 "826
-[e $ ! && && >= -> -> 13 `i `ui _lastAddress <= -> -> 13 `i `ui _lastEndAddress > *U + &U __MODBUSHoldingRegs * -> -> -> 13 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 0 `i `ui 354  ]
-[; ;main.c: 827: {
-"827
 {
-[; ;main.c: 828: if(eventCount < 60)
+[; ;main.c: 828: if(lastAddress == 0)
 "828
-[e $ ! < -> _eventCount `i -> 60 `i 355  ]
+[e $ ! == _lastAddress -> -> 0 `i `ui 352  ]
 [; ;main.c: 829: {
 "829
 {
 "830
-[v _eventEeAddr `uc ~T0 @X0 1 a ]
-[; ;main.c: 830: uint8_t eventEeAddr = 18 + 1 + (eventCount << 1);
-[e = _eventEeAddr -> + + -> 18 `i -> 1 `i << -> _eventCount `i -> 1 `i `uc ]
-[; ;main.c: 831: v1 = ((unsigned char)(((_MODBUSHoldingRegs[13])>>8)&0xFF));
+[v _command `uc ~T0 @X0 1 a ]
+[; ;main.c: 830: uint8_t command = ((unsigned char)(((_MODBUSHoldingRegs[0])>>8)&0xFF));
+[e = _command -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc ]
 "831
-[e = _v1 -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 13 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc ]
-[; ;main.c: 832: do{ while (WR) { continue; } EEADR = (eventEeAddr); EEDATA = (v1); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
+[v _hourMin `ui ~T0 @X0 1 a ]
+[; ;main.c: 831: uint16_t hourMin;
+[; ;main.c: 832: switch(command)
 "832
+[e $U 354  ]
+[; ;main.c: 833: {
+"833
+{
+[; ;main.c: 834: case 0x7F:
+"834
+[e :U 355 ]
+"836
+[; <"                         RESET; ;# ">
+[; ;main.c: 838: return;
+"838
+[e $UE 349  ]
+[; ;main.c: 839: case 0x01:
+"839
+[e :U 356 ]
+[; ;main.c: 840: break;
+"840
+[e $U 353  ]
+[; ;main.c: 841: case 0x10:
+"841
+[e :U 357 ]
+[; ;main.c: 842: SetTimeCommand();
+"842
+[e ( _SetTimeCommand ..  ]
+[; ;main.c: 843: ModbusSetExceptionStatusBit(0, 1);
+"843
+[e ( _ModbusSetExceptionStatusBit (2 , -> -> 0 `i `uc -> -> 1 `i `uc ]
+[; ;main.c: 844: break;
+"844
+[e $U 353  ]
+[; ;main.c: 847: case 0x80:
+"847
 [e :U 358 ]
-{
-[e $U 359  ]
-[e :U 360 ]
-{
-[e $U 359  ]
-}
-[e :U 359 ]
-[e $ _WR 360  ]
+[; ;main.c: 848: eventCount = 0;
+"848
+[e = _eventCount -> -> 0 `i `uc ]
+[; ;main.c: 849: do{ while (WR) { continue; } EEADR = (18); EEDATA = (0); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
+"849
 [e :U 361 ]
+{
+[e $U 362  ]
+[e :U 363 ]
+{
+[e $U 362  ]
+}
+[e :U 362 ]
+[e $ _WR 363  ]
+[e :U 364 ]
+[e = _EEADR -> -> 18 `i `uc ]
+[e = _EEDATA -> -> 0 `i `uc ]
+[e -> 0 `i ]
+[e = _CARRY -> -> 0 `i `b ]
+[e $ ! _GIE 365  ]
+{
+[e = _CARRY -> -> 1 `i `b ]
+}
+[e :U 365 ]
+[e = _GIE -> -> 0 `i `b ]
+[e = _WREN -> -> 1 `i `b ]
+[e = _EECON2 -> -> 85 `i `uc ]
+[e = _EECON2 -> -> 170 `i `uc ]
+[e = _WR -> -> 1 `i `b ]
+[e = _WREN -> -> 0 `i `b ]
+[e $ ! _CARRY 366  ]
+{
+[e = _GIE -> -> 1 `i `b ]
+}
+[e :U 366 ]
+}
+[e :U 360 ]
+[; ;main.c: 850: ModbusSetExceptionStatusBit(0, 1);
+"850
+[e ( _ModbusSetExceptionStatusBit (2 , -> -> 0 `i `uc -> -> 1 `i `uc ]
+[; ;main.c: 851: break;
+"851
+[e $U 353  ]
+[; ;main.c: 852: case 0x81:
+"852
+[e :U 367 ]
+[; ;main.c: 854: if(eventCount < 60)
+"854
+[e $ ! < -> _eventCount `i -> 60 `i 368  ]
+[; ;main.c: 855: {
+"855
+{
+"856
+[v _eventEeAddr `uc ~T0 @X0 1 a ]
+[; ;main.c: 856: uint8_t eventEeAddr = 18 + 1 + (eventCount << 1);
+[e = _eventEeAddr -> + + -> 18 `i -> 1 `i << -> _eventCount `i -> 1 `i `uc ]
+[; ;main.c: 857: v1 = ((unsigned char)(((_MODBUSHoldingRegs[1])>>8)&0xFF));
+"857
+[e = _v1 -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc ]
+[; ;main.c: 858: do{ while (WR) { continue; } EEADR = (eventEeAddr); EEDATA = (v1); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
+"858
+[e :U 371 ]
+{
+[e $U 372  ]
+[e :U 373 ]
+{
+[e $U 372  ]
+}
+[e :U 372 ]
+[e $ _WR 373  ]
+[e :U 374 ]
 [e = _EEADR _eventEeAddr ]
 [e = _EEDATA _v1 ]
 [e -> 0 `i ]
 [e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 362  ]
+[e $ ! _GIE 375  ]
 {
 [e = _CARRY -> -> 1 `i `b ]
 }
-[e :U 362 ]
+[e :U 375 ]
 [e = _GIE -> -> 0 `i `b ]
 [e = _WREN -> -> 1 `i `b ]
 [e = _EECON2 -> -> 85 `i `uc ]
 [e = _EECON2 -> -> 170 `i `uc ]
 [e = _WR -> -> 1 `i `b ]
 [e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 363  ]
+[e $ ! _CARRY 376  ]
 {
 [e = _GIE -> -> 1 `i `b ]
 }
-[e :U 363 ]
+[e :U 376 ]
 }
-[e :U 357 ]
-[; ;main.c: 833: v1 = ((unsigned char)((_MODBUSHoldingRegs[13])&0xFF));
-"833
-[e = _v1 -> & *U + &U __MODBUSHoldingRegs * -> -> -> 13 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
-[; ;main.c: 834: do{ while (WR) { continue; } EEADR = (eventEeAddr + 1); EEDATA = (v1); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
-"834
-[e :U 366 ]
+[e :U 370 ]
+[; ;main.c: 859: v1 = ((unsigned char)((_MODBUSHoldingRegs[1])&0xFF));
+"859
+[e = _v1 -> & *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
+[; ;main.c: 860: do{ while (WR) { continue; } EEADR = (eventEeAddr + 1); EEDATA = (v1); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
+"860
+[e :U 379 ]
 {
-[e $U 367  ]
-[e :U 368 ]
+[e $U 380  ]
+[e :U 381 ]
 {
-[e $U 367  ]
+[e $U 380  ]
 }
-[e :U 367 ]
-[e $ _WR 368  ]
-[e :U 369 ]
+[e :U 380 ]
+[e $ _WR 381  ]
+[e :U 382 ]
 [e = _EEADR -> + -> _eventEeAddr `i -> 1 `i `uc ]
 [e = _EEDATA _v1 ]
 [e -> 0 `i ]
 [e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 370  ]
+[e $ ! _GIE 383  ]
 {
 [e = _CARRY -> -> 1 `i `b ]
 }
-[e :U 370 ]
+[e :U 383 ]
 [e = _GIE -> -> 0 `i `b ]
 [e = _WREN -> -> 1 `i `b ]
 [e = _EECON2 -> -> 85 `i `uc ]
 [e = _EECON2 -> -> 170 `i `uc ]
 [e = _WR -> -> 1 `i `b ]
 [e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 371  ]
+[e $ ! _CARRY 384  ]
 {
 [e = _GIE -> -> 1 `i `b ]
 }
-[e :U 371 ]
+[e :U 384 ]
 }
-[e :U 365 ]
-[; ;main.c: 836: _MODBUSHoldingRegs[13] = 0;
-"836
-[e = *U + &U __MODBUSHoldingRegs * -> -> -> 13 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 0 `i `ui ]
-[; ;main.c: 838: LightLed(eventCount, LED_GREEN, 0);
-"838
-[e ( _LightLed (3 , , _eventCount . `E2426 1 -> -> 0 `i `uc ]
-[; ;main.c: 840: eventCount++;
-"840
+[e :U 378 ]
+[; ;main.c: 863: LightLed(eventCount, LED_GREEN, 0);
+"863
+[e ( _LightLed (3 , , _eventCount . `E2433 1 -> -> 0 `i `uc ]
+[; ;main.c: 865: eventCount++;
+"865
 [e ++ _eventCount -> -> 1 `i `uc ]
-[; ;main.c: 841: do{ while (WR) { continue; } EEADR = (18); EEDATA = (eventCount); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
-"841
-[e :U 374 ]
+[; ;main.c: 866: do{ while (WR) { continue; } EEADR = (18); EEDATA = (eventCount); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
+"866
+[e :U 387 ]
 {
-[e $U 375  ]
-[e :U 376 ]
+[e $U 388  ]
+[e :U 389 ]
 {
-[e $U 375  ]
+[e $U 388  ]
 }
-[e :U 375 ]
-[e $ _WR 376  ]
-[e :U 377 ]
+[e :U 388 ]
+[e $ _WR 389  ]
+[e :U 390 ]
 [e = _EEADR -> -> 18 `i `uc ]
 [e = _EEDATA _eventCount ]
 [e -> 0 `i ]
 [e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 378  ]
+[e $ ! _GIE 391  ]
 {
 [e = _CARRY -> -> 1 `i `b ]
 }
-[e :U 378 ]
+[e :U 391 ]
 [e = _GIE -> -> 0 `i `b ]
 [e = _WREN -> -> 1 `i `b ]
 [e = _EECON2 -> -> 85 `i `uc ]
 [e = _EECON2 -> -> 170 `i `uc ]
 [e = _WR -> -> 1 `i `b ]
 [e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 379  ]
+[e $ ! _CARRY 392  ]
 {
 [e = _GIE -> -> 1 `i `b ]
-}
-[e :U 379 ]
-}
-[e :U 373 ]
-[; ;main.c: 843: _MODBUSInputRegs[0] = 0x8080;
-"843
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-"844
-}
-[; ;main.c: 844: }
-[e $U 380  ]
-"845
-[e :U 355 ]
-[; ;main.c: 845: else
-[; ;main.c: 846: _MODBUSInputRegs[0] = 0x0100;
-"846
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> -> 256 `i `ui ]
-[e :U 380 ]
-"847
-}
-[e :U 354 ]
-[; ;main.c: 847: }
-[; ;main.c: 850: if((0 >= lastAddress && 0 <= lastEndAddress) && _MODBUSHoldingRegs[0] > 0)
-"850
-[e $ ! && && >= -> -> 0 `i `ui _lastAddress <= -> -> 0 `i `ui _lastEndAddress > *U + &U __MODBUSHoldingRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 0 `i `ui 381  ]
-[; ;main.c: 851: {
-"851
-{
-[; ;main.c: 852: v1 = ((unsigned char)((_MODBUSHoldingRegs[0])&0xFF));
-"852
-[e = _v1 -> & *U + &U __MODBUSHoldingRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
-[; ;main.c: 854: LightLed(((unsigned char)(((_MODBUSHoldingRegs[0])>>8)&0xFF)), v1 & 0x03, (((v1) >> (2)) & 0x01));
-"854
-[e ( _LightLed (3 , , -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc -> & -> _v1 `i -> 3 `i `E2426 -> & >> -> _v1 `i -> 2 `i -> 1 `i `uc ]
-[; ;main.c: 855: _MODBUSHoldingRegs[0] = 0;
-"855
-[e = *U + &U __MODBUSHoldingRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 0 `i `ui ]
-[; ;main.c: 856: _MODBUSInputRegs[0] = 0x8080;
-"856
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-"857
-}
-[e :U 381 ]
-[; ;main.c: 857: }
-[; ;main.c: 858: if((1 >= lastAddress && 1 <= lastEndAddress)) { buzzeLoudDuration = ((unsigned char)(((_MODBUSHoldingRegs[1])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (2); EEDATA = (buzzeLoudDuration); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WRE
-"858
-[e $ ! && >= -> -> 1 `i `ui _lastAddress <= -> -> 1 `i `ui _lastEndAddress 382  ]
-{
-[e = _buzzeLoudDuration -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc ]
-[e :U 385 ]
-{
-[e $U 386  ]
-[e :U 387 ]
-{
-[e $U 386  ]
-}
-[e :U 386 ]
-[e $ _WR 387  ]
-[e :U 388 ]
-[e = _EEADR -> -> 2 `i `uc ]
-[e = _EEDATA _buzzeLoudDuration ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 389  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 389 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 390  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 390 ]
-}
-[e :U 384 ]
-[e = _buzzeQuietDuration -> & *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
-[e :U 393 ]
-{
-[e $U 394  ]
-[e :U 395 ]
-{
-[e $U 394  ]
-}
-[e :U 394 ]
-[e $ _WR 395  ]
-[e :U 396 ]
-[e = _EEADR -> -> 3 `i `uc ]
-[e = _EEDATA _buzzeQuietDuration ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 397  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 397 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 398  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 398 ]
 }
 [e :U 392 ]
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
 }
-[e :U 382 ]
-[; ;main.c: 859: if((2 >= lastAddress && 2 <= lastEndAddress)) { buzzerInfoPeriod = ((unsigned char)(((_MODBUSHoldingRegs[2])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (4); EEDATA = (buzzerInfoPeriod); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN 
-"859
-[e $ ! && >= -> -> 2 `i `ui _lastAddress <= -> -> 2 `i `ui _lastEndAddress 399  ]
-{
-[e = _buzzerInfoPeriod -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 2 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc ]
-[e :U 402 ]
-{
-[e $U 403  ]
-[e :U 404 ]
-{
-[e $U 403  ]
-}
-[e :U 403 ]
-[e $ _WR 404  ]
-[e :U 405 ]
-[e = _EEADR -> -> 4 `i `uc ]
-[e = _EEDATA _buzzerInfoPeriod ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 406  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 406 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 407  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 407 ]
-}
-[e :U 401 ]
-[e = _buzzerAlarmPeriod -> & *U + &U __MODBUSHoldingRegs * -> -> -> 2 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
-[e :U 410 ]
-{
-[e $U 411  ]
-[e :U 412 ]
-{
-[e $U 411  ]
-}
-[e :U 411 ]
-[e $ _WR 412  ]
-[e :U 413 ]
-[e = _EEADR -> -> 5 `i `uc ]
-[e = _EEDATA _buzzerAlarmPeriod ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 414  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 414 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 415  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 415 ]
-}
-[e :U 409 ]
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-}
-[e :U 399 ]
-[; ;main.c: 860: SetBuzzerDuty(buzzeLoudDuration);
-"860
-[e ( _SetBuzzerDuty (1 -> _buzzeLoudDuration `ui ]
-[; ;main.c: 861: PR2 = buzzerAlarmPeriod;
-"861
-[e = _PR2 _buzzerAlarmPeriod ]
-[; ;main.c: 862: if((3 >= lastAddress && 3 <= lastEndAddress)) { buzzerOnOffDuration = ((unsigned char)(((_MODBUSHoldingRegs[3])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (6); EEDATA = (buzzerOnOffDuration); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0;
-"862
-[e $ ! && >= -> -> 3 `i `ui _lastAddress <= -> -> 3 `i `ui _lastEndAddress 416  ]
-{
-[e = _buzzerOnOffDuration -> -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 3 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc `ui ]
-[e :U 419 ]
-{
-[e $U 420  ]
-[e :U 421 ]
-{
-[e $U 420  ]
-}
-[e :U 420 ]
-[e $ _WR 421  ]
-[e :U 422 ]
-[e = _EEADR -> -> 6 `i `uc ]
-[e = _EEDATA -> _buzzerOnOffDuration `uc ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 423  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 423 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 424  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 424 ]
-}
-[e :U 418 ]
-[e =<< _buzzerOnOffDuration -> 8 `i ]
-[e = _buzzerOnOffPeriod -> -> & *U + &U __MODBUSHoldingRegs * -> -> -> 3 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc `ui ]
-[e :U 427 ]
-{
-[e $U 428  ]
-[e :U 429 ]
-{
-[e $U 428  ]
-}
-[e :U 428 ]
-[e $ _WR 429  ]
-[e :U 430 ]
-[e = _EEADR -> -> 7 `i `uc ]
-[e = _EEDATA -> _buzzerOnOffPeriod `uc ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 431  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 431 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 432  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 432 ]
-}
-[e :U 426 ]
-[e =<< _buzzerOnOffPeriod -> 8 `i ]
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-}
-[e :U 416 ]
-[; ;main.c: 865: if((4 >= lastAddress && 4 <= lastEndAddress)) { eventAcceptTime = ((unsigned char)((_MODBUSHoldingRegs[4])&0xFF)); do{ while (WR) { continue; } EEADR = (10); EEDATA = (eventAcceptTime); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; E
-"865
-[e $ ! && >= -> -> 4 `i `ui _lastAddress <= -> -> 4 `i `ui _lastEndAddress 433  ]
-{
-[e = _eventAcceptTime -> & *U + &U __MODBUSHoldingRegs * -> -> -> 4 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
-[e :U 436 ]
-{
-[e $U 437  ]
-[e :U 438 ]
-{
-[e $U 437  ]
-}
-[e :U 437 ]
-[e $ _WR 438  ]
-[e :U 439 ]
-[e = _EEADR -> -> 10 `i `uc ]
-[e = _EEDATA _eventAcceptTime ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 440  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 440 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 441  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 441 ]
-}
-[e :U 435 ]
-[e = *U + &U __MODBUSInputRegs * -> -> -> 4 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux *U + &U __MODBUSHoldingRegs * -> -> -> 4 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux ]
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-}
-[e :U 433 ]
-[; ;main.c: 866: if((5 >= lastAddress && 5 <= lastEndAddress)) { buzzeEscaladeTime = ((unsigned char)(((_MODBUSHoldingRegs[5])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (8); EEDATA = (buzzeEscaladeTime); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WRE
-"866
-[e $ ! && >= -> -> 5 `i `ui _lastAddress <= -> -> 5 `i `ui _lastEndAddress 442  ]
-{
-[e = _buzzeEscaladeTime -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 5 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc ]
-[e :U 445 ]
-{
-[e $U 446  ]
-[e :U 447 ]
-{
-[e $U 446  ]
-}
-[e :U 446 ]
-[e $ _WR 447  ]
-[e :U 448 ]
-[e = _EEADR -> -> 8 `i `uc ]
-[e = _EEDATA _buzzeEscaladeTime ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 449  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 449 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 450  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 450 ]
-}
-[e :U 444 ]
-[e = _buzzerStartDurationDiv -> & *U + &U __MODBUSHoldingRegs * -> -> -> 5 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
-[e :U 453 ]
-{
-[e $U 454  ]
-[e :U 455 ]
-{
-[e $U 454  ]
-}
-[e :U 454 ]
-[e $ _WR 455  ]
-[e :U 456 ]
-[e = _EEADR -> -> 9 `i `uc ]
-[e = _EEDATA _buzzerStartDurationDiv ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 457  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 457 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 458  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 458 ]
-}
-[e :U 452 ]
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-}
-[e :U 442 ]
-[; ;main.c: 867: if((6 >= lastAddress && 6 <= lastEndAddress)) { eveningTimeHour = ((unsigned char)(((_MODBUSHoldingRegs[6])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (11); EEDATA = (eveningTimeHour); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN =
-"867
-[e $ ! && >= -> -> 6 `i `ui _lastAddress <= -> -> 6 `i `ui _lastEndAddress 459  ]
-{
-[e = _eveningTimeHour -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 6 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc ]
-[e :U 462 ]
-{
-[e $U 463  ]
-[e :U 464 ]
-{
-[e $U 463  ]
-}
-[e :U 463 ]
-[e $ _WR 464  ]
-[e :U 465 ]
-[e = _EEADR -> -> 11 `i `uc ]
-[e = _EEDATA _eveningTimeHour ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 466  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 466 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 467  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 467 ]
-}
-[e :U 461 ]
-[e = _morningTimeHour -> & *U + &U __MODBUSHoldingRegs * -> -> -> 6 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
-[e :U 470 ]
-{
-[e $U 471  ]
-[e :U 472 ]
-{
-[e $U 471  ]
-}
-[e :U 471 ]
-[e $ _WR 472  ]
-[e :U 473 ]
-[e = _EEADR -> -> 14 `i `uc ]
-[e = _EEDATA _morningTimeHour ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 474  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 474 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 475  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 475 ]
-}
-[e :U 469 ]
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-}
-[e :U 459 ]
-[; ;main.c: 868: if((7 >= lastAddress && 7 <= lastEndAddress)) { nightStartHour = ((unsigned char)(((_MODBUSHoldingRegs[7])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (12); EEDATA = (nightStartHour); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1
+[e :U 386 ]
+[; ;main.c: 868: ModbusSetExceptionStatusBit(0, 1);
 "868
-[e $ ! && >= -> -> 7 `i `ui _lastAddress <= -> -> 7 `i `ui _lastEndAddress 476  ]
-{
-[e = _nightStartHour -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 7 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc ]
-[e :U 479 ]
-{
-[e $U 480  ]
-[e :U 481 ]
-{
-[e $U 480  ]
+[e ( _ModbusSetExceptionStatusBit (2 , -> -> 0 `i `uc -> -> 1 `i `uc ]
+"869
 }
-[e :U 480 ]
-[e $ _WR 481  ]
-[e :U 482 ]
-[e = _EEADR -> -> 12 `i `uc ]
-[e = _EEDATA _nightStartHour ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 483  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 483 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 484  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 484 ]
-}
-[e :U 478 ]
-[e = _nightEndHour -> & *U + &U __MODBUSHoldingRegs * -> -> -> 7 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
-[e :U 487 ]
-{
-[e $U 488  ]
-[e :U 489 ]
-{
-[e $U 488  ]
-}
-[e :U 488 ]
-[e $ _WR 489  ]
-[e :U 490 ]
-[e = _EEADR -> -> 13 `i `uc ]
-[e = _EEDATA _nightEndHour ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 491  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 491 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 492  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 492 ]
-}
-[e :U 486 ]
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-}
-[e :U 476 ]
-[; ;main.c: 870: if((8 >= lastAddress && 8 <= lastEndAddress)) { blinkDuration = ((unsigned char)(((_MODBUSHoldingRegs[8])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (15); EEDATA = (blinkDuration); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; 
+[; ;main.c: 869: }
+[e $U 393  ]
 "870
-[e $ ! && >= -> -> 8 `i `ui _lastAddress <= -> -> 8 `i `ui _lastEndAddress 493  ]
-{
-[e = _blinkDuration -> -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 8 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc `ui ]
-[e :U 496 ]
-{
-[e $U 497  ]
-[e :U 498 ]
-{
-[e $U 497  ]
-}
-[e :U 497 ]
-[e $ _WR 498  ]
-[e :U 499 ]
-[e = _EEADR -> -> 15 `i `uc ]
-[e = _EEDATA -> _blinkDuration `uc ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 500  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 500 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 501  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 501 ]
-}
-[e :U 495 ]
-[e =<< _blinkDuration -> 6 `i ]
-[e = _blinkPeriod -> -> & *U + &U __MODBUSHoldingRegs * -> -> -> 8 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc `ui ]
-[e :U 504 ]
-{
-[e $U 505  ]
-[e :U 506 ]
-{
-[e $U 505  ]
-}
-[e :U 505 ]
-[e $ _WR 506  ]
-[e :U 507 ]
-[e = _EEADR -> -> 16 `i `uc ]
-[e = _EEDATA -> _blinkPeriod `uc ]
-[e -> 0 `i ]
-[e = _CARRY -> -> 0 `i `b ]
-[e $ ! _GIE 508  ]
-{
-[e = _CARRY -> -> 1 `i `b ]
-}
-[e :U 508 ]
-[e = _GIE -> -> 0 `i `b ]
-[e = _WREN -> -> 1 `i `b ]
-[e = _EECON2 -> -> 85 `i `uc ]
-[e = _EECON2 -> -> 170 `i `uc ]
-[e = _WR -> -> 1 `i `b ]
-[e = _WREN -> -> 0 `i `b ]
-[e $ ! _CARRY 509  ]
-{
-[e = _GIE -> -> 1 `i `b ]
-}
-[e :U 509 ]
-}
-[e :U 503 ]
-[e =<< _blinkPeriod -> 6 `i ]
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-}
-[e :U 493 ]
-[; ;main.c: 874: if((9 >= lastAddress && 9 <= lastEndAddress) && (11 >= lastAddress && 11 <= lastEndAddress))
+[e :U 368 ]
+[; ;main.c: 870: else
+[; ;main.c: 871: ModbusSetExceptionStatusBit(0, 0);
+"871
+[e ( _ModbusSetExceptionStatusBit (2 , -> -> 0 `i `uc -> -> 0 `i `uc ]
+[e :U 393 ]
+[; ;main.c: 873: break;
+"873
+[e $U 353  ]
+[; ;main.c: 874: case 0x82:
 "874
-[e $ ! && && >= -> -> 9 `i `ui _lastAddress <= -> -> 9 `i `ui _lastEndAddress && >= -> -> 11 `i `ui _lastAddress <= -> -> 11 `i `ui _lastEndAddress 510  ]
-[; ;main.c: 875: {
-"875
-{
-"876
-[v _hourMin `ui ~T0 @X0 1 a ]
-[; ;main.c: 876: uint16_t hourMin = _MODBUSHoldingRegs[9];
-[e = _hourMin *U + &U __MODBUSHoldingRegs * -> -> -> 9 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux ]
+[e :U 394 ]
+[; ;main.c: 877: v1 = ((unsigned char)((_MODBUSHoldingRegs[1])&0xFF));
 "877
-[v _daySec `ui ~T0 @X0 1 a ]
-[; ;main.c: 877: uint16_t daySec = _MODBUSHoldingRegs[10];
-[e = _daySec *U + &U __MODBUSHoldingRegs * -> -> -> 10 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux ]
-"878
-[v _yearMonth `ui ~T0 @X0 1 a ]
-[; ;main.c: 878: uint16_t yearMonth = _MODBUSHoldingRegs[11];
-[e = _yearMonth *U + &U __MODBUSHoldingRegs * -> -> -> 11 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux ]
-[; ;main.c: 879: SetTimeFromRegs(&hourMin, &daySec, &yearMonth);
+[e = _v1 -> & *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
+[; ;main.c: 879: LightLed(((unsigned char)(((_MODBUSHoldingRegs[1])>>8)&0xFF)), v1 & 0x03, (((v1) >> (2)) & 0x01));
 "879
-[e ( _SetTimeFromRegs (3 , , &U _hourMin &U _daySec &U _yearMonth ]
-[; ;main.c: 880: ((_MODBUSDiscreteInputs) |= ((unsigned short)1 << (0x00)));
+[e ( _LightLed (3 , , -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc -> & -> _v1 `i -> 3 `i `E2433 -> & >> -> _v1 `i -> 2 `i -> 1 `i `uc ]
+[; ;main.c: 880: _MODBUSHoldingRegs[1] = 0;
 "880
-[e =| __MODBUSDiscreteInputs << -> -> -> 1 `i `us `ui -> 0 `i ]
-[; ;main.c: 882: _MODBUSInputRegs[0] = 0x8080;
+[e = *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 0 `i `ui ]
+[; ;main.c: 881: ModbusSetExceptionStatusBit(0, 1);
+"881
+[e ( _ModbusSetExceptionStatusBit (2 , -> -> 0 `i `uc -> -> 1 `i `uc ]
+[; ;main.c: 882: break;
 "882
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-"886
+[e $U 353  ]
+"884
 }
-[e :U 510 ]
-[; ;main.c: 886: }
-[; ;main.c: 887: return;
-"887
-[e $UE 348  ]
-"888
-}
+[; ;main.c: 884: }
+[e $U 353  ]
+"832
+[e :U 354 ]
+[e [\ _command , $ -> -> 127 `i `uc 355
+ , $ -> -> 1 `i `uc 356
+ , $ -> -> 16 `i `uc 357
+ , $ -> -> 128 `i `uc 358
+ , $ -> -> 129 `i `uc 367
+ , $ -> -> 130 `i `uc 394
+ 353 ]
+"884
 [e :U 353 ]
-[; ;main.c: 888: }
-[; ;main.c: 889: if(*lastCommand == MODBUS_COM_WRITE_FILE_RECORD)
-"889
-[e $ ! == -> *U _lastCommand `i -> . `E2336 7 `i 511  ]
-[; ;main.c: 890: {
-"890
-{
-[; ;main.c: 891: InitFromEeprom();
-"891
-[e ( _InitFromEeprom ..  ]
-[; ;main.c: 892: _MODBUSInputRegs[0] = 0x8080;
-"892
-[e = *U + &U __MODBUSInputRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> 32896 `ui ]
-[; ;main.c: 895: return;
-"895
-[e $UE 348  ]
-"896
+[; ;main.c: 885: _MODBUSHoldingRegs[0] = 0;
+"885
+[e = *U + &U __MODBUSHoldingRegs * -> -> -> 0 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 0 `i `ui ]
+[; ;main.c: 886: _MODBUSHoldingRegs[1] = 0;
+"886
+[e = *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 0 `i `ui ]
+"887
 }
-[e :U 511 ]
-[; ;main.c: 896: }
-[; ;main.c: 897: }
-"897
-[e :UE 348 ]
+[e :U 352 ]
+"902
+}
+[e :U 351 ]
+[; ;main.c: 887: }
+[; ;main.c: 902: }
+[; ;main.c: 939: if(*lastCommand == MB_FC_WRITE_FILE_RECORD)
+"939
+[e $ ! == -> *U _lastCommand `i -> . `E2336 11 `i 395  ]
+[; ;main.c: 940: {
+"940
+{
+[; ;main.c: 941: InitFromEeprom();
+"941
+[e ( _InitFromEeprom ..  ]
+[; ;main.c: 942: ModbusSetExceptionStatusBit(0, 1);
+"942
+[e ( _ModbusSetExceptionStatusBit (2 , -> -> 0 `i `uc -> -> 1 `i `uc ]
+[; ;main.c: 945: return;
+"945
+[e $UE 349  ]
+"946
+}
+[e :U 395 ]
+[; ;main.c: 946: }
+[; ;main.c: 947: }
+"947
+[e :UE 349 ]
 }

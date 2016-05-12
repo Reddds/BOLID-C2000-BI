@@ -45,6 +45,15 @@ enum MESSAGE
     BYTE_CNT //!< byte counter = 6
 };
 
+enum MEI_MESSAGE
+{
+    MEI_ID = 0, //!< ID field
+    MEI_FUNC, //!< Function code position
+    MEI_TYPE, //!< MEI Type
+    MEI_READ_DEV_ID, //!< Read Dev Id code
+    MEI_OBJ_ID // Object Id
+};
+
 enum FILE_MESSAGE
 {
     FILE_DATA_LEN = 2, //!< Request data length
@@ -58,29 +67,7 @@ enum FILE_MESSAGE
     FILE_FIRST_BYTE
 };
 
-/**
- * @enum MB_FC
- * @brief
- * Modbus function codes summary.
- * These are the implement function codes either for Master or for Slave.
- *
- * @see also fctsupported
- * @see also modbus_t
- */
-enum MB_FC
-{
-    MB_FC_NONE = 0,                         /*!< null operator */
-    MB_FC_READ_COILS = 1,                   /*!< FCT=1 -> read coils or digital outputs */
-    MB_FC_READ_DISCRETE_INPUT = 2,          /*!< FCT=2 -> read digital inputs */
-    MB_FC_READ_REGISTERS = 3,               /*!< FCT=3 -> read registers or analog outputs */
-    MB_FC_READ_INPUT_REGISTER = 4,          /*!< FCT=4 -> read analog inputs */
-    MB_FC_WRITE_COIL = 5,                   /*!< FCT=5 -> write single coil or output */
-    MB_FC_WRITE_REGISTER = 6,               /*!< FCT=6 -> write single register */
-    MB_FC_WRITE_MULTIPLE_COILS = 15,        /*!< FCT=15 -> write multiple coils or outputs */
-    MB_FC_WRITE_MULTIPLE_REGISTERS = 16,    /*!< FCT=16 -> write multiple registers */
-    MB_FC_REPORT_SLAVE_ID = 17,             /*!< FCT=17 -> Report Slave ID */
-    MB_FC_WRITE_FILE_RECORD = 21            // (0x15) Write File Record
-};
+
 
 enum COM_STATES
 {
@@ -114,10 +101,12 @@ const unsigned char fctsupported[] = {
     MB_FC_READ_INPUT_REGISTER,
     MB_FC_WRITE_COIL,
     MB_FC_WRITE_REGISTER,
+    MB_FC_READ_EXCEPTION_STATUS,
     MB_FC_WRITE_MULTIPLE_COILS,
     MB_FC_WRITE_MULTIPLE_REGISTERS,
     MB_FC_REPORT_SLAVE_ID,
-    MB_FC_WRITE_FILE_RECORD
+    MB_FC_WRITE_FILE_RECORD,
+    MB_FC_READ_DEVICE_ID
 };
 
 #define T35  5
@@ -137,8 +126,9 @@ uint8_t _inputRegsCount, _holdingRegsCount;
 uint16_t _u16InCnt, _u16OutCnt, _u16errCnt;
 uint16_t _u16timeOut;
 uint32_t _u32time, _u32timeOut;
+uint8_t _exceptionStatus = 0;
 
-MODBUS_COMMANDS_t _lastCommand = 0;
+uint8_t _lastCommand = 0;
 uint16_t _lastAddress = 0;
 uint16_t _lastCount = 0; // number of coils or registers or file length in bytes in last command 
 
@@ -154,11 +144,13 @@ int8_t ModbusProcess_FC1(uint16_t regs); // Read Coils
 int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size); // Read Holding Registers
 int8_t ModbusProcess_FC5(uint16_t *regs); // Write Single Coil &regs 
 int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size); // Write Single Register
+int8_t ModbusProcess_FC7(); //Read Exception Status
 int8_t ModbusProcess_FC15(uint16_t *regs); //Write Multiple Coils&regs 
 int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size); //Write Multiple registers
 int8_t ModbusProcess_FC17(); //Report Slave ID
 // Writing to EEPROM
 int8_t ModbusProcess_FC21(); //Write File Record
+int8_t ModbusProcess_FC43(); // 43 / 14 (0x2B / 0x0E) Read Device Identification
 void ModbusBuildException(uint8_t u8exception); // build exception message
 /* _____PUBLIC FUNCTIONS_____________________________________________________ */
 
@@ -175,12 +167,15 @@ void ModbusBuildException(uint8_t u8exception); // build exception message
  * @overload Modbus::Modbus()
  */
 
-Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
+void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
 {
     ModbusInit(u8id, u8serno, u8txenpin);
 }
 
-
+void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value)
+{
+    bitWrite(_exceptionStatus, bitNum, value);
+}
 /**
  * @brief
  * Initialize class object.
@@ -409,7 +404,8 @@ uint8_t ModbusGetLastError()
 uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
         uint16_t *holdingRegs, const uint8_t holdingRegsCount)
 {
-    _lastCommand = MODBUS_COM_NONE;
+    _lastCommand = MB_FC_NONE;
+    //bitClear(_exceptionStatus, MB_EXCEPTION_LAST_COMMAND_STATE);
     //_inputRegs = inputRegs;
     //_holdingRegs = holdingRegs;
     _inputRegsCount = inputRegsCount;
@@ -475,6 +471,8 @@ uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs
             return ModbusProcess_FC5(coils);
         case MB_FC_WRITE_REGISTER:
             return ModbusProcess_FC6(holdingRegs, holdingRegsCount);
+        case MB_FC_READ_EXCEPTION_STATUS:
+            return ModbusProcess_FC7();
         case MB_FC_WRITE_MULTIPLE_COILS:
             return ModbusProcess_FC15(coils);
         case MB_FC_WRITE_MULTIPLE_REGISTERS:
@@ -483,6 +481,8 @@ uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs
             return ModbusProcess_FC17();
         case MB_FC_WRITE_FILE_RECORD:
             return ModbusProcess_FC21();
+        case MB_FC_READ_DEVICE_ID:
+            return ModbusProcess_FC43();
         default:
             break;
     }
@@ -777,7 +777,17 @@ uint8_t ModbusValidateRequest()
             if (startAddrBytes + recLenBytes >= _EEPROMSIZE)
                 return EXC_ADDR_RANGE;
             break;
+        case MB_FC_READ_DEVICE_ID:
+            if(_au8Buffer[ MEI_TYPE ] != 0x0E)
+                return EXC_FUNC_CODE;
+            uint8_t readDevId = _au8Buffer[ MEI_READ_DEV_ID ];
+            if(readDevId != 0x01 && readDevId != 0x02 && readDevId != 0x04)
+                return EXC_REGS_QUANT;
+            if(readDevId == 0x04 && _au8Buffer[ MEI_OBJ_ID ] > 0x06)
+                return EXC_ADDR_RANGE;
+            break;
     }
+    _lastCommand = _au8Buffer[ FUNC ];
     return 0; // OK, no exception code thrown
 }
 
@@ -873,7 +883,7 @@ void ModbusBuildException(uint8_t u8exception)
 //   }
 // }
 
-MODBUS_COMMANDS_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
+uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
 {
     if (address != NULL)
         *address = _lastAddress;
@@ -892,8 +902,6 @@ MODBUS_COMMANDS_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
  */
 int8_t ModbusProcess_FC1(uint16_t regs)
 {
-    _lastCommand = MODBUS_COM_READ_COILS;
-
     //uint8_t u8currentRegister;
     uint8_t u8currentBit, u8bytesno, u8bitsno;
     uint8_t u8CopyBufferSize;
@@ -951,8 +959,6 @@ int8_t ModbusProcess_FC1(uint16_t regs)
  */
 int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size)
 {
-    _lastCommand = MODBUS_COM_READ_HOLDING;
-
     uint8_t u8StartAdd = word(_au8Buffer[ ADD_HI ], _au8Buffer[ ADD_LO ]);
     _lastAddress = u8StartAdd;
     uint16_t u16regsno = word(_au8Buffer[ NB_HI ], _au8Buffer[ NB_LO ]);
@@ -986,8 +992,6 @@ int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size)
  */
 int8_t ModbusProcess_FC5(uint16_t *regs)
 {
-    _lastCommand = MODBUS_COM_WRITE_SINGLE_COIL;
-
     //uint8_t u8currentRegister,
     uint8_t u8currentBit;
     uint8_t u8CopyBufferSize;
@@ -1023,8 +1027,6 @@ int8_t ModbusProcess_FC5(uint16_t *regs)
  */
 int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
 {
-    _lastCommand = MODBUS_COM_WRITE_SINGLE_REGISTER;
-
     uint16_t u16add = word(_au8Buffer[ ADD_HI ], _au8Buffer[ ADD_LO ]);
     _lastAddress = u16add;
     _lastCount = 1;
@@ -1042,6 +1044,15 @@ int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
     return u8CopyBufferSize;
 }
 
+// 07 (0x07) Read Exception Status (Serial Line only)
+int8_t ModbusProcess_FC7()
+{
+    _au8Buffer[ 2 ] = _exceptionStatus;
+    _u8BufferSize = 3;
+    uint8_t u8CopyBufferSize = _u8BufferSize;
+    ModbusSendTxBuffer();
+    return u8CopyBufferSize;
+}
 /**
  * @brief
  * This method processes function 15 Write Multiple Coils
@@ -1052,7 +1063,6 @@ int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
  */
 int8_t ModbusProcess_FC15(uint16_t *regs)
 {
-    _lastCommand = MODBUS_COM_WRITE_MULTIPLE_COILS;
     //   uint8_t u8currentRegister,
     uint8_t u8currentBit, u8frameByte, u8bitsno;
     uint8_t u8CopyBufferSize;
@@ -1111,7 +1121,6 @@ int8_t ModbusProcess_FC15(uint16_t *regs)
  */
 int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size)
 {
-    _lastCommand = MODBUS_COM_WRITE_MULTIPLE_REGISTERS;
     //  uint8_t u8func = au8Buffer[ FUNC ];  // get the original FUNC code
     uint16_t u16StartAdd = _au8Buffer[ ADD_HI ] << 8 | _au8Buffer[ ADD_LO ];
     _lastAddress = u16StartAdd;
@@ -1158,23 +1167,6 @@ int8_t ModbusProcess_FC17()
     for(uint8_t i = 0; i < sizeof(SLAVE_ID_STRING); i++, _u8BufferSize++)
         _au8Buffer[_u8BufferSize] = SLAVE_ID_STRING[i];
 
-//    _au8Buffer[_u8BufferSize++] = 'P';
-//    _au8Buffer[_u8BufferSize++] = 'r';
-//    _au8Buffer[_u8BufferSize++] = 'o';
-//    _au8Buffer[_u8BufferSize++] = 'v';
-//    _au8Buffer[_u8BufferSize++] = 'e';
-//    _au8Buffer[_u8BufferSize++] = 'r';
-//    _au8Buffer[_u8BufferSize++] = 'k';
-//    _au8Buffer[_u8BufferSize++] = 'a';
-//
-//    _au8Buffer[_u8BufferSize++] = ' ';
-//    _au8Buffer[_u8BufferSize++] = 'd';
-//    _au8Buffer[_u8BufferSize++] = 'e';
-//    _au8Buffer[_u8BufferSize++] = 'l';
-//    _au8Buffer[_u8BufferSize++] = 'o';
-//    _au8Buffer[_u8BufferSize++] = 'm';
-
-
     _au8Buffer[_u8BufferSize++] = '!';
     _au8Buffer[_u8BufferSize++] = '>';
     uint8_t u8CopyBufferSize = _u8BufferSize;
@@ -1193,7 +1185,6 @@ int8_t ModbusProcess_FC17()
  */
 int8_t ModbusProcess_FC21()
 {
-    _lastCommand = MODBUS_COM_WRITE_FILE_RECORD;
     //uint8_t u8func = au8Buffer[ FUNC ];  // get the original FUNC code
 
     int8_t requestDataLen = _au8Buffer[ FILE_DATA_LEN ];
@@ -1224,3 +1215,94 @@ int8_t ModbusProcess_FC21()
     return u8CopyBufferSize;
 }
 
+void CopyStringToBuffer(uint8_t objId, const char *src, uint8_t len)
+{
+    len--;// not copy endong zero
+    _au8Buffer[_u8BufferSize++] = objId;
+    _au8Buffer[_u8BufferSize++] = len;
+    for(uint8_t i = 0; i < len; i++, _u8BufferSize++)
+        _au8Buffer[_u8BufferSize] = src[i];
+}
+
+int8_t ModbusProcess_FC43()
+{
+    uint8_t devIdCode = _au8Buffer[ 3 ];
+    /*
+     * The parameter " Read Device ID code " allows to define four access types :
+        01: request to get the basic device identification (stream access)
+        02: request to get the regular device identification (stream access)
+        03: request to get the extended device identification (stream access)
+        04: request to get one specific identification object (individual access)
+     */
+    uint8_t objId = _au8Buffer[ 4 ];
+    /*
+     Identification conformity level of the device and type of supported access
+        0x01: basic identification (stream access only)
+        0x02: regular identification (stream access only)
+        0x03: extended identification (stream access only)
+        0x81: basic identification (stream access and individual access)
+        0x82: regular identification (stream access and individual access)
+        0x83: extended identification(stream access and individual
+        access)
+     */
+    _au8Buffer[ 5 ] = 0x00; // More Follows
+    _au8Buffer[ 6 ] = 0x00; //Next Object Id
+    
+    _u8BufferSize = 8;
+    switch(devIdCode)
+    {
+        case 0x01: // request to get the basic device identification (stream access)
+            _au8Buffer[ 4 ] = 0x81; // Conformity level
+            _au8Buffer[ 7 ] = 3; //Number of objects
+            CopyStringToBuffer(0x00, VENDOR_NAME, sizeof(VENDOR_NAME));
+            CopyStringToBuffer(0x01, PRODUCT_CODE, sizeof(PRODUCT_CODE));
+            CopyStringToBuffer(0x02, MAJOR_MINOR_REVISION, sizeof(MAJOR_MINOR_REVISION));
+            break;
+        case 0x02: // request to get the regular device identification (stream access)
+            _au8Buffer[ 4 ] = 0x82; // Conformity level
+            _au8Buffer[ 7 ] = 4; //Number of objects
+            CopyStringToBuffer(0x03, VENDOR_URL, sizeof(VENDOR_URL));
+            CopyStringToBuffer(0x04, PRODUCT_NAME, sizeof(PRODUCT_NAME));
+            CopyStringToBuffer(0x05, MODEL_NAME, sizeof(MODEL_NAME));
+            CopyStringToBuffer(0x06, USER_APPLICATION_NAME, sizeof(USER_APPLICATION_NAME));
+            break;
+        case 0x04:  //request to get one specific identification object (individual access)
+            _au8Buffer[ 7 ] = 1;
+            switch(objId)
+            {
+                case 0x00:
+                    _au8Buffer[ 4 ] = 0x81; // Conformity level
+                    CopyStringToBuffer(objId, VENDOR_NAME, sizeof(VENDOR_NAME));
+                    break;
+                case 0x01:    
+                    _au8Buffer[ 4 ] = 0x81; // Conformity level
+                    CopyStringToBuffer(objId, PRODUCT_CODE, sizeof(PRODUCT_CODE));
+                    break;
+                case 0x02:    
+                    _au8Buffer[ 4 ] = 0x81; // Conformity level
+                    CopyStringToBuffer(objId, MAJOR_MINOR_REVISION, sizeof(MAJOR_MINOR_REVISION));
+                    break;
+                case 0x03:    
+                    _au8Buffer[ 4 ] = 0x82; // Conformity level
+                    CopyStringToBuffer(objId, VENDOR_URL, sizeof(VENDOR_URL));
+                    break;
+                case 0x04:    
+                    _au8Buffer[ 4 ] = 0x82; // Conformity level
+                    CopyStringToBuffer(objId, PRODUCT_NAME, sizeof(PRODUCT_NAME));
+                    break;
+                case 0x05:    
+                    _au8Buffer[ 4 ] = 0x82; // Conformity level
+                    CopyStringToBuffer(objId, MODEL_NAME, sizeof(MODEL_NAME));
+                    break;
+                case 0x06:    
+                    _au8Buffer[ 4 ] = 0x82; // Conformity level
+                    CopyStringToBuffer(objId, USER_APPLICATION_NAME, sizeof(USER_APPLICATION_NAME));
+                    break;
+            }
+            break;
+    }
+    uint8_t u8CopyBufferSize = _u8BufferSize;
+    ModbusSendTxBuffer();
+
+    return u8CopyBufferSize;    
+}

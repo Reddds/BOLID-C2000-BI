@@ -73,6 +73,10 @@ bool IsBusserOn = false;
 #define EE_EVENT_COUNT 18
 #define EE_FIRST_EVENT EE_EVENT_COUNT + 1 // 60 events * 2 bytes = 120 bytes
 
+#define DISCRETE_REG_TIME_SET 0
+#define DISCRETE_REG_NEED_TIME_SYNC 1
+
+
 #define COIL_FIRE 0x00 // FIre alarm
 #define COIL_WARNING 0x01 // Warning alarm
 #define COIL_ALARM 0x02 // Alarm!
@@ -82,10 +86,11 @@ bool IsBusserOn = false;
 #define COIL_FAULT 0x06 // Fault
 #define COIL_WORKING 0x07 // Working
 
-#define COIL_BUTTON_PRESSED 0x08 // When Reset Button Pressed
-#define CLEAR_ALL_EVENTS 0x09 // Clear diary
+//  #define COIL_BUTTON_PRESSED 0x08 // When Reset Button Pressed
+#define COIL_CLEAR_ALL_EVENTS 0x09 // Clear diary
 
-#define RESET_COIL 0x0f // When set< reset controller
+
+//#define RESET_COIL 0x0f // When set< reset controller
 
 //#define INPUT_REG_LAST_COMMAND_STATE 0 // State after execution last command 0x8080 - All Right
 #define INPUT_REG_CURRENT_HOUR_MIN 1
@@ -95,10 +100,10 @@ bool IsBusserOn = false;
 #define INPUT_REG_SECONDS 5
 
 
-#define HOLDING_REG_SETLED 0 // Set led stste HI - Led number [1..60] Lo - state 
-#define HOLDING_BUZZER_LOUD_QUIET_DURATION 1 // Day|Evening buzzer duration
-#define HOLDING_BUZZER_INFO_ALARM_PERIOD 2 // HI - Info Period, LO - Alarm period
-#define HOLDING_BUZZER_ON_OFF_DURATION_PERIOD 3 // * 256 ms
+//#define HOLDING_REG_SETLED 0 // Set led stste HI - Led number [1..60] Lo - state 
+//#define HOLDING_BUZZER_LOUD_QUIET_DURATION 1 // Day|Evening buzzer duration
+//#define HOLDING_BUZZER_INFO_ALARM_PERIOD 2 // HI - Info Period, LO - Alarm period
+//#define HOLDING_BUZZER_ON_OFF_DURATION_PERIOD 3 // * 256 ms
 
 #define HOLDING_EVENT_ACCEPT_TIME_S 4  // Time to react to the event in sec
 
@@ -109,14 +114,17 @@ bool IsBusserOn = false;
 
 #define HOLDING_BLINK_DURATION_PERIOD 8 // HI - duration, ms << 6, LO - Period, ms << 6
 
-#define HOUR_MIN_HOLDING_REG 9
-#define DAY_SEC_HOLDING_REG 10
-#define YEAR_MONTH_HOLDING_REG 11
+//#define HOUR_MIN_HOLDING_REG 9
+//#define DAY_SEC_HOLDING_REG 10
+//#define YEAR_MONTH_HOLDING_REG 11
 
-#define HOLDING_ADD_EVENT 13 // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
+//#define HOLDING_ADD_EVENT 13 // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
 
 
-
+// Custom Commands
+#define MB_COMMAND_CLEAR_ALL_EVENTS 0x80
+#define MB_COMMAND_ADD_EVENT 0x81
+#define MB_COMMAND_SET_LED 0x82
 
 #define D7CLC_PIN RC1
 
@@ -791,70 +799,112 @@ void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth)
 }
 
 
+void SetTimeCommand()
+{
+    uint16_t hourMin = _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA];
+                   
+    uint16_t daySec = _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA + 1];
+    uint16_t yearMonth = _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA + 2];
+    SetTimeFromRegs(&hourMin, &daySec, &yearMonth);
+    bitSet(_MODBUSDiscreteInputs, INPUT_TIME_SET);
+
+}
+
 void io_poll() 
 {
     uint16_t lastAddress;
     uint16_t lastEndAddress;
     //uint16_t lastCount;
-    MODBUS_COMMANDS_t *lastCommand = ModbusGetLastCommand(&lastAddress, &lastEndAddress);
-    if(*lastCommand == MODBUS_COM_NONE)
+    uint8_t *lastCommand = ModbusGetLastCommand(&lastAddress, &lastEndAddress);
+    if(*lastCommand == MB_FC_NONE)
         return;
     
     lastEndAddress += lastAddress - 1;
     
-    if(*lastCommand == MODBUS_COM_WRITE_SINGLE_COIL || *lastCommand == MODBUS_COM_WRITE_MULTIPLE_COILS)
-    {
-        if (MbRegWithin(RESET_COIL) && bitRead(_MODBUSCoils, RESET_COIL))
-        {
-            #asm
-                RESET; 
-            #endasm
-            return;
-        }
-        if (MbRegWithin(CLEAR_ALL_EVENTS) && bitRead(_MODBUSCoils, CLEAR_ALL_EVENTS))
-        {
-            eventCount = 0;
-            _MODBUSInputRegs[INPUT_REG_LAST_COMMAND_STATE] = MODBUS_RESULT_SUCCESS;
-            return;
-        }  
-        return;
-    }
     uint8_t v1;
-    if(*lastCommand == MODBUS_COM_WRITE_SINGLE_REGISTER || *lastCommand == MODBUS_COM_WRITE_MULTIPLE_REGISTERS)
+    if(*lastCommand == MB_FC_WRITE_REGISTER || *lastCommand == MB_FC_WRITE_MULTIPLE_REGISTERS)
     {
-        // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
-        if(MbRegWithin(HOLDING_ADD_EVENT) && _MODBUSHoldingRegs[HOLDING_ADD_EVENT] > 0)
+        // Command received
+        if(lastAddress == HOLDING_COMMAND)
         {
-            if(eventCount < MAX_EVENTS)
+            uint8_t command = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
+            uint16_t hourMin;
+            switch(command)
             {
-                uint8_t eventEeAddr = EE_FIRST_EVENT + (eventCount << 1);
-                v1 = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_ADD_EVENT]);
-                _EEREG_EEPROM_WRITE(eventEeAddr, v1);
-                v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_ADD_EVENT]);
-                _EEREG_EEPROM_WRITE(eventEeAddr + 1, v1);
-                // 2 bit - blink status
-                _MODBUSHoldingRegs[HOLDING_ADD_EVENT] = 0;
+                case MB_COMMAND_RESET:
+                    #asm
+                        RESET; 
+                    #endasm
+                    return;
+                case MB_COMMAND_SET_ADDRESS:
+                    break;
+                case MB_COMMAND_SET_TIME:
+                    SetTimeCommand();
+                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+                    break;
+                    
+                    
+                case MB_COMMAND_CLEAR_ALL_EVENTS:
+                    eventCount = 0;
+                    _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, 0);
+                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+                    break;
+                case MB_COMMAND_ADD_EVENT:
+                    // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
+                    if(eventCount < MAX_EVENTS)
+                    {
+                        uint8_t eventEeAddr = EE_FIRST_EVENT + (eventCount << 1);
+                        v1 = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
+                        _EEREG_EEPROM_WRITE(eventEeAddr, v1);
+                        v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
+                        _EEREG_EEPROM_WRITE(eventEeAddr + 1, v1);
+                        // 2 bit - blink status
 
-                LightLed(eventCount, LED_GREEN, false);
+                        LightLed(eventCount, LED_GREEN, false);
 
-                eventCount++;
-                _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, eventCount);
+                        eventCount++;
+                        _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, eventCount);
 
-                _MODBUSInputRegs[INPUT_REG_LAST_COMMAND_STATE] = MODBUS_RESULT_SUCCESS;
+                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+                    }
+                    else
+                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, false);
+                    
+                    break;
+                case MB_COMMAND_SET_LED:
+                    // 0 Holding reg - First byte - Led num [1..60]
+                    // Second byte Value 0 - OFF, 1 - GREEN, 2 - RED 
+                    v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
+                    // 2 bit - blink status
+                    LightLed(HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]), v1 & 0x03, bitRead(v1, 2));
+                    _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA] = 0;
+                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+                    break;   
+        
             }
-            else
-                _MODBUSInputRegs[INPUT_REG_LAST_COMMAND_STATE] = 0x0100;
+            _MODBUSHoldingRegs[HOLDING_COMMAND] = 0;
+            _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA] = 0;
         }
-        // 0 Holding reg - First byte - Led num [1..60]
-        // Second byte Value 0 - OFF, 1 - GREEN, 2 - RED 
-        if(MbRegWithin(HOLDING_REG_SETLED) && _MODBUSHoldingRegs[HOLDING_REG_SETLED] > 0)
-        {
-            v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_REG_SETLED]);
-            // 2 bit - blink status
-            LightLed(HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_REG_SETLED]), v1 & 0x03, bitRead(v1, 2));
-            _MODBUSHoldingRegs[HOLDING_REG_SETLED] = 0;
-            _MODBUSInputRegs[INPUT_REG_LAST_COMMAND_STATE] = MODBUS_RESULT_SUCCESS;
-        }
+        // --------------- SET TIME -----------------------
+//        if(MbRegWithin(HOUR_MIN_HOLDING_REG) && MbRegWithin(YEAR_MONTH_HOLDING_REG))
+//        {
+//            uint16_t hourMin = _MODBUSHoldingRegs[HOUR_MIN_HOLDING_REG];
+//            uint16_t daySec = _MODBUSHoldingRegs[DAY_SEC_HOLDING_REG];
+//            uint16_t yearMonth = _MODBUSHoldingRegs[YEAR_MONTH_HOLDING_REG];
+//            SetTimeFromRegs(&hourMin, &daySec, &yearMonth);
+//            bitSet(_MODBUSDiscreteInputs, INPUT_TIME_SET);
+//
+//            ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+//
+//            //_MODBUSHoldingRegs[DAY_SEC_HOLDING_REG] = 0;
+//            //_MODBUSHoldingRegs[YEAR_MONTH_HOLDING_REG] = 0;
+//        }
+    }
+    
+
+/*    if(*lastCommand == MODBUS_COM_WRITE_SINGLE_REGISTER || *lastCommand == MODBUS_COM_WRITE_MULTIPLE_REGISTERS)
+    {
+        
         LoadMbUint8Values(HOLDING_BUZZER_LOUD_QUIET_DURATION, buzzeLoudDuration, buzzeQuietDuration, EE_BUZZER_LOUD_DURATION, EE_BUZZER_QUIET_DURATION)
         LoadMbUint8Values(HOLDING_BUZZER_INFO_ALARM_PERIOD, buzzerInfoPeriod, buzzerAlarmPeriod, EE_BUZZER_INFO_PERIOD, EE_BUZZER_ALARM_PERIOD)
         SetBuzzerDuty(buzzeLoudDuration); // For debug! !!!!!
@@ -885,11 +935,11 @@ void io_poll()
             //_MODBUSHoldingRegs[YEAR_MONTH_HOLDING_REG] = 0;
         }
         return;
-    }
-    if(*lastCommand == MODBUS_COM_WRITE_FILE_RECORD)
+    }*/
+    if(*lastCommand == MB_FC_WRITE_FILE_RECORD)
     {
         InitFromEeprom();
-        _MODBUSInputRegs[INPUT_REG_LAST_COMMAND_STATE] = MODBUS_RESULT_SUCCESS;
+        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
 //        for(uint8_t i = 0; i < eventCount && i < MAX_EVENTS; i++)
 //            LightLed(i + 1, LED_GREEN, false);
         return;

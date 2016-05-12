@@ -3094,22 +3094,27 @@ void SetTime(time_t *newTime);
 void AddSecond();
 time_t *GetTime();
 
-# 71 "ModbusRtu.h"
-typedef enum
+# 91 "ModbusRtu.h"
+enum MB_FC
 {
-MODBUS_COM_NONE = 0,
-MODBUS_COM_READ_COILS = 1,
-MODBUS_COM_READ_HOLDING = 3,
-MODBUS_COM_WRITE_SINGLE_COIL = 5,
-MODBUS_COM_WRITE_SINGLE_REGISTER,
-MODBUS_COM_WRITE_MULTIPLE_COILS = 15,
-MODBUS_COM_WRITE_MULTIPLE_REGISTERS = 16,
-MODBUS_COM_WRITE_FILE_RECORD = 21
-} MODBUS_COMMANDS_t;
+MB_FC_NONE = 0,
+MB_FC_READ_COILS = 1,
+MB_FC_READ_DISCRETE_INPUT = 2,
+MB_FC_READ_REGISTERS = 3,
+MB_FC_READ_INPUT_REGISTER = 4,
+MB_FC_WRITE_COIL = 5,
+MB_FC_WRITE_REGISTER = 6,
+MB_FC_READ_EXCEPTION_STATUS = 7,
+MB_FC_WRITE_MULTIPLE_COILS = 15,
+MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
+MB_FC_REPORT_SLAVE_ID = 17,
+MB_FC_WRITE_FILE_RECORD = 21,
+MB_FC_READ_DEVICE_ID = 43
+};
 
 
 
-Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
+void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
 void ModbusBegin(long u32speed);
 
 void ModbusSetTimeOut( uint16_t u16timeout);
@@ -3129,7 +3134,8 @@ uint8_t ModbusGetState();
 uint8_t ModbusGetLastError();
 void ModbusSetID( uint8_t u8id );
 void ModbusEnd();
-MODBUS_COMMANDS_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
 
 # 66 "interrupts.h"
 void InitUartBuffer();
@@ -3147,10 +3153,10 @@ void SetHourMin(int *newHour, int *newMin);
 # 44 "main.c"
 bool IsBusserOn = 0;
 
-# 153
+# 161
 uint16_t modbusState;
 
-# 175
+# 183
 uint16_t buzzerOnOffDuration = 0x100;
 uint16_t buzzerOnOffPeriod = 0x400;
 uint8_t buzzeLoudDuration;
@@ -3181,10 +3187,10 @@ uint8_t curEventNum = 0xff;
 
 time_t eventResetSecond = 0;
 
-# 209
+# 217
 uint8_t statusLedState = 0x00;
 
-# 233
+# 241
 uint8_t ledStatuses[16];
 
 uint16_t blinkDuration;
@@ -3192,7 +3198,7 @@ uint16_t blinkPeriod;
 
 uint8_t ledBlink[16];
 
-# 254
+# 262
 void io_poll();
 void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth);
 void LoadNextEvent();
@@ -3230,7 +3236,7 @@ break;
 }
 }
 
-# 333
+# 341
 void SwitchOffAllLeds()
 {
 for(uint8_t i = 0; i < 16 - 1; i++)
@@ -3291,7 +3297,7 @@ return;
 void pwm_init(void)
 {
 
-# 402
+# 410
 CCP1CONbits.CCP1M = 0x0f;
 
 
@@ -3310,7 +3316,7 @@ TRISCbits.RC2 = 0;
 
 }
 
-# 425
+# 433
 void SetBuzzerDuty(uint16_t dc)
 {
 
@@ -3322,7 +3328,7 @@ CCP1CONbits.DC1B1 = (dc & 0x02) != 0 ? 1 : 0;
 CCPR1L = (uint8_t)(dc >> 2);
 }
 
-# 448
+# 456
 void InitFromEeprom()
 {
 buzzeLoudDuration = ( EEADR = 2, (void)0, RD = 1, EEDATA);
@@ -3353,7 +3359,7 @@ SwitchOffAllLeds();
 LoadNextEvent();
 }
 
-# 486
+# 494
 uint8_t currentLedBlock = 0;
 unsigned long diffTime;
 unsigned long oldBlinkOnTime = 0;
@@ -3417,7 +3423,7 @@ currentLedBlock &= 0xFB;
 
 }
 
-# 556
+# 564
 void ResetEvent(bool state)
 {
 LightLed(currentAlarmedEventNum + 1, state ? LED_GREEN : LED_RED, 0);
@@ -3436,7 +3442,7 @@ uint8_t hour, minute;
 if(!getHourMin(&hour, &minute))
 return;
 
-# 580
+# 588
 do
 {
 if(curEventNum == 0xff)
@@ -3500,7 +3506,7 @@ _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
 
 }
 
-# 656
+# 664
 }
 
 void main(void)
@@ -3515,13 +3521,13 @@ InitApp();
 
 InitFromEeprom();
 
-# 677
+# 685
 unsigned long lastMs = millis();
 
 
 pwm_init();
 
-# 686
+# 694
 unsigned long oldBuzzerOnTime = 0;
 uint8_t oldMinute = 0xff;
 
@@ -3559,10 +3565,10 @@ if(currentAlarmedEventNum != 0xff)
 ResetEvent(1);
 }
 
-# 738
+# 746
 }
 
-# 745
+# 753
 if(curMs - lastMs >= 1000)
 {
 AddSecond();
@@ -3612,106 +3618,103 @@ LoadNextEvent();
 }
 
 
+void SetTimeCommand()
+{
+uint16_t hourMin = _MODBUSHoldingRegs[1];
+
+uint16_t daySec = _MODBUSHoldingRegs[1 + 1];
+uint16_t yearMonth = _MODBUSHoldingRegs[1 + 2];
+SetTimeFromRegs(&hourMin, &daySec, &yearMonth);
+((_MODBUSDiscreteInputs) |= ((unsigned short)1 << (0x00)));
+
+}
+
 void io_poll()
 {
 uint16_t lastAddress;
 uint16_t lastEndAddress;
 
-MODBUS_COMMANDS_t *lastCommand = ModbusGetLastCommand(&lastAddress, &lastEndAddress);
-if(*lastCommand == MODBUS_COM_NONE)
+uint8_t *lastCommand = ModbusGetLastCommand(&lastAddress, &lastEndAddress);
+if(*lastCommand == MB_FC_NONE)
 return;
 
 lastEndAddress += lastAddress - 1;
 
-if(*lastCommand == MODBUS_COM_WRITE_SINGLE_COIL || *lastCommand == MODBUS_COM_WRITE_MULTIPLE_COILS)
-{
-if ((0x0f >= lastAddress && 0x0f <= lastEndAddress) && (((_MODBUSCoils) >> (0x0f)) & 0x01))
-{
-
-# 809
-#asm
-                RESET;
-#endasm 
-            return;
-}
-if ((0x09 >= lastAddress && 0x09 <= lastEndAddress) && (((_MODBUSCoils) >> (0x09)) & 0x01))
-{
-eventCount = 0;
-_MODBUSInputRegs[0] = 0x8080;
-return;
-}
-return;
-}
 uint8_t v1;
-if(*lastCommand == MODBUS_COM_WRITE_SINGLE_REGISTER || *lastCommand == MODBUS_COM_WRITE_MULTIPLE_REGISTERS)
+if(*lastCommand == MB_FC_WRITE_REGISTER || *lastCommand == MB_FC_WRITE_MULTIPLE_REGISTERS)
 {
 
-if((13 >= lastAddress && 13 <= lastEndAddress) && _MODBUSHoldingRegs[13] > 0)
+if(lastAddress == 0)
 {
+uint8_t command = ((unsigned char)(((_MODBUSHoldingRegs[0])>>8)&0xFF));
+uint16_t hourMin;
+switch(command)
+{
+case 0x7F:
+
+# 835
+#asm
+                        RESET;
+#endasm 
+                    return;
+case 0x01:
+break;
+case 0x10:
+SetTimeCommand();
+ModbusSetExceptionStatusBit(0, 1);
+break;
+
+
+case 0x80:
+eventCount = 0;
+do{ while (WR) { continue; } EEADR = (18); EEDATA = (0); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
+ModbusSetExceptionStatusBit(0, 1);
+break;
+case 0x81:
+
 if(eventCount < 60)
 {
 uint8_t eventEeAddr = 18 + 1 + (eventCount << 1);
-v1 = ((unsigned char)(((_MODBUSHoldingRegs[13])>>8)&0xFF));
+v1 = ((unsigned char)(((_MODBUSHoldingRegs[1])>>8)&0xFF));
 do{ while (WR) { continue; } EEADR = (eventEeAddr); EEDATA = (v1); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
-v1 = ((unsigned char)((_MODBUSHoldingRegs[13])&0xFF));
+v1 = ((unsigned char)((_MODBUSHoldingRegs[1])&0xFF));
 do{ while (WR) { continue; } EEADR = (eventEeAddr + 1); EEDATA = (v1); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
 
-_MODBUSHoldingRegs[13] = 0;
 
 LightLed(eventCount, LED_GREEN, 0);
 
 eventCount++;
 do{ while (WR) { continue; } EEADR = (18); EEDATA = (eventCount); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
 
-_MODBUSInputRegs[0] = 0x8080;
+ModbusSetExceptionStatusBit(0, 1);
 }
 else
-_MODBUSInputRegs[0] = 0x0100;
+ModbusSetExceptionStatusBit(0, 0);
+
+break;
+case 0x82:
+
+
+v1 = ((unsigned char)((_MODBUSHoldingRegs[1])&0xFF));
+
+LightLed(((unsigned char)(((_MODBUSHoldingRegs[1])>>8)&0xFF)), v1 & 0x03, (((v1) >> (2)) & 0x01));
+_MODBUSHoldingRegs[1] = 0;
+ModbusSetExceptionStatusBit(0, 1);
+break;
+
 }
-
-
-if((0 >= lastAddress && 0 <= lastEndAddress) && _MODBUSHoldingRegs[0] > 0)
-{
-v1 = ((unsigned char)((_MODBUSHoldingRegs[0])&0xFF));
-
-LightLed(((unsigned char)(((_MODBUSHoldingRegs[0])>>8)&0xFF)), v1 & 0x03, (((v1) >> (2)) & 0x01));
 _MODBUSHoldingRegs[0] = 0;
-_MODBUSInputRegs[0] = 0x8080;
+_MODBUSHoldingRegs[1] = 0;
 }
-if((1 >= lastAddress && 1 <= lastEndAddress)) { buzzeLoudDuration = ((unsigned char)(((_MODBUSHoldingRegs[1])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (2); EEDATA = (buzzeLoudDuration); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; buzzeQuietDuration = ((unsigned char)((_MODBUSHoldingRegs[1])&0xFF)); do{ while (WR) { continue; } EEADR = (3); EEDATA = (buzzeQuietDuration); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; _MODBUSInputRegs[0] = 0x8080; };
-if((2 >= lastAddress && 2 <= lastEndAddress)) { buzzerInfoPeriod = ((unsigned char)(((_MODBUSHoldingRegs[2])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (4); EEDATA = (buzzerInfoPeriod); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; buzzerAlarmPeriod = ((unsigned char)((_MODBUSHoldingRegs[2])&0xFF)); do{ while (WR) { continue; } EEADR = (5); EEDATA = (buzzerAlarmPeriod); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; _MODBUSInputRegs[0] = 0x8080; };
-SetBuzzerDuty(buzzeLoudDuration);
-PR2 = buzzerAlarmPeriod;
-if((3 >= lastAddress && 3 <= lastEndAddress)) { buzzerOnOffDuration = ((unsigned char)(((_MODBUSHoldingRegs[3])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (6); EEDATA = (buzzerOnOffDuration); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); (buzzerOnOffDuration <<= 8); buzzerOnOffPeriod = ((unsigned char)((_MODBUSHoldingRegs[3])&0xFF)); do{ while (WR) { continue; } EEADR = (7); EEDATA = (buzzerOnOffPeriod); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); (buzzerOnOffPeriod <<= 8); _MODBUSInputRegs[0] = 0x8080; };
 
-# 865
-if((4 >= lastAddress && 4 <= lastEndAddress)) { eventAcceptTime = ((unsigned char)((_MODBUSHoldingRegs[4])&0xFF)); do{ while (WR) { continue; } EEADR = (10); EEDATA = (eventAcceptTime); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; _MODBUSInputRegs[4] = _MODBUSHoldingRegs[4]; _MODBUSInputRegs[0] = 0x8080; }
-if((5 >= lastAddress && 5 <= lastEndAddress)) { buzzeEscaladeTime = ((unsigned char)(((_MODBUSHoldingRegs[5])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (8); EEDATA = (buzzeEscaladeTime); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; buzzerStartDurationDiv = ((unsigned char)((_MODBUSHoldingRegs[5])&0xFF)); do{ while (WR) { continue; } EEADR = (9); EEDATA = (buzzerStartDurationDiv); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; _MODBUSInputRegs[0] = 0x8080; };
-if((6 >= lastAddress && 6 <= lastEndAddress)) { eveningTimeHour = ((unsigned char)(((_MODBUSHoldingRegs[6])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (11); EEDATA = (eveningTimeHour); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; morningTimeHour = ((unsigned char)((_MODBUSHoldingRegs[6])&0xFF)); do{ while (WR) { continue; } EEADR = (14); EEDATA = (morningTimeHour); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; _MODBUSInputRegs[0] = 0x8080; };
-if((7 >= lastAddress && 7 <= lastEndAddress)) { nightStartHour = ((unsigned char)(((_MODBUSHoldingRegs[7])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (12); EEDATA = (nightStartHour); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; nightEndHour = ((unsigned char)((_MODBUSHoldingRegs[7])&0xFF)); do{ while (WR) { continue; } EEADR = (13); EEDATA = (nightEndHour); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); ; _MODBUSInputRegs[0] = 0x8080; };
-
-if((8 >= lastAddress && 8 <= lastEndAddress)) { blinkDuration = ((unsigned char)(((_MODBUSHoldingRegs[8])>>8)&0xFF)); do{ while (WR) { continue; } EEADR = (15); EEDATA = (blinkDuration); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); (blinkDuration <<= 6); blinkPeriod = ((unsigned char)((_MODBUSHoldingRegs[8])&0xFF)); do{ while (WR) { continue; } EEADR = (16); EEDATA = (blinkPeriod); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0); (blinkPeriod <<= 6); _MODBUSInputRegs[0] = 0x8080; };
-
-# 874
-if((9 >= lastAddress && 9 <= lastEndAddress) && (11 >= lastAddress && 11 <= lastEndAddress))
-{
-uint16_t hourMin = _MODBUSHoldingRegs[9];
-uint16_t daySec = _MODBUSHoldingRegs[10];
-uint16_t yearMonth = _MODBUSHoldingRegs[11];
-SetTimeFromRegs(&hourMin, &daySec, &yearMonth);
-((_MODBUSDiscreteInputs) |= ((unsigned short)1 << (0x00)));
-
-_MODBUSInputRegs[0] = 0x8080;
-
-
-
+# 902
 }
-return;
-}
-if(*lastCommand == MODBUS_COM_WRITE_FILE_RECORD)
+
+# 939
+if(*lastCommand == MB_FC_WRITE_FILE_RECORD)
 {
 InitFromEeprom();
-_MODBUSInputRegs[0] = 0x8080;
+ModbusSetExceptionStatusBit(0, 1);
 
 
 return;
