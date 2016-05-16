@@ -793,45 +793,6 @@ uint8_t ModbusValidateRequest()
 
 /**
  * @brief
- * This method validates master incoming messages
- *
- * @return 0 if OK, EXCEPTION if anything fails
- * @ingroup buffer
- */
-//uint8_t ModbusValidateAnswer() {
-//  // check message crc vs calculated crc
-//  uint16_t u16MsgCRC =
-//    ((_au8Buffer[_u8BufferSize - 2] << 8)
-//    | _au8Buffer[_u8BufferSize - 1]); // combine the crc Low & High bytes
-//  if ( ModbusCalcCRC( _u8BufferSize-2 ) != u16MsgCRC ) {
-//    _u16errCnt ++;
-//    return NO_REPLY;
-//  }
-//
-//  // check exception
-//  if ((_au8Buffer[ FUNC ] & 0x80) != 0) {
-//    _u16errCnt ++;
-//    return ERR_EXCEPTION;
-//  }
-//
-//  // check fct code
-//  boolean isSupported = false;
-//  for (uint8_t i = 0; i< sizeof( fctsupported ); i++) {
-//    if (fctsupported[i] == _au8Buffer[FUNC]) {
-//      isSupported = 1;
-//      break;
-//    }
-//  }
-//  if (!isSupported) {
-//    _u16errCnt ++;
-//    return EXC_FUNC_CODE;
-//  }
-//
-//  return 0; // OK, no exception code thrown
-//}
-
-/**
- * @brief
  * This method builds an exception message
  *
  * @ingroup buffer
@@ -846,42 +807,6 @@ void ModbusBuildException(uint8_t u8exception)
     _u8BufferSize = EXCEPTION_SIZE;
 }
 
-// /**
-//  * This method processes functions 1 & 2 (for master)
-//  * This method puts the slave answer into master data buffer
-//  *
-//  * @ingroup register
-//  * TODO: finish its implementation
-//  */
-// void Modbus::get_FC1() {
-//   uint8_t u8byte, i;
-//   u8byte = 0;
-
-//   //  for (i=0; i< au8Buffer[ 2 ] /2; i++) {
-//   //    au16regs[ i ] = word(
-//   //    au8Buffer[ u8byte ],
-//   //    au8Buffer[ u8byte +1 ]);
-//   //    u8byte += 2;
-//   //  }
-// }
-
-// /**
-//  * This method processes functions 3 & 4 (for master)
-//  * This method puts the slave answer into master data buffer
-//  *
-//  * @ingroup register
-//  */
-// void Modbus::get_FC3() {
-//   uint8_t u8byte, i;
-//   u8byte = 3;
-
-//   for (i=0; i< au8Buffer[ 2 ] /2; i++) {
-//     au16regs[ i ] = word(
-//     au8Buffer[ u8byte ],
-//     au8Buffer[ u8byte +1 ]);
-//     u8byte += 2;
-//   }
-// }
 
 uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
 {

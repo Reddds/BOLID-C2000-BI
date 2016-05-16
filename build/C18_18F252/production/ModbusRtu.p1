@@ -57,7 +57,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 "781
 [c E2392 0 1 2 3 4 .. ]
 [n E2392 MEI_MESSAGE MEI_ID MEI_FUNC MEI_TYPE MEI_READ_DEV_ID MEI_OBJ_ID  ]
-"846
+"807
 [c E2380 6 3 2 .. ]
 [n E2380 . RESPONSE_SIZE EXCEPTION_SIZE CHECKSUM_SIZE  ]
 "5807 C:\Program Files (x86)\Microchip\xc8\v1.37\include\pic18f252.h
@@ -3464,700 +3464,700 @@ Version 3.2 HI-TECH Software Intermediate Code
 "792
 [e :UE 294 ]
 }
-"839
+"800
 [v _ModbusBuildException `(v ~T0 @X0 1 ef1`uc ]
-"840
+"801
 {
-[; ;ModbusRtu.c: 839: void ModbusBuildException(uint8_t u8exception)
-[; ;ModbusRtu.c: 840: {
+[; ;ModbusRtu.c: 800: void ModbusBuildException(uint8_t u8exception)
+[; ;ModbusRtu.c: 801: {
 [e :U _ModbusBuildException ]
-"839
+"800
 [v _u8exception `uc ~T0 @X0 1 r1 ]
-"840
+"801
 [f ]
-"841
+"802
 [v _u8func `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 841: uint8_t u8func = _au8Buffer[ FUNC ];
+[; ;ModbusRtu.c: 802: uint8_t u8func = _au8Buffer[ FUNC ];
 [e = _u8func *U + &U __au8Buffer * -> . `E2384 1 `ux -> -> # *U &U __au8Buffer `ui `ux ]
-[; ;ModbusRtu.c: 843: _au8Buffer[ ID ] = _u8id;
-"843
+[; ;ModbusRtu.c: 804: _au8Buffer[ ID ] = _u8id;
+"804
 [e = *U + &U __au8Buffer * -> . `E2384 0 `ux -> -> # *U &U __au8Buffer `ui `ux __u8id ]
-[; ;ModbusRtu.c: 844: _au8Buffer[ FUNC ] = u8func + 0x80;
-"844
+[; ;ModbusRtu.c: 805: _au8Buffer[ FUNC ] = u8func + 0x80;
+"805
 [e = *U + &U __au8Buffer * -> . `E2384 1 `ux -> -> # *U &U __au8Buffer `ui `ux -> + -> _u8func `i -> 128 `i `uc ]
-[; ;ModbusRtu.c: 845: _au8Buffer[ 2 ] = u8exception;
-"845
+[; ;ModbusRtu.c: 806: _au8Buffer[ 2 ] = u8exception;
+"806
 [e = *U + &U __au8Buffer * -> -> -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux _u8exception ]
-[; ;ModbusRtu.c: 846: _u8BufferSize = EXCEPTION_SIZE;
-"846
+[; ;ModbusRtu.c: 807: _u8BufferSize = EXCEPTION_SIZE;
+"807
 [e = __u8BufferSize -> . `E2380 1 `uc ]
-[; ;ModbusRtu.c: 847: }
-"847
+[; ;ModbusRtu.c: 808: }
+"808
 [e :UE 327 ]
 }
-"886
+"811
 [v _ModbusGetLastCommand `(*uc ~T0 @X0 1 ef2`*us`*us ]
-"887
+"812
 {
-[; ;ModbusRtu.c: 886: uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
-[; ;ModbusRtu.c: 887: {
+[; ;ModbusRtu.c: 811: uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
+[; ;ModbusRtu.c: 812: {
 [e :U _ModbusGetLastCommand ]
-"886
+"811
 [v _address `*us ~T0 @X0 1 r1 ]
 [v _count `*us ~T0 @X0 1 r2 ]
-"887
+"812
 [f ]
-[; ;ModbusRtu.c: 888: if (address != (0))
-"888
+[; ;ModbusRtu.c: 813: if (address != (0))
+"813
 [e $ ! != _address -> -> 0 `i `*us 329  ]
-[; ;ModbusRtu.c: 889: *address = _lastAddress;
-"889
+[; ;ModbusRtu.c: 814: *address = _lastAddress;
+"814
 [e = *U _address __lastAddress ]
 [e :U 329 ]
-[; ;ModbusRtu.c: 890: if (count != (0))
-"890
+[; ;ModbusRtu.c: 815: if (count != (0))
+"815
 [e $ ! != _count -> -> 0 `i `*us 330  ]
-[; ;ModbusRtu.c: 891: *count = _lastCount;
-"891
+[; ;ModbusRtu.c: 816: *count = _lastCount;
+"816
 [e = *U _count __lastCount ]
 [e :U 330 ]
-[; ;ModbusRtu.c: 892: return &_lastCommand;
-"892
+[; ;ModbusRtu.c: 817: return &_lastCommand;
+"817
 [e ) &U __lastCommand ]
 [e $UE 328  ]
-[; ;ModbusRtu.c: 893: }
-"893
+[; ;ModbusRtu.c: 818: }
+"818
 [e :UE 328 ]
 }
-"903
+"828
 [v _ModbusProcess_FC1 `(uc ~T0 @X0 1 ef1`us ]
-"904
+"829
 {
-[; ;ModbusRtu.c: 903: int8_t ModbusProcess_FC1(uint16_t regs)
-[; ;ModbusRtu.c: 904: {
+[; ;ModbusRtu.c: 828: int8_t ModbusProcess_FC1(uint16_t regs)
+[; ;ModbusRtu.c: 829: {
 [e :U _ModbusProcess_FC1 ]
-"903
+"828
 [v _regs `us ~T0 @X0 1 r1 ]
-"904
+"829
 [f ]
-"906
+"831
 [v _u8currentBit `uc ~T0 @X0 1 a ]
 [v _u8bytesno `uc ~T0 @X0 1 a ]
 [v _u8bitsno `uc ~T0 @X0 1 a ]
-"907
+"832
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-"908
+"833
 [v _u16currentCoil `us ~T0 @X0 1 a ]
 [v _u16coil `us ~T0 @X0 1 a ]
-"911
+"836
 [v _u16StartCoil `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 906: uint8_t u8currentBit, u8bytesno, u8bitsno;
-[; ;ModbusRtu.c: 907: uint8_t u8CopyBufferSize;
-[; ;ModbusRtu.c: 908: uint16_t u16currentCoil, u16coil;
-[; ;ModbusRtu.c: 911: uint16_t u16StartCoil = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
+[; ;ModbusRtu.c: 831: uint8_t u8currentBit, u8bytesno, u8bitsno;
+[; ;ModbusRtu.c: 832: uint8_t u8CopyBufferSize;
+[; ;ModbusRtu.c: 833: uint16_t u16currentCoil, u16coil;
+[; ;ModbusRtu.c: 836: uint16_t u16StartCoil = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 [e = _u16StartCoil -> | << -> -> *U + &U __au8Buffer * -> . `E2384 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
-[; ;ModbusRtu.c: 912: _lastAddress = u16StartCoil;
-"912
+[; ;ModbusRtu.c: 837: _lastAddress = u16StartCoil;
+"837
 [e = __lastAddress _u16StartCoil ]
-"913
+"838
 [v _u16Coilno `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 913: uint16_t u16Coilno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
+[; ;ModbusRtu.c: 838: uint16_t u16Coilno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
 [e = _u16Coilno -> | << -> -> *U + &U __au8Buffer * -> . `E2384 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
-[; ;ModbusRtu.c: 914: _lastCount = u16Coilno;
-"914
+[; ;ModbusRtu.c: 839: _lastCount = u16Coilno;
+"839
 [e = __lastCount _u16Coilno ]
-[; ;ModbusRtu.c: 916: u8bytesno = (uint8_t) (u16Coilno / 8);
-"916
+[; ;ModbusRtu.c: 841: u8bytesno = (uint8_t) (u16Coilno / 8);
+"841
 [e = _u8bytesno -> / -> _u16Coilno `ui -> -> 8 `i `ui `uc ]
-[; ;ModbusRtu.c: 917: if (u16Coilno % 8 != 0)
-"917
+[; ;ModbusRtu.c: 842: if (u16Coilno % 8 != 0)
+"842
 [e $ ! != % -> _u16Coilno `ui -> -> 8 `i `ui -> -> 0 `i `ui 332  ]
-[; ;ModbusRtu.c: 918: u8bytesno++;
-"918
+[; ;ModbusRtu.c: 843: u8bytesno++;
+"843
 [e ++ _u8bytesno -> -> 1 `i `uc ]
 [e :U 332 ]
-[; ;ModbusRtu.c: 919: _au8Buffer[ ADD_HI ] = u8bytesno;
-"919
+[; ;ModbusRtu.c: 844: _au8Buffer[ ADD_HI ] = u8bytesno;
+"844
 [e = *U + &U __au8Buffer * -> . `E2384 2 `ux -> -> # *U &U __au8Buffer `ui `ux _u8bytesno ]
-[; ;ModbusRtu.c: 920: _u8BufferSize = ADD_LO;
-"920
+[; ;ModbusRtu.c: 845: _u8BufferSize = ADD_LO;
+"845
 [e = __u8BufferSize -> . `E2384 3 `uc ]
-[; ;ModbusRtu.c: 923: u8bitsno = 0;
-"923
+[; ;ModbusRtu.c: 848: u8bitsno = 0;
+"848
 [e = _u8bitsno -> -> 0 `i `uc ]
-[; ;ModbusRtu.c: 925: for (u16currentCoil = 0; u16currentCoil < u16Coilno; u16currentCoil++)
-"925
+[; ;ModbusRtu.c: 850: for (u16currentCoil = 0; u16currentCoil < u16Coilno; u16currentCoil++)
+"850
 {
 [e = _u16currentCoil -> -> 0 `i `us ]
 [e $U 336  ]
-"926
+"851
 [e :U 333 ]
-[; ;ModbusRtu.c: 926: {
+[; ;ModbusRtu.c: 851: {
 {
-[; ;ModbusRtu.c: 927: u16coil = u16StartCoil + u16currentCoil;
-"927
+[; ;ModbusRtu.c: 852: u16coil = u16StartCoil + u16currentCoil;
+"852
 [e = _u16coil -> + -> _u16StartCoil `ui -> _u16currentCoil `ui `us ]
-[; ;ModbusRtu.c: 929: u8currentBit = (uint8_t) u16coil;
-"929
+[; ;ModbusRtu.c: 854: u8currentBit = (uint8_t) u16coil;
+"854
 [e = _u8currentBit -> _u16coil `uc ]
-[; ;ModbusRtu.c: 931: ((((regs) >> (u8currentBit)) & 0x01) ? ((_au8Buffer[ _u8BufferSize ]) |= ((unsigned short)1 << (u8bitsno))) : ((_au8Buffer[ _u8BufferSize ]) &= ~((unsigned short)1 << (u8bitsno))));
-"931
+[; ;ModbusRtu.c: 856: ((((regs) >> (u8currentBit)) & 0x01) ? ((_au8Buffer[ _u8BufferSize ]) |= ((unsigned short)1 << (u8bitsno))) : ((_au8Buffer[ _u8BufferSize ]) &= ~((unsigned short)1 << (u8bitsno))));
+"856
 [e ? != & >> -> _regs `ui _u8currentBit -> -> 1 `i `ui -> -> 0 `i `ui : -> =| *U + &U __au8Buffer * -> __u8BufferSize `ux -> -> # *U &U __au8Buffer `ui `ux -> << -> -> -> 1 `i `us `ui _u8bitsno `uc `i -> =& *U + &U __au8Buffer * -> __u8BufferSize `ux -> -> # *U &U __au8Buffer `ui `ux -> ~ << -> -> -> 1 `i `us `ui _u8bitsno `uc `i ]
-[; ;ModbusRtu.c: 935: u8bitsno++;
-"935
+[; ;ModbusRtu.c: 860: u8bitsno++;
+"860
 [e ++ _u8bitsno -> -> 1 `i `uc ]
-[; ;ModbusRtu.c: 937: if (u8bitsno > 7)
-"937
+[; ;ModbusRtu.c: 862: if (u8bitsno > 7)
+"862
 [e $ ! > -> _u8bitsno `i -> 7 `i 337  ]
-[; ;ModbusRtu.c: 938: {
-"938
+[; ;ModbusRtu.c: 863: {
+"863
 {
-[; ;ModbusRtu.c: 939: u8bitsno = 0;
-"939
+[; ;ModbusRtu.c: 864: u8bitsno = 0;
+"864
 [e = _u8bitsno -> -> 0 `i `uc ]
-[; ;ModbusRtu.c: 940: _u8BufferSize++;
-"940
+[; ;ModbusRtu.c: 865: _u8BufferSize++;
+"865
 [e ++ __u8BufferSize -> -> 1 `i `uc ]
-"941
+"866
 }
 [e :U 337 ]
-"942
+"867
 }
-"925
+"850
 [e ++ _u16currentCoil -> -> 1 `i `us ]
 [e :U 336 ]
 [e $ < -> _u16currentCoil `ui -> _u16Coilno `ui 333  ]
 [e :U 334 ]
-"942
+"867
 }
-[; ;ModbusRtu.c: 941: }
-[; ;ModbusRtu.c: 942: }
-[; ;ModbusRtu.c: 945: if (u16Coilno % 8 != 0)
-"945
+[; ;ModbusRtu.c: 866: }
+[; ;ModbusRtu.c: 867: }
+[; ;ModbusRtu.c: 870: if (u16Coilno % 8 != 0)
+"870
 [e $ ! != % -> _u16Coilno `ui -> -> 8 `i `ui -> -> 0 `i `ui 338  ]
-[; ;ModbusRtu.c: 946: _u8BufferSize++;
-"946
+[; ;ModbusRtu.c: 871: _u8BufferSize++;
+"871
 [e ++ __u8BufferSize -> -> 1 `i `uc ]
 [e :U 338 ]
-[; ;ModbusRtu.c: 947: u8CopyBufferSize = _u8BufferSize + 2;
-"947
+[; ;ModbusRtu.c: 872: u8CopyBufferSize = _u8BufferSize + 2;
+"872
 [e = _u8CopyBufferSize -> + -> __u8BufferSize `i -> 2 `i `uc ]
-[; ;ModbusRtu.c: 948: ModbusSendTxBuffer();
-"948
+[; ;ModbusRtu.c: 873: ModbusSendTxBuffer();
+"873
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 949: return u8CopyBufferSize;
-"949
+[; ;ModbusRtu.c: 874: return u8CopyBufferSize;
+"874
 [e ) _u8CopyBufferSize ]
 [e $UE 331  ]
-[; ;ModbusRtu.c: 950: }
-"950
+[; ;ModbusRtu.c: 875: }
+"875
 [e :UE 331 ]
 }
-"960
+"885
 [v _ModbusProcess_FC3 `(uc ~T0 @X0 1 ef2`*us`uc ]
-"961
+"886
 {
-[; ;ModbusRtu.c: 960: int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size)
-[; ;ModbusRtu.c: 961: {
+[; ;ModbusRtu.c: 885: int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size)
+[; ;ModbusRtu.c: 886: {
 [e :U _ModbusProcess_FC3 ]
-"960
+"885
 [v _regs `*us ~T0 @X0 1 r1 ]
 [v _u8size `uc ~T0 @X0 1 r2 ]
-"961
+"886
 [f ]
-"962
+"887
 [v _u8StartAdd `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 962: uint8_t u8StartAdd = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
+[; ;ModbusRtu.c: 887: uint8_t u8StartAdd = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 [e = _u8StartAdd -> | << -> -> *U + &U __au8Buffer * -> . `E2384 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `uc ]
-[; ;ModbusRtu.c: 963: _lastAddress = u8StartAdd;
-"963
+[; ;ModbusRtu.c: 888: _lastAddress = u8StartAdd;
+"888
 [e = __lastAddress -> _u8StartAdd `us ]
-"964
+"889
 [v _u16regsno `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 964: uint16_t u16regsno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
+[; ;ModbusRtu.c: 889: uint16_t u16regsno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
 [e = _u16regsno -> | << -> -> *U + &U __au8Buffer * -> . `E2384 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
-[; ;ModbusRtu.c: 965: _lastCount = u16regsno;
-"965
+[; ;ModbusRtu.c: 890: _lastCount = u16regsno;
+"890
 [e = __lastCount _u16regsno ]
-"966
+"891
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-"967
+"892
 [v _i `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 966: uint8_t u8CopyBufferSize;
-[; ;ModbusRtu.c: 967: uint8_t i;
-[; ;ModbusRtu.c: 969: _au8Buffer[ 2 ] = u16regsno * 2;
-"969
+[; ;ModbusRtu.c: 891: uint8_t u8CopyBufferSize;
+[; ;ModbusRtu.c: 892: uint8_t i;
+[; ;ModbusRtu.c: 894: _au8Buffer[ 2 ] = u16regsno * 2;
+"894
 [e = *U + &U __au8Buffer * -> -> -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> * -> _u16regsno `ui -> -> 2 `i `ui `uc ]
-[; ;ModbusRtu.c: 970: _u8BufferSize = 3;
-"970
+[; ;ModbusRtu.c: 895: _u8BufferSize = 3;
+"895
 [e = __u8BufferSize -> -> 3 `i `uc ]
-[; ;ModbusRtu.c: 972: for (i = u8StartAdd; i < u8StartAdd + u16regsno; i++)
-"972
+[; ;ModbusRtu.c: 897: for (i = u8StartAdd; i < u8StartAdd + u16regsno; i++)
+"897
 {
 [e = _i _u8StartAdd ]
 [e $U 343  ]
-"973
+"898
 [e :U 340 ]
-[; ;ModbusRtu.c: 973: {
+[; ;ModbusRtu.c: 898: {
 {
-[; ;ModbusRtu.c: 974: _au8Buffer[ _u8BufferSize ] = ((unsigned char)(((regs[i])>>8)&0xFF));
-"974
+[; ;ModbusRtu.c: 899: _au8Buffer[ _u8BufferSize ] = ((unsigned char)(((regs[i])>>8)&0xFF));
+"899
 [e = *U + &U __au8Buffer * -> __u8BufferSize `ux -> -> # *U &U __au8Buffer `ui `ux -> & >> -> *U + _regs * -> _i `ux -> -> # *U _regs `ui `ux `ui -> 8 `i -> -> 255 `i `ui `uc ]
-[; ;ModbusRtu.c: 975: _u8BufferSize++;
-"975
+[; ;ModbusRtu.c: 900: _u8BufferSize++;
+"900
 [e ++ __u8BufferSize -> -> 1 `i `uc ]
-[; ;ModbusRtu.c: 976: _au8Buffer[ _u8BufferSize ] = ((unsigned char)((regs[i])&0xFF));
-"976
+[; ;ModbusRtu.c: 901: _au8Buffer[ _u8BufferSize ] = ((unsigned char)((regs[i])&0xFF));
+"901
 [e = *U + &U __au8Buffer * -> __u8BufferSize `ux -> -> # *U &U __au8Buffer `ui `ux -> & -> *U + _regs * -> _i `ux -> -> # *U _regs `ui `ux `ui -> -> 255 `i `ui `uc ]
-[; ;ModbusRtu.c: 977: _u8BufferSize++;
-"977
+[; ;ModbusRtu.c: 902: _u8BufferSize++;
+"902
 [e ++ __u8BufferSize -> -> 1 `i `uc ]
-"978
+"903
 }
-"972
+"897
 [e ++ _i -> -> 1 `i `uc ]
 [e :U 343 ]
 [e $ < -> _i `ui + -> _u8StartAdd `ui -> _u16regsno `ui 340  ]
 [e :U 341 ]
-"978
+"903
 }
-[; ;ModbusRtu.c: 978: }
-[; ;ModbusRtu.c: 979: u8CopyBufferSize = _u8BufferSize + 2;
-"979
+[; ;ModbusRtu.c: 903: }
+[; ;ModbusRtu.c: 904: u8CopyBufferSize = _u8BufferSize + 2;
+"904
 [e = _u8CopyBufferSize -> + -> __u8BufferSize `i -> 2 `i `uc ]
-[; ;ModbusRtu.c: 980: ModbusSendTxBuffer();
-"980
+[; ;ModbusRtu.c: 905: ModbusSendTxBuffer();
+"905
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 982: return u8CopyBufferSize;
-"982
+[; ;ModbusRtu.c: 907: return u8CopyBufferSize;
+"907
 [e ) _u8CopyBufferSize ]
 [e $UE 339  ]
-[; ;ModbusRtu.c: 983: }
-"983
+[; ;ModbusRtu.c: 908: }
+"908
 [e :UE 339 ]
 }
-"993
+"918
 [v _ModbusProcess_FC5 `(uc ~T0 @X0 1 ef1`*us ]
-"994
+"919
 {
-[; ;ModbusRtu.c: 993: int8_t ModbusProcess_FC5(uint16_t *regs)
-[; ;ModbusRtu.c: 994: {
+[; ;ModbusRtu.c: 918: int8_t ModbusProcess_FC5(uint16_t *regs)
+[; ;ModbusRtu.c: 919: {
 [e :U _ModbusProcess_FC5 ]
-"993
+"918
 [v _regs `*us ~T0 @X0 1 r1 ]
-"994
+"919
 [f ]
-"996
+"921
 [v _u8currentBit `uc ~T0 @X0 1 a ]
-"997
+"922
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-"998
+"923
 [v _u16coil `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 996: uint8_t u8currentBit;
-[; ;ModbusRtu.c: 997: uint8_t u8CopyBufferSize;
-[; ;ModbusRtu.c: 998: uint16_t u16coil = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
+[; ;ModbusRtu.c: 921: uint8_t u8currentBit;
+[; ;ModbusRtu.c: 922: uint8_t u8CopyBufferSize;
+[; ;ModbusRtu.c: 923: uint16_t u16coil = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 [e = _u16coil -> | << -> -> *U + &U __au8Buffer * -> . `E2384 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
-[; ;ModbusRtu.c: 999: _lastAddress = u16coil;
-"999
+[; ;ModbusRtu.c: 924: _lastAddress = u16coil;
+"924
 [e = __lastAddress _u16coil ]
-[; ;ModbusRtu.c: 1000: _lastCount = 1;
-"1000
+[; ;ModbusRtu.c: 925: _lastCount = 1;
+"925
 [e = __lastCount -> -> 1 `i `us ]
-[; ;ModbusRtu.c: 1003: u8currentBit = (uint8_t) (u16coil % 16);
-"1003
+[; ;ModbusRtu.c: 928: u8currentBit = (uint8_t) (u16coil % 16);
+"928
 [e = _u8currentBit -> % -> _u16coil `ui -> -> 16 `i `ui `uc ]
-[; ;ModbusRtu.c: 1006: (_au8Buffer[ NB_HI ] == 0xff ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
-"1006
+[; ;ModbusRtu.c: 931: (_au8Buffer[ NB_HI ] == 0xff ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
+"931
 [e ? == -> *U + &U __au8Buffer * -> . `E2384 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 255 `i : -> =| *U _regs -> << -> -> -> 1 `i `us `ui _u8currentBit `us `ui -> =& *U _regs -> ~ << -> -> -> 1 `i `us `ui _u8currentBit `us `ui ]
-[; ;ModbusRtu.c: 1013: _u8BufferSize = 6;
-"1013
+[; ;ModbusRtu.c: 938: _u8BufferSize = 6;
+"938
 [e = __u8BufferSize -> -> 6 `i `uc ]
-[; ;ModbusRtu.c: 1014: u8CopyBufferSize = _u8BufferSize + 2;
-"1014
+[; ;ModbusRtu.c: 939: u8CopyBufferSize = _u8BufferSize + 2;
+"939
 [e = _u8CopyBufferSize -> + -> __u8BufferSize `i -> 2 `i `uc ]
-[; ;ModbusRtu.c: 1015: ModbusSendTxBuffer();
-"1015
+[; ;ModbusRtu.c: 940: ModbusSendTxBuffer();
+"940
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 1017: return u8CopyBufferSize;
-"1017
+[; ;ModbusRtu.c: 942: return u8CopyBufferSize;
+"942
 [e ) _u8CopyBufferSize ]
 [e $UE 344  ]
-[; ;ModbusRtu.c: 1018: }
-"1018
+[; ;ModbusRtu.c: 943: }
+"943
 [e :UE 344 ]
 }
-"1028
+"953
 [v _ModbusProcess_FC6 `(uc ~T0 @X0 1 ef2`*us`uc ]
-"1029
+"954
 {
-[; ;ModbusRtu.c: 1028: int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
-[; ;ModbusRtu.c: 1029: {
+[; ;ModbusRtu.c: 953: int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
+[; ;ModbusRtu.c: 954: {
 [e :U _ModbusProcess_FC6 ]
-"1028
+"953
 [v _regs `*us ~T0 @X0 1 r1 ]
 [v _u8size `uc ~T0 @X0 1 r2 ]
-"1029
+"954
 [f ]
-"1030
+"955
 [v _u16add `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1030: uint16_t u16add = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
+[; ;ModbusRtu.c: 955: uint16_t u16add = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 [e = _u16add -> | << -> -> *U + &U __au8Buffer * -> . `E2384 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
-[; ;ModbusRtu.c: 1031: _lastAddress = u16add;
-"1031
+[; ;ModbusRtu.c: 956: _lastAddress = u16add;
+"956
 [e = __lastAddress _u16add ]
-[; ;ModbusRtu.c: 1032: _lastCount = 1;
-"1032
+[; ;ModbusRtu.c: 957: _lastCount = 1;
+"957
 [e = __lastCount -> -> 1 `i `us ]
-"1033
+"958
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-"1034
+"959
 [v _u16val `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1033: uint8_t u8CopyBufferSize;
-[; ;ModbusRtu.c: 1034: uint16_t u16val = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
+[; ;ModbusRtu.c: 958: uint8_t u8CopyBufferSize;
+[; ;ModbusRtu.c: 959: uint16_t u16val = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
 [e = _u16val -> | << -> -> *U + &U __au8Buffer * -> . `E2384 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
-[; ;ModbusRtu.c: 1036: regs[ u16add ] = u16val;
-"1036
+[; ;ModbusRtu.c: 961: regs[ u16add ] = u16val;
+"961
 [e = *U + _regs * -> _u16add `ux -> -> # *U _regs `ui `ux _u16val ]
-[; ;ModbusRtu.c: 1039: _u8BufferSize = RESPONSE_SIZE;
-"1039
+[; ;ModbusRtu.c: 964: _u8BufferSize = RESPONSE_SIZE;
+"964
 [e = __u8BufferSize -> . `E2380 0 `uc ]
-[; ;ModbusRtu.c: 1041: u8CopyBufferSize = _u8BufferSize + 2;
-"1041
+[; ;ModbusRtu.c: 966: u8CopyBufferSize = _u8BufferSize + 2;
+"966
 [e = _u8CopyBufferSize -> + -> __u8BufferSize `i -> 2 `i `uc ]
-[; ;ModbusRtu.c: 1042: ModbusSendTxBuffer();
-"1042
+[; ;ModbusRtu.c: 967: ModbusSendTxBuffer();
+"967
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 1044: return u8CopyBufferSize;
-"1044
+[; ;ModbusRtu.c: 969: return u8CopyBufferSize;
+"969
 [e ) _u8CopyBufferSize ]
 [e $UE 345  ]
-[; ;ModbusRtu.c: 1045: }
-"1045
+[; ;ModbusRtu.c: 970: }
+"970
 [e :UE 345 ]
 }
-"1048
+"973
 [v _ModbusProcess_FC7 `(uc ~T0 @X0 1 ef ]
-"1049
+"974
 {
-[; ;ModbusRtu.c: 1048: int8_t ModbusProcess_FC7()
-[; ;ModbusRtu.c: 1049: {
+[; ;ModbusRtu.c: 973: int8_t ModbusProcess_FC7()
+[; ;ModbusRtu.c: 974: {
 [e :U _ModbusProcess_FC7 ]
 [f ]
-[; ;ModbusRtu.c: 1050: _au8Buffer[ 2 ] = _exceptionStatus;
-"1050
+[; ;ModbusRtu.c: 975: _au8Buffer[ 2 ] = _exceptionStatus;
+"975
 [e = *U + &U __au8Buffer * -> -> -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux __exceptionStatus ]
-[; ;ModbusRtu.c: 1051: _u8BufferSize = 3;
-"1051
+[; ;ModbusRtu.c: 976: _u8BufferSize = 3;
+"976
 [e = __u8BufferSize -> -> 3 `i `uc ]
-"1052
+"977
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1052: uint8_t u8CopyBufferSize = _u8BufferSize;
+[; ;ModbusRtu.c: 977: uint8_t u8CopyBufferSize = _u8BufferSize;
 [e = _u8CopyBufferSize __u8BufferSize ]
-[; ;ModbusRtu.c: 1053: ModbusSendTxBuffer();
-"1053
+[; ;ModbusRtu.c: 978: ModbusSendTxBuffer();
+"978
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 1054: return u8CopyBufferSize;
-"1054
+[; ;ModbusRtu.c: 979: return u8CopyBufferSize;
+"979
 [e ) _u8CopyBufferSize ]
 [e $UE 346  ]
-[; ;ModbusRtu.c: 1055: }
-"1055
+[; ;ModbusRtu.c: 980: }
+"980
 [e :UE 346 ]
 }
-"1064
+"989
 [v _ModbusProcess_FC15 `(uc ~T0 @X0 1 ef1`*us ]
-"1065
+"990
 {
-[; ;ModbusRtu.c: 1064: int8_t ModbusProcess_FC15(uint16_t *regs)
-[; ;ModbusRtu.c: 1065: {
+[; ;ModbusRtu.c: 989: int8_t ModbusProcess_FC15(uint16_t *regs)
+[; ;ModbusRtu.c: 990: {
 [e :U _ModbusProcess_FC15 ]
-"1064
+"989
 [v _regs `*us ~T0 @X0 1 r1 ]
-"1065
+"990
 [f ]
-"1067
+"992
 [v _u8currentBit `uc ~T0 @X0 1 a ]
 [v _u8frameByte `uc ~T0 @X0 1 a ]
 [v _u8bitsno `uc ~T0 @X0 1 a ]
-"1068
+"993
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-"1069
+"994
 [v _u16currentCoil `us ~T0 @X0 1 a ]
 [v _u16coil `us ~T0 @X0 1 a ]
-"1070
+"995
 [v _bTemp `uc ~T0 @X0 1 a ]
-"1073
+"998
 [v _u16StartCoil `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1067: uint8_t u8currentBit, u8frameByte, u8bitsno;
-[; ;ModbusRtu.c: 1068: uint8_t u8CopyBufferSize;
-[; ;ModbusRtu.c: 1069: uint16_t u16currentCoil, u16coil;
-[; ;ModbusRtu.c: 1070: boolean bTemp;
-[; ;ModbusRtu.c: 1073: uint16_t u16StartCoil = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
+[; ;ModbusRtu.c: 992: uint8_t u8currentBit, u8frameByte, u8bitsno;
+[; ;ModbusRtu.c: 993: uint8_t u8CopyBufferSize;
+[; ;ModbusRtu.c: 994: uint16_t u16currentCoil, u16coil;
+[; ;ModbusRtu.c: 995: boolean bTemp;
+[; ;ModbusRtu.c: 998: uint16_t u16StartCoil = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 [e = _u16StartCoil -> | << -> -> *U + &U __au8Buffer * -> . `E2384 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
-[; ;ModbusRtu.c: 1074: _lastAddress = u16StartCoil;
-"1074
+[; ;ModbusRtu.c: 999: _lastAddress = u16StartCoil;
+"999
 [e = __lastAddress _u16StartCoil ]
-"1075
+"1000
 [v _u16Coilno `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1075: uint16_t u16Coilno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
+[; ;ModbusRtu.c: 1000: uint16_t u16Coilno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
 [e = _u16Coilno -> | << -> -> *U + &U __au8Buffer * -> . `E2384 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
-[; ;ModbusRtu.c: 1076: _lastCount = u16Coilno;
-"1076
+[; ;ModbusRtu.c: 1001: _lastCount = u16Coilno;
+"1001
 [e = __lastCount _u16Coilno ]
-[; ;ModbusRtu.c: 1079: u8bitsno = 0;
-"1079
+[; ;ModbusRtu.c: 1004: u8bitsno = 0;
+"1004
 [e = _u8bitsno -> -> 0 `i `uc ]
-[; ;ModbusRtu.c: 1080: u8frameByte = 7;
-"1080
+[; ;ModbusRtu.c: 1005: u8frameByte = 7;
+"1005
 [e = _u8frameByte -> -> 7 `i `uc ]
-[; ;ModbusRtu.c: 1081: for (u16currentCoil = 0; u16currentCoil < u16Coilno; u16currentCoil++)
-"1081
+[; ;ModbusRtu.c: 1006: for (u16currentCoil = 0; u16currentCoil < u16Coilno; u16currentCoil++)
+"1006
 {
 [e = _u16currentCoil -> -> 0 `i `us ]
 [e $U 351  ]
-"1082
+"1007
 [e :U 348 ]
-[; ;ModbusRtu.c: 1082: {
+[; ;ModbusRtu.c: 1007: {
 {
-[; ;ModbusRtu.c: 1084: u16coil = u16StartCoil + u16currentCoil;
-"1084
+[; ;ModbusRtu.c: 1009: u16coil = u16StartCoil + u16currentCoil;
+"1009
 [e = _u16coil -> + -> _u16StartCoil `ui -> _u16currentCoil `ui `us ]
-[; ;ModbusRtu.c: 1086: u8currentBit = (uint8_t) u16coil;
-"1086
+[; ;ModbusRtu.c: 1011: u8currentBit = (uint8_t) u16coil;
+"1011
 [e = _u8currentBit -> _u16coil `uc ]
-[; ;ModbusRtu.c: 1088: bTemp = (((_au8Buffer[ u8frameByte ]) >> (u8bitsno)) & 0x01);
-"1088
+[; ;ModbusRtu.c: 1013: bTemp = (((_au8Buffer[ u8frameByte ]) >> (u8bitsno)) & 0x01);
+"1013
 [e = _bTemp -> & >> -> *U + &U __au8Buffer * -> _u8frameByte `ux -> -> # *U &U __au8Buffer `ui `ux `i _u8bitsno -> 1 `i `uc ]
-[; ;ModbusRtu.c: 1092: (bTemp ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
-"1092
+[; ;ModbusRtu.c: 1017: (bTemp ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
+"1017
 [e ? != -> _bTemp `i -> -> -> 0 `i `uc `i : -> =| *U _regs -> << -> -> -> 1 `i `us `ui _u8currentBit `us `ui -> =& *U _regs -> ~ << -> -> -> 1 `i `us `ui _u8currentBit `us `ui ]
-[; ;ModbusRtu.c: 1097: u8bitsno++;
-"1097
+[; ;ModbusRtu.c: 1022: u8bitsno++;
+"1022
 [e ++ _u8bitsno -> -> 1 `i `uc ]
-[; ;ModbusRtu.c: 1099: if (u8bitsno > 7)
-"1099
+[; ;ModbusRtu.c: 1024: if (u8bitsno > 7)
+"1024
 [e $ ! > -> _u8bitsno `i -> 7 `i 352  ]
-[; ;ModbusRtu.c: 1100: {
-"1100
+[; ;ModbusRtu.c: 1025: {
+"1025
 {
-[; ;ModbusRtu.c: 1101: u8bitsno = 0;
-"1101
+[; ;ModbusRtu.c: 1026: u8bitsno = 0;
+"1026
 [e = _u8bitsno -> -> 0 `i `uc ]
-[; ;ModbusRtu.c: 1102: u8frameByte++;
-"1102
+[; ;ModbusRtu.c: 1027: u8frameByte++;
+"1027
 [e ++ _u8frameByte -> -> 1 `i `uc ]
-"1103
+"1028
 }
 [e :U 352 ]
-"1104
+"1029
 }
-"1081
+"1006
 [e ++ _u16currentCoil -> -> 1 `i `us ]
 [e :U 351 ]
 [e $ < -> _u16currentCoil `ui -> _u16Coilno `ui 348  ]
 [e :U 349 ]
-"1104
+"1029
 }
-[; ;ModbusRtu.c: 1103: }
-[; ;ModbusRtu.c: 1104: }
-[; ;ModbusRtu.c: 1108: _u8BufferSize = 6;
-"1108
+[; ;ModbusRtu.c: 1028: }
+[; ;ModbusRtu.c: 1029: }
+[; ;ModbusRtu.c: 1033: _u8BufferSize = 6;
+"1033
 [e = __u8BufferSize -> -> 6 `i `uc ]
-[; ;ModbusRtu.c: 1109: u8CopyBufferSize = _u8BufferSize + 2;
-"1109
+[; ;ModbusRtu.c: 1034: u8CopyBufferSize = _u8BufferSize + 2;
+"1034
 [e = _u8CopyBufferSize -> + -> __u8BufferSize `i -> 2 `i `uc ]
-[; ;ModbusRtu.c: 1110: ModbusSendTxBuffer();
-"1110
+[; ;ModbusRtu.c: 1035: ModbusSendTxBuffer();
+"1035
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 1111: return u8CopyBufferSize;
-"1111
+[; ;ModbusRtu.c: 1036: return u8CopyBufferSize;
+"1036
 [e ) _u8CopyBufferSize ]
 [e $UE 347  ]
-[; ;ModbusRtu.c: 1112: }
-"1112
+[; ;ModbusRtu.c: 1037: }
+"1037
 [e :UE 347 ]
 }
-"1122
+"1047
 [v _ModbusProcess_FC16 `(uc ~T0 @X0 1 ef2`*us`uc ]
-"1123
+"1048
 {
-[; ;ModbusRtu.c: 1122: int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size)
-[; ;ModbusRtu.c: 1123: {
+[; ;ModbusRtu.c: 1047: int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size)
+[; ;ModbusRtu.c: 1048: {
 [e :U _ModbusProcess_FC16 ]
-"1122
+"1047
 [v _regs `*us ~T0 @X0 1 r1 ]
 [v _u8size `uc ~T0 @X0 1 r2 ]
-"1123
+"1048
 [f ]
-"1125
+"1050
 [v _u16StartAdd `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1125: uint16_t u16StartAdd = _au8Buffer[ ADD_HI ] << 8 | _au8Buffer[ ADD_LO ];
+[; ;ModbusRtu.c: 1050: uint16_t u16StartAdd = _au8Buffer[ ADD_HI ] << 8 | _au8Buffer[ ADD_LO ];
 [e = _u16StartAdd -> | << -> *U + &U __au8Buffer * -> . `E2384 2 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 3 `ux -> -> # *U &U __au8Buffer `ui `ux `i `us ]
-[; ;ModbusRtu.c: 1126: _lastAddress = u16StartAdd;
-"1126
+[; ;ModbusRtu.c: 1051: _lastAddress = u16StartAdd;
+"1051
 [e = __lastAddress _u16StartAdd ]
-"1127
+"1052
 [v _u8regsno `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1127: int8_t u8regsno = _au8Buffer[ NB_HI ] << 8 | _au8Buffer[ NB_LO ];
+[; ;ModbusRtu.c: 1052: int8_t u8regsno = _au8Buffer[ NB_HI ] << 8 | _au8Buffer[ NB_LO ];
 [e = _u8regsno -> | << -> *U + &U __au8Buffer * -> . `E2384 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2384 5 `ux -> -> # *U &U __au8Buffer `ui `ux `i `uc ]
-[; ;ModbusRtu.c: 1128: _lastCount = u8regsno;
-"1128
+[; ;ModbusRtu.c: 1053: _lastCount = u8regsno;
+"1053
 [e = __lastCount -> _u8regsno `us ]
-"1129
+"1054
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-"1130
+"1055
 [v _i `uc ~T0 @X0 1 a ]
-"1131
+"1056
 [v _temp `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1129: uint8_t u8CopyBufferSize;
-[; ;ModbusRtu.c: 1130: uint8_t i;
-[; ;ModbusRtu.c: 1131: uint16_t temp;
-[; ;ModbusRtu.c: 1134: _au8Buffer[ NB_HI ] = 0;
-"1134
+[; ;ModbusRtu.c: 1054: uint8_t u8CopyBufferSize;
+[; ;ModbusRtu.c: 1055: uint8_t i;
+[; ;ModbusRtu.c: 1056: uint16_t temp;
+[; ;ModbusRtu.c: 1059: _au8Buffer[ NB_HI ] = 0;
+"1059
 [e = *U + &U __au8Buffer * -> . `E2384 4 `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 0 `i `uc ]
-[; ;ModbusRtu.c: 1135: _au8Buffer[ NB_LO ] = u8regsno;
-"1135
+[; ;ModbusRtu.c: 1060: _au8Buffer[ NB_LO ] = u8regsno;
+"1060
 [e = *U + &U __au8Buffer * -> . `E2384 5 `ux -> -> # *U &U __au8Buffer `ui `ux _u8regsno ]
-[; ;ModbusRtu.c: 1136: _u8BufferSize = RESPONSE_SIZE;
-"1136
+[; ;ModbusRtu.c: 1061: _u8BufferSize = RESPONSE_SIZE;
+"1061
 [e = __u8BufferSize -> . `E2380 0 `uc ]
-[; ;ModbusRtu.c: 1139: for (i = 0; i < u8regsno && (u16StartAdd + i) < u8size; i++)
-"1139
+[; ;ModbusRtu.c: 1064: for (i = 0; i < u8regsno && (u16StartAdd + i) < u8size; i++)
+"1064
 {
 [e = _i -> -> 0 `i `uc ]
 [e $U 357  ]
-"1140
+"1065
 [e :U 354 ]
-[; ;ModbusRtu.c: 1140: {
+[; ;ModbusRtu.c: 1065: {
 {
-[; ;ModbusRtu.c: 1141: temp = (((uint16_t)_au8Buffer[ (BYTE_CNT + 1) + i * 2 ]<<8)|_au8Buffer[ (BYTE_CNT + 2) + i * 2 ]);
-"1141
+[; ;ModbusRtu.c: 1066: temp = (((uint16_t)_au8Buffer[ (BYTE_CNT + 1) + i * 2 ]<<8)|_au8Buffer[ (BYTE_CNT + 2) + i * 2 ]);
+"1066
 [e = _temp -> | << -> -> *U + &U __au8Buffer * -> -> + + -> . `E2384 6 `i -> 1 `i * -> _i `i -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> -> + + -> . `E2384 6 `i -> 2 `i * -> _i `i -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
-[; ;ModbusRtu.c: 1145: regs[ u16StartAdd + i ] = temp;
-"1145
+[; ;ModbusRtu.c: 1070: regs[ u16StartAdd + i ] = temp;
+"1070
 [e = *U + _regs * -> + -> _u16StartAdd `ui -> _i `ui `ux -> -> # *U _regs `ui `ux _temp ]
-"1146
+"1071
 }
-"1139
+"1064
 [e ++ _i -> -> 1 `i `uc ]
 [e :U 357 ]
 [e $ && < -> _i `i -> _u8regsno `i < + -> _u16StartAdd `ui -> _i `ui -> _u8size `ui 354  ]
 [e :U 355 ]
-"1146
+"1071
 }
-[; ;ModbusRtu.c: 1146: }
-[; ;ModbusRtu.c: 1147: u8CopyBufferSize = _u8BufferSize + 2;
-"1147
+[; ;ModbusRtu.c: 1071: }
+[; ;ModbusRtu.c: 1072: u8CopyBufferSize = _u8BufferSize + 2;
+"1072
 [e = _u8CopyBufferSize -> + -> __u8BufferSize `i -> 2 `i `uc ]
-[; ;ModbusRtu.c: 1148: ModbusSendTxBuffer();
-"1148
+[; ;ModbusRtu.c: 1073: ModbusSendTxBuffer();
+"1073
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 1150: return u8CopyBufferSize;
-"1150
+[; ;ModbusRtu.c: 1075: return u8CopyBufferSize;
+"1075
 [e ) _u8CopyBufferSize ]
 [e $UE 353  ]
-[; ;ModbusRtu.c: 1151: }
-"1151
+[; ;ModbusRtu.c: 1076: }
+"1076
 [e :UE 353 ]
 }
-"1161
+"1086
 [v _ModbusProcess_FC17 `(uc ~T0 @X0 1 ef ]
-"1162
+"1087
 {
-[; ;ModbusRtu.c: 1161: int8_t ModbusProcess_FC17()
-[; ;ModbusRtu.c: 1162: {
+[; ;ModbusRtu.c: 1086: int8_t ModbusProcess_FC17()
+[; ;ModbusRtu.c: 1087: {
 [e :U _ModbusProcess_FC17 ]
 [f ]
-[; ;ModbusRtu.c: 1163: _au8Buffer[ 2 ] = sizeof("Tablo s raspisaniem turo") + 1 + 1;
-"1163
+[; ;ModbusRtu.c: 1088: _au8Buffer[ 2 ] = sizeof("Tablo s raspisaniem turo") + 1 + 1;
+"1088
 [e = *U + &U __au8Buffer * -> -> -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> + + -> 25 `ui -> -> 1 `i `ui -> -> 1 `i `ui `uc ]
-[; ;ModbusRtu.c: 1165: _u8BufferSize = 3;
-"1165
+[; ;ModbusRtu.c: 1090: _u8BufferSize = 3;
+"1090
 [e = __u8BufferSize -> -> 3 `i `uc ]
-[; ;ModbusRtu.c: 1167: for(uint8_t i = 0; i < sizeof("Tablo s raspisaniem turo"); i++, _u8BufferSize++)
-"1167
+[; ;ModbusRtu.c: 1092: for(uint8_t i = 0; i < sizeof("Tablo s raspisaniem turo"); i++, _u8BufferSize++)
+"1092
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `ui -> 25 `ui 359  ]
 [e $U 360  ]
-"1168
+"1093
 [e :U 359 ]
-[; ;ModbusRtu.c: 1168: _au8Buffer[_u8BufferSize] = "Tablo s raspisaniem turo"[i];
+[; ;ModbusRtu.c: 1093: _au8Buffer[_u8BufferSize] = "Tablo s raspisaniem turo"[i];
 [e = *U + &U __au8Buffer * -> __u8BufferSize `ux -> -> # *U &U __au8Buffer `ui `ux *U + :s 3C * -> _i `ux -> -> # *U :s 3C `ui `ux ]
-"1167
+"1092
 [e ; ++ _i -> -> 1 `i `uc ++ __u8BufferSize -> -> 1 `i `uc ]
 [e $ < -> _i `ui -> 25 `ui 359  ]
 [e :U 360 ]
-"1168
+"1093
 }
-[; ;ModbusRtu.c: 1170: _au8Buffer[_u8BufferSize++] = '!';
-"1170
+[; ;ModbusRtu.c: 1095: _au8Buffer[_u8BufferSize++] = '!';
+"1095
 [e = *U + &U __au8Buffer * -> ++ __u8BufferSize -> -> 1 `i `uc `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 33 `ui `uc ]
-[; ;ModbusRtu.c: 1171: _au8Buffer[_u8BufferSize++] = '>';
-"1171
+[; ;ModbusRtu.c: 1096: _au8Buffer[_u8BufferSize++] = '>';
+"1096
 [e = *U + &U __au8Buffer * -> ++ __u8BufferSize -> -> 1 `i `uc `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 62 `ui `uc ]
-"1172
+"1097
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1172: uint8_t u8CopyBufferSize = _u8BufferSize;
+[; ;ModbusRtu.c: 1097: uint8_t u8CopyBufferSize = _u8BufferSize;
 [e = _u8CopyBufferSize __u8BufferSize ]
-[; ;ModbusRtu.c: 1173: ModbusSendTxBuffer();
-"1173
+[; ;ModbusRtu.c: 1098: ModbusSendTxBuffer();
+"1098
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 1175: return u8CopyBufferSize;
-"1175
+[; ;ModbusRtu.c: 1100: return u8CopyBufferSize;
+"1100
 [e ) _u8CopyBufferSize ]
 [e $UE 358  ]
-[; ;ModbusRtu.c: 1176: }
-"1176
+[; ;ModbusRtu.c: 1101: }
+"1101
 [e :UE 358 ]
 }
-"1186
+"1111
 [v _ModbusProcess_FC21 `(uc ~T0 @X0 1 ef ]
-"1187
+"1112
 {
-[; ;ModbusRtu.c: 1186: int8_t ModbusProcess_FC21()
-[; ;ModbusRtu.c: 1187: {
+[; ;ModbusRtu.c: 1111: int8_t ModbusProcess_FC21()
+[; ;ModbusRtu.c: 1112: {
 [e :U _ModbusProcess_FC21 ]
 [f ]
-"1190
+"1115
 [v _requestDataLen `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1190: int8_t requestDataLen = _au8Buffer[ FILE_DATA_LEN ];
+[; ;ModbusRtu.c: 1115: int8_t requestDataLen = _au8Buffer[ FILE_DATA_LEN ];
 [e = _requestDataLen *U + &U __au8Buffer * -> . `E2398 0 `ux -> -> # *U &U __au8Buffer `ui `ux ]
-"1192
+"1117
 [v _startAddrsBytes `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1192: uint16_t startAddrsBytes = ((((uint16_t)_au8Buffer[ FILE_REC_HI ]<<8)|_au8Buffer[ FILE_REC_LO ])) << 1;
+[; ;ModbusRtu.c: 1117: uint16_t startAddrsBytes = ((((uint16_t)_au8Buffer[ FILE_REC_HI ]<<8)|_au8Buffer[ FILE_REC_LO ])) << 1;
 [e = _startAddrsBytes -> << | << -> -> *U + &U __au8Buffer * -> . `E2398 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2398 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui -> 1 `i `us ]
-[; ;ModbusRtu.c: 1193: _lastAddress = startAddrsBytes;
-"1193
+[; ;ModbusRtu.c: 1118: _lastAddress = startAddrsBytes;
+"1118
 [e = __lastAddress _startAddrsBytes ]
-"1194
+"1119
 [v _recLenBytes `us ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1194: uint16_t recLenBytes = ((((uint16_t)_au8Buffer[ FILE_REC_LEN_HI ]<<8)|_au8Buffer[ FILE_REC_LEN_LO ])) << 1;
+[; ;ModbusRtu.c: 1119: uint16_t recLenBytes = ((((uint16_t)_au8Buffer[ FILE_REC_LEN_HI ]<<8)|_au8Buffer[ FILE_REC_LEN_LO ])) << 1;
 [e = _recLenBytes -> << | << -> -> *U + &U __au8Buffer * -> . `E2398 6 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2398 7 `ux -> -> # *U &U __au8Buffer `ui `ux `ui -> 1 `i `us ]
-[; ;ModbusRtu.c: 1195: _lastCount = recLenBytes;
-"1195
+[; ;ModbusRtu.c: 1120: _lastCount = recLenBytes;
+"1120
 [e = __lastCount _recLenBytes ]
-"1196
+"1121
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-"1197
+"1122
 [v _i `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1196: uint8_t u8CopyBufferSize;
-[; ;ModbusRtu.c: 1197: uint8_t i;
-[; ;ModbusRtu.c: 1203: _u8BufferSize = requestDataLen + 1;
-"1203
+[; ;ModbusRtu.c: 1121: uint8_t u8CopyBufferSize;
+[; ;ModbusRtu.c: 1122: uint8_t i;
+[; ;ModbusRtu.c: 1128: _u8BufferSize = requestDataLen + 1;
+"1128
 [e = __u8BufferSize -> + -> _requestDataLen `i -> 1 `i `uc ]
-[; ;ModbusRtu.c: 1207: for (i = 0; i < recLenBytes; i++)
-"1207
+[; ;ModbusRtu.c: 1132: for (i = 0; i < recLenBytes; i++)
+"1132
 {
 [e = _i -> -> 0 `i `uc ]
 [e $U 366  ]
-"1208
+"1133
 [e :U 363 ]
-[; ;ModbusRtu.c: 1208: {
+[; ;ModbusRtu.c: 1133: {
 {
-[; ;ModbusRtu.c: 1209: do{ while (WR) { continue; } EEADR = (startAddrsBytes + i); EEDATA = (_au8Buffer[ FILE_FIRST_BYTE + i ]); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (
-"1209
+[; ;ModbusRtu.c: 1134: do{ while (WR) { continue; } EEADR = (startAddrsBytes + i); EEDATA = (_au8Buffer[ FILE_FIRST_BYTE + i ]); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (
+"1134
 [e :U 369 ]
 {
 [e $U 370  ]
@@ -4190,250 +4190,250 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 374 ]
 }
 [e :U 368 ]
-"1210
+"1135
 }
-"1207
+"1132
 [e ++ _i -> -> 1 `i `uc ]
 [e :U 366 ]
 [e $ < -> _i `ui -> _recLenBytes `ui 363  ]
 [e :U 364 ]
-"1210
+"1135
 }
-[; ;ModbusRtu.c: 1210: }
-[; ;ModbusRtu.c: 1212: u8CopyBufferSize = _u8BufferSize;
-"1212
+[; ;ModbusRtu.c: 1135: }
+[; ;ModbusRtu.c: 1137: u8CopyBufferSize = _u8BufferSize;
+"1137
 [e = _u8CopyBufferSize __u8BufferSize ]
-[; ;ModbusRtu.c: 1213: ModbusSendTxBuffer();
-"1213
+[; ;ModbusRtu.c: 1138: ModbusSendTxBuffer();
+"1138
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 1215: return u8CopyBufferSize;
-"1215
+[; ;ModbusRtu.c: 1140: return u8CopyBufferSize;
+"1140
 [e ) _u8CopyBufferSize ]
 [e $UE 362  ]
-[; ;ModbusRtu.c: 1216: }
-"1216
+[; ;ModbusRtu.c: 1141: }
+"1141
 [e :UE 362 ]
 }
-"1218
+"1143
 [v _CopyStringToBuffer `(v ~T0 @X0 1 ef3`uc`*Cuc`uc ]
-"1219
+"1144
 {
-[; ;ModbusRtu.c: 1218: void CopyStringToBuffer(uint8_t objId, const char *src, uint8_t len)
-[; ;ModbusRtu.c: 1219: {
+[; ;ModbusRtu.c: 1143: void CopyStringToBuffer(uint8_t objId, const char *src, uint8_t len)
+[; ;ModbusRtu.c: 1144: {
 [e :U _CopyStringToBuffer ]
-"1218
+"1143
 [v _objId `uc ~T0 @X0 1 r1 ]
 [v _src `*Cuc ~T0 @X0 1 r2 ]
 [v _len `uc ~T0 @X0 1 r3 ]
-"1219
+"1144
 [f ]
-[; ;ModbusRtu.c: 1220: len--;
-"1220
+[; ;ModbusRtu.c: 1145: len--;
+"1145
 [e -- _len -> -> 1 `i `uc ]
-[; ;ModbusRtu.c: 1221: _au8Buffer[_u8BufferSize++] = objId;
-"1221
+[; ;ModbusRtu.c: 1146: _au8Buffer[_u8BufferSize++] = objId;
+"1146
 [e = *U + &U __au8Buffer * -> ++ __u8BufferSize -> -> 1 `i `uc `ux -> -> # *U &U __au8Buffer `ui `ux _objId ]
-[; ;ModbusRtu.c: 1222: _au8Buffer[_u8BufferSize++] = len;
-"1222
+[; ;ModbusRtu.c: 1147: _au8Buffer[_u8BufferSize++] = len;
+"1147
 [e = *U + &U __au8Buffer * -> ++ __u8BufferSize -> -> 1 `i `uc `ux -> -> # *U &U __au8Buffer `ui `ux _len ]
-[; ;ModbusRtu.c: 1223: for(uint8_t i = 0; i < len; i++, _u8BufferSize++)
-"1223
+[; ;ModbusRtu.c: 1148: for(uint8_t i = 0; i < len; i++, _u8BufferSize++)
+"1148
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
 [e $U 379  ]
-"1224
+"1149
 [e :U 376 ]
-[; ;ModbusRtu.c: 1224: _au8Buffer[_u8BufferSize] = src[i];
+[; ;ModbusRtu.c: 1149: _au8Buffer[_u8BufferSize] = src[i];
 [e = *U + &U __au8Buffer * -> __u8BufferSize `ux -> -> # *U &U __au8Buffer `ui `ux *U + _src * -> _i `ux -> -> # *U _src `ui `ux ]
-"1223
+"1148
 [e ; ++ _i -> -> 1 `i `uc ++ __u8BufferSize -> -> 1 `i `uc ]
 [e :U 379 ]
 [e $ < -> _i `i -> _len `i 376  ]
 [e :U 377 ]
-"1224
+"1149
 }
-[; ;ModbusRtu.c: 1225: }
-"1225
+[; ;ModbusRtu.c: 1150: }
+"1150
 [e :UE 375 ]
 }
-"1227
+"1152
 [v _ModbusProcess_FC43 `(uc ~T0 @X0 1 ef ]
-"1228
+"1153
 {
-[; ;ModbusRtu.c: 1227: int8_t ModbusProcess_FC43()
-[; ;ModbusRtu.c: 1228: {
+[; ;ModbusRtu.c: 1152: int8_t ModbusProcess_FC43()
+[; ;ModbusRtu.c: 1153: {
 [e :U _ModbusProcess_FC43 ]
 [f ]
-"1229
+"1154
 [v _devIdCode `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1229: uint8_t devIdCode = _au8Buffer[ 3 ];
+[; ;ModbusRtu.c: 1154: uint8_t devIdCode = _au8Buffer[ 3 ];
 [e = _devIdCode *U + &U __au8Buffer * -> -> -> 3 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux ]
-"1237
+"1162
 [v _objId `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1237: uint8_t objId = _au8Buffer[ 4 ];
+[; ;ModbusRtu.c: 1162: uint8_t objId = _au8Buffer[ 4 ];
 [e = _objId *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux ]
-[; ;ModbusRtu.c: 1248: _au8Buffer[ 5 ] = 0x00;
-"1248
+[; ;ModbusRtu.c: 1173: _au8Buffer[ 5 ] = 0x00;
+"1173
 [e = *U + &U __au8Buffer * -> -> -> 5 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 0 `i `uc ]
-[; ;ModbusRtu.c: 1249: _au8Buffer[ 6 ] = 0x00;
-"1249
+[; ;ModbusRtu.c: 1174: _au8Buffer[ 6 ] = 0x00;
+"1174
 [e = *U + &U __au8Buffer * -> -> -> 6 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 0 `i `uc ]
-[; ;ModbusRtu.c: 1251: _u8BufferSize = 8;
-"1251
+[; ;ModbusRtu.c: 1176: _u8BufferSize = 8;
+"1176
 [e = __u8BufferSize -> -> 8 `i `uc ]
-[; ;ModbusRtu.c: 1252: switch(devIdCode)
-"1252
+[; ;ModbusRtu.c: 1177: switch(devIdCode)
+"1177
 [e $U 382  ]
-[; ;ModbusRtu.c: 1253: {
-"1253
+[; ;ModbusRtu.c: 1178: {
+"1178
 {
-[; ;ModbusRtu.c: 1254: case 0x01:
-"1254
+[; ;ModbusRtu.c: 1179: case 0x01:
+"1179
 [e :U 383 ]
-[; ;ModbusRtu.c: 1255: _au8Buffer[ 4 ] = 0x81;
-"1255
+[; ;ModbusRtu.c: 1180: _au8Buffer[ 4 ] = 0x81;
+"1180
 [e = *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 129 `i `uc ]
-[; ;ModbusRtu.c: 1256: _au8Buffer[ 7 ] = 3;
-"1256
+[; ;ModbusRtu.c: 1181: _au8Buffer[ 7 ] = 3;
+"1181
 [e = *U + &U __au8Buffer * -> -> -> 7 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 3 `i `uc ]
-[; ;ModbusRtu.c: 1257: CopyStringToBuffer(0x00, "BOLID", sizeof("BOLID"));
-"1257
+[; ;ModbusRtu.c: 1182: CopyStringToBuffer(0x00, "BOLID", sizeof("BOLID"));
+"1182
 [e ( _CopyStringToBuffer (3 , , -> -> 0 `i `uc :s 4C -> -> 6 `ui `uc ]
-[; ;ModbusRtu.c: 1258: CopyStringToBuffer(0x01, "C2000-BI", sizeof("C2000-BI"));
-"1258
+[; ;ModbusRtu.c: 1183: CopyStringToBuffer(0x01, "C2000-BI", sizeof("C2000-BI"));
+"1183
 [e ( _CopyStringToBuffer (3 , , -> -> 1 `i `uc :s 6C -> -> 9 `ui `uc ]
-[; ;ModbusRtu.c: 1259: CopyStringToBuffer(0x02, "1.01", sizeof("1.01"));
-"1259
+[; ;ModbusRtu.c: 1184: CopyStringToBuffer(0x02, "1.01", sizeof("1.01"));
+"1184
 [e ( _CopyStringToBuffer (3 , , -> -> 2 `i `uc :s 8C -> -> 5 `ui `uc ]
-[; ;ModbusRtu.c: 1260: break;
-"1260
+[; ;ModbusRtu.c: 1185: break;
+"1185
 [e $U 381  ]
-[; ;ModbusRtu.c: 1261: case 0x02:
-"1261
+[; ;ModbusRtu.c: 1186: case 0x02:
+"1186
 [e :U 384 ]
-[; ;ModbusRtu.c: 1262: _au8Buffer[ 4 ] = 0x82;
-"1262
+[; ;ModbusRtu.c: 1187: _au8Buffer[ 4 ] = 0x82;
+"1187
 [e = *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 130 `i `uc ]
-[; ;ModbusRtu.c: 1263: _au8Buffer[ 7 ] = 4;
-"1263
+[; ;ModbusRtu.c: 1188: _au8Buffer[ 7 ] = 4;
+"1188
 [e = *U + &U __au8Buffer * -> -> -> 7 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 4 `i `uc ]
-[; ;ModbusRtu.c: 1264: CopyStringToBuffer(0x03, "http://bolid.ru", sizeof("http://bolid.ru"));
-"1264
+[; ;ModbusRtu.c: 1189: CopyStringToBuffer(0x03, "http://bolid.ru", sizeof("http://bolid.ru"));
+"1189
 [e ( _CopyStringToBuffer (3 , , -> -> 3 `i `uc :s 10C -> -> 16 `ui `uc ]
-[; ;ModbusRtu.c: 1265: CopyStringToBuffer(0x04, "Tablo s raspisaniem", sizeof("Tablo s raspisaniem"));
-"1265
+[; ;ModbusRtu.c: 1190: CopyStringToBuffer(0x04, "Tablo s raspisaniem", sizeof("Tablo s raspisaniem"));
+"1190
 [e ( _CopyStringToBuffer (3 , , -> -> 4 `i `uc :s 12C -> -> 20 `ui `uc ]
-[; ;ModbusRtu.c: 1266: CopyStringToBuffer(0x05, "MMM", sizeof("MMM"));
-"1266
+[; ;ModbusRtu.c: 1191: CopyStringToBuffer(0x05, "MMM", sizeof("MMM"));
+"1191
 [e ( _CopyStringToBuffer (3 , , -> -> 5 `i `uc :s 14C -> -> 4 `ui `uc ]
-[; ;ModbusRtu.c: 1267: CopyStringToBuffer(0x06, "Raspisanie", sizeof("Raspisanie"));
-"1267
+[; ;ModbusRtu.c: 1192: CopyStringToBuffer(0x06, "Raspisanie", sizeof("Raspisanie"));
+"1192
 [e ( _CopyStringToBuffer (3 , , -> -> 6 `i `uc :s 16C -> -> 11 `ui `uc ]
-[; ;ModbusRtu.c: 1268: break;
-"1268
+[; ;ModbusRtu.c: 1193: break;
+"1193
 [e $U 381  ]
-[; ;ModbusRtu.c: 1269: case 0x04:
-"1269
+[; ;ModbusRtu.c: 1194: case 0x04:
+"1194
 [e :U 385 ]
-[; ;ModbusRtu.c: 1270: _au8Buffer[ 7 ] = 1;
-"1270
+[; ;ModbusRtu.c: 1195: _au8Buffer[ 7 ] = 1;
+"1195
 [e = *U + &U __au8Buffer * -> -> -> 7 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 1 `i `uc ]
-[; ;ModbusRtu.c: 1271: switch(objId)
-"1271
+[; ;ModbusRtu.c: 1196: switch(objId)
+"1196
 [e $U 387  ]
-[; ;ModbusRtu.c: 1272: {
-"1272
+[; ;ModbusRtu.c: 1197: {
+"1197
 {
-[; ;ModbusRtu.c: 1273: case 0x00:
-"1273
+[; ;ModbusRtu.c: 1198: case 0x00:
+"1198
 [e :U 388 ]
-[; ;ModbusRtu.c: 1274: _au8Buffer[ 4 ] = 0x81;
-"1274
+[; ;ModbusRtu.c: 1199: _au8Buffer[ 4 ] = 0x81;
+"1199
 [e = *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 129 `i `uc ]
-[; ;ModbusRtu.c: 1275: CopyStringToBuffer(objId, "BOLID", sizeof("BOLID"));
-"1275
+[; ;ModbusRtu.c: 1200: CopyStringToBuffer(objId, "BOLID", sizeof("BOLID"));
+"1200
 [e ( _CopyStringToBuffer (3 , , _objId :s 18C -> -> 6 `ui `uc ]
-[; ;ModbusRtu.c: 1276: break;
-"1276
+[; ;ModbusRtu.c: 1201: break;
+"1201
 [e $U 386  ]
-[; ;ModbusRtu.c: 1277: case 0x01:
-"1277
+[; ;ModbusRtu.c: 1202: case 0x01:
+"1202
 [e :U 389 ]
-[; ;ModbusRtu.c: 1278: _au8Buffer[ 4 ] = 0x81;
-"1278
+[; ;ModbusRtu.c: 1203: _au8Buffer[ 4 ] = 0x81;
+"1203
 [e = *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 129 `i `uc ]
-[; ;ModbusRtu.c: 1279: CopyStringToBuffer(objId, "C2000-BI", sizeof("C2000-BI"));
-"1279
+[; ;ModbusRtu.c: 1204: CopyStringToBuffer(objId, "C2000-BI", sizeof("C2000-BI"));
+"1204
 [e ( _CopyStringToBuffer (3 , , _objId :s 20C -> -> 9 `ui `uc ]
-[; ;ModbusRtu.c: 1280: break;
-"1280
+[; ;ModbusRtu.c: 1205: break;
+"1205
 [e $U 386  ]
-[; ;ModbusRtu.c: 1281: case 0x02:
-"1281
+[; ;ModbusRtu.c: 1206: case 0x02:
+"1206
 [e :U 390 ]
-[; ;ModbusRtu.c: 1282: _au8Buffer[ 4 ] = 0x81;
-"1282
+[; ;ModbusRtu.c: 1207: _au8Buffer[ 4 ] = 0x81;
+"1207
 [e = *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 129 `i `uc ]
-[; ;ModbusRtu.c: 1283: CopyStringToBuffer(objId, "1.01", sizeof("1.01"));
-"1283
+[; ;ModbusRtu.c: 1208: CopyStringToBuffer(objId, "1.01", sizeof("1.01"));
+"1208
 [e ( _CopyStringToBuffer (3 , , _objId :s 22C -> -> 5 `ui `uc ]
-[; ;ModbusRtu.c: 1284: break;
-"1284
+[; ;ModbusRtu.c: 1209: break;
+"1209
 [e $U 386  ]
-[; ;ModbusRtu.c: 1285: case 0x03:
-"1285
+[; ;ModbusRtu.c: 1210: case 0x03:
+"1210
 [e :U 391 ]
-[; ;ModbusRtu.c: 1286: _au8Buffer[ 4 ] = 0x82;
-"1286
+[; ;ModbusRtu.c: 1211: _au8Buffer[ 4 ] = 0x82;
+"1211
 [e = *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 130 `i `uc ]
-[; ;ModbusRtu.c: 1287: CopyStringToBuffer(objId, "http://bolid.ru", sizeof("http://bolid.ru"));
-"1287
+[; ;ModbusRtu.c: 1212: CopyStringToBuffer(objId, "http://bolid.ru", sizeof("http://bolid.ru"));
+"1212
 [e ( _CopyStringToBuffer (3 , , _objId :s 24C -> -> 16 `ui `uc ]
-[; ;ModbusRtu.c: 1288: break;
-"1288
+[; ;ModbusRtu.c: 1213: break;
+"1213
 [e $U 386  ]
-[; ;ModbusRtu.c: 1289: case 0x04:
-"1289
+[; ;ModbusRtu.c: 1214: case 0x04:
+"1214
 [e :U 392 ]
-[; ;ModbusRtu.c: 1290: _au8Buffer[ 4 ] = 0x82;
-"1290
+[; ;ModbusRtu.c: 1215: _au8Buffer[ 4 ] = 0x82;
+"1215
 [e = *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 130 `i `uc ]
-[; ;ModbusRtu.c: 1291: CopyStringToBuffer(objId, "Tablo s raspisaniem", sizeof("Tablo s raspisaniem"));
-"1291
+[; ;ModbusRtu.c: 1216: CopyStringToBuffer(objId, "Tablo s raspisaniem", sizeof("Tablo s raspisaniem"));
+"1216
 [e ( _CopyStringToBuffer (3 , , _objId :s 26C -> -> 20 `ui `uc ]
-[; ;ModbusRtu.c: 1292: break;
-"1292
+[; ;ModbusRtu.c: 1217: break;
+"1217
 [e $U 386  ]
-[; ;ModbusRtu.c: 1293: case 0x05:
-"1293
+[; ;ModbusRtu.c: 1218: case 0x05:
+"1218
 [e :U 393 ]
-[; ;ModbusRtu.c: 1294: _au8Buffer[ 4 ] = 0x82;
-"1294
+[; ;ModbusRtu.c: 1219: _au8Buffer[ 4 ] = 0x82;
+"1219
 [e = *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 130 `i `uc ]
-[; ;ModbusRtu.c: 1295: CopyStringToBuffer(objId, "MMM", sizeof("MMM"));
-"1295
+[; ;ModbusRtu.c: 1220: CopyStringToBuffer(objId, "MMM", sizeof("MMM"));
+"1220
 [e ( _CopyStringToBuffer (3 , , _objId :s 28C -> -> 4 `ui `uc ]
-[; ;ModbusRtu.c: 1296: break;
-"1296
+[; ;ModbusRtu.c: 1221: break;
+"1221
 [e $U 386  ]
-[; ;ModbusRtu.c: 1297: case 0x06:
-"1297
+[; ;ModbusRtu.c: 1222: case 0x06:
+"1222
 [e :U 394 ]
-[; ;ModbusRtu.c: 1298: _au8Buffer[ 4 ] = 0x82;
-"1298
+[; ;ModbusRtu.c: 1223: _au8Buffer[ 4 ] = 0x82;
+"1223
 [e = *U + &U __au8Buffer * -> -> -> 4 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 130 `i `uc ]
-[; ;ModbusRtu.c: 1299: CopyStringToBuffer(objId, "Raspisanie", sizeof("Raspisanie"));
-"1299
+[; ;ModbusRtu.c: 1224: CopyStringToBuffer(objId, "Raspisanie", sizeof("Raspisanie"));
+"1224
 [e ( _CopyStringToBuffer (3 , , _objId :s 30C -> -> 11 `ui `uc ]
-[; ;ModbusRtu.c: 1300: break;
-"1300
+[; ;ModbusRtu.c: 1225: break;
+"1225
 [e $U 386  ]
-"1301
+"1226
 }
-[; ;ModbusRtu.c: 1301: }
+[; ;ModbusRtu.c: 1226: }
 [e $U 386  ]
-"1271
+"1196
 [e :U 387 ]
 [e [\ _objId , $ -> -> 0 `i `uc 388
  , $ -> -> 1 `i `uc 389
@@ -4443,36 +4443,36 @@ Version 3.2 HI-TECH Software Intermediate Code
  , $ -> -> 5 `i `uc 393
  , $ -> -> 6 `i `uc 394
  386 ]
-"1301
+"1226
 [e :U 386 ]
-[; ;ModbusRtu.c: 1302: break;
-"1302
+[; ;ModbusRtu.c: 1227: break;
+"1227
 [e $U 381  ]
-"1303
+"1228
 }
-[; ;ModbusRtu.c: 1303: }
+[; ;ModbusRtu.c: 1228: }
 [e $U 381  ]
-"1252
+"1177
 [e :U 382 ]
 [e [\ _devIdCode , $ -> -> 1 `i `uc 383
  , $ -> -> 2 `i `uc 384
  , $ -> -> 4 `i `uc 385
  381 ]
-"1303
+"1228
 [e :U 381 ]
-"1304
+"1229
 [v _u8CopyBufferSize `uc ~T0 @X0 1 a ]
-[; ;ModbusRtu.c: 1304: uint8_t u8CopyBufferSize = _u8BufferSize;
+[; ;ModbusRtu.c: 1229: uint8_t u8CopyBufferSize = _u8BufferSize;
 [e = _u8CopyBufferSize __u8BufferSize ]
-[; ;ModbusRtu.c: 1305: ModbusSendTxBuffer();
-"1305
+[; ;ModbusRtu.c: 1230: ModbusSendTxBuffer();
+"1230
 [e ( _ModbusSendTxBuffer ..  ]
-[; ;ModbusRtu.c: 1307: return u8CopyBufferSize;
-"1307
+[; ;ModbusRtu.c: 1232: return u8CopyBufferSize;
+"1232
 [e ) _u8CopyBufferSize ]
 [e $UE 380  ]
-[; ;ModbusRtu.c: 1308: }
-"1308
+[; ;ModbusRtu.c: 1233: }
+"1233
 [e :UE 380 ]
 }
 [a 10C 104 116 116 112 58 47 47 98 111 108 105 100 46 114 117 0 ]

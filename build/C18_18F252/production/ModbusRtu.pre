@@ -3486,7 +3486,7 @@ _lastCommand = _au8Buffer[ FUNC ];
 return 0;
 }
 
-# 839
+# 800
 void ModbusBuildException(uint8_t u8exception)
 {
 uint8_t u8func = _au8Buffer[ FUNC ];
@@ -3497,7 +3497,7 @@ _au8Buffer[ 2 ] = u8exception;
 _u8BufferSize = EXCEPTION_SIZE;
 }
 
-# 886
+
 uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
 {
 if (address != (0))
@@ -3507,7 +3507,7 @@ if (count != (0))
 return &_lastCommand;
 }
 
-# 903
+# 828
 int8_t ModbusProcess_FC1(uint16_t regs)
 {
 
@@ -3538,7 +3538,7 @@ u8currentBit = (uint8_t) u16coil;
 
 ((((regs) >> (u8currentBit)) & 0x01) ? ((_au8Buffer[ _u8BufferSize ]) |= ((unsigned short)1 << (u8bitsno))) : ((_au8Buffer[ _u8BufferSize ]) &= ~((unsigned short)1 << (u8bitsno))));
 
-# 935
+# 860
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3556,7 +3556,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 960
+# 885
 int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size)
 {
 uint8_t u8StartAdd = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
@@ -3582,7 +3582,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 993
+# 918
 int8_t ModbusProcess_FC5(uint16_t *regs)
 {
 
@@ -3598,7 +3598,7 @@ u8currentBit = (uint8_t) (u16coil % 16);
 
 (_au8Buffer[ NB_HI ] == 0xff ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 1013
+# 938
 _u8BufferSize = 6;
 u8CopyBufferSize = _u8BufferSize + 2;
 ModbusSendTxBuffer();
@@ -3606,7 +3606,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1028
+# 953
 int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
 {
 uint16_t u16add = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
@@ -3636,7 +3636,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1064
+# 989
 int8_t ModbusProcess_FC15(uint16_t *regs)
 {
 
@@ -3663,10 +3663,10 @@ u8currentBit = (uint8_t) u16coil;
 
 bTemp = (((_au8Buffer[ u8frameByte ]) >> (u8bitsno)) & 0x01);
 
-# 1092
+# 1017
 (bTemp ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 1097
+# 1022
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3684,7 +3684,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1122
+# 1047
 int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size)
 {
 
@@ -3706,7 +3706,7 @@ for (i = 0; i < u8regsno && (u16StartAdd + i) < u8size; i++)
 {
 temp = (((uint16_t)_au8Buffer[ (BYTE_CNT + 1) + i * 2 ]<<8)|_au8Buffer[ (BYTE_CNT + 2) + i * 2 ]);
 
-# 1145
+# 1070
 regs[ u16StartAdd + i ] = temp;
 }
 u8CopyBufferSize = _u8BufferSize + 2;
@@ -3715,7 +3715,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1161
+# 1086
 int8_t ModbusProcess_FC17()
 {
 _au8Buffer[ 2 ] = sizeof("Tablo s raspisaniem turo") + 1 + 1;
@@ -3733,7 +3733,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1186
+# 1111
 int8_t ModbusProcess_FC21()
 {
 
@@ -3747,7 +3747,7 @@ _lastCount = recLenBytes;
 uint8_t u8CopyBufferSize;
 uint8_t i;
 
-# 1203
+# 1128
 _u8BufferSize = requestDataLen + 1;
 
 
@@ -3776,10 +3776,10 @@ int8_t ModbusProcess_FC43()
 {
 uint8_t devIdCode = _au8Buffer[ 3 ];
 
-# 1237
+# 1162
 uint8_t objId = _au8Buffer[ 4 ];
 
-# 1248
+# 1173
 _au8Buffer[ 5 ] = 0x00;
 _au8Buffer[ 6 ] = 0x00;
 
