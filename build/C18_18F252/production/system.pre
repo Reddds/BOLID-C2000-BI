@@ -3051,15 +3051,15 @@ void ConfigureOscillator(void);
 # 22 "system.c"
 asm("\tpsect eeprom_data,class=EEDATA,noexec"); asm("\tdb\t" "0x11" "," "10" "," "0x80" "," "0x0f" "," "0x80" "," "0xff" "," "0x01" "," "0x04");
 
-# 31
+# 32
 asm("\tpsect eeprom_data,class=EEDATA,noexec"); asm("\tdb\t" "0x10" "," "0x03" "," "0xff" "," "21" "," "23" "," "9" "," "11" "," "0x06");
 
-# 39
+# 41
 asm("\tpsect eeprom_data,class=EEDATA,noexec"); asm("\tdb\t" "0x09" "," "0x00" "," "0x01" "," "0x30" "," "0x20" "," "0x00" "," "0x00" "," "0x00");
 
-# 50
+# 86
 void ConfigureOscillator(void)
 {
 
-# 57
+# 93
 }

@@ -78,7 +78,7 @@ bool IsBusserOn = false;
 // Sounds
 #define EE_SOUNDS_COUNT 140
 
-
+#define PLAY_INFINITE USHRT_MAX
 
 #define DISCRETE_REG_TIME_SET 0
 #define DISCRETE_REG_NEED_TIME_SYNC 1
@@ -175,19 +175,19 @@ bool IsBusserOn = false;
 uint16_t modbusState;
 
 
-uint16_t buzzerOnOffDuration = 0x100; // 256 ms
-uint16_t buzzerOnOffPeriod = 0x400; // ~1 sec
-uint8_t buzzeLoudDuration;
-uint8_t buzzeQuietDuration;
-uint8_t buzzerInfoPeriod;
-uint8_t buzzerAlarmPeriod;
-uint8_t buzzeEscaladeTime;
-uint8_t buzzerStartDurationDiv;
+//uint16_t buzzerOnOffDuration = 0x100; // 256 ms
+//uint16_t buzzerOnOffPeriod = 0x400; // ~1 sec
+//uint8_t buzzeLoudDuration;
+//uint8_t buzzeQuietDuration;
+//uint8_t buzzerInfoPeriod;
+//uint8_t buzzerAlarmPeriod;
+//uint8_t buzzeEscaladeTime;
+//uint8_t buzzerStartDurationDiv;
 uint8_t eventAcceptTime;
-uint8_t eveningTimeHour;
-uint8_t nightStartHour;
-uint8_t nightEndHour;
-uint8_t morningTimeHour;
+//uint8_t eveningTimeHour;
+//uint8_t nightStartHour;
+//uint8_t nightEndHour;
+//uint8_t morningTimeHour;
 
 uint8_t eventCount;
 uint8_t currentEvent = 0;
@@ -197,9 +197,18 @@ uint8_t currentEventType = 0; // Alarm(1) Info(0)
 
 uint8_t curEventHour;
 uint8_t curEventMinute;
-uint8_t curEventType; // 0 - info 1 - alarm
+//uint8_t curEventType; // 0 - info 1 - alarm
 uint8_t currentAlarmedEventNum = 0xff;
 uint8_t curEventNum = 0xff;
+
+bool _isSoundPlaying = false;
+uint8_t _soundCount = 0;
+uint8_t _playingSoundSteps = 0;
+uint8_t _playingSoundStartPosInEe = 0;
+uint8_t _playingSoundCurPos = 0;
+
+uint8_t _nextEventSoundId = 0;
+uint16_t _nextEventPlayDuration = 0;
 //EVENT_PROCESS_STATES_t curEventProcessState = CUR_EVENT_NOT_PROCESSED;
 //uint8_t oldEventEndAlarmHour = HOUR_NOT_SET;
 //uint8_t oldEventEndAlarmMinute = 0;
@@ -404,35 +413,32 @@ void PrintTime()
 
 }*/
 
-bool _isSoundPlaying = false;
-uint8_t _soundCount = 0;
-uint8_t _playingSoundSteps = 0;
-uint8_t _playingSoundStartPosInEe = 0;
-uint8_t _playingSoundCurPos = 0;
+
 
 void InitFromEeprom()
 {
-    buzzeLoudDuration       = _EEREG_EEPROM_READ(EE_BUZZER_LOUD_DURATION);
-    buzzeQuietDuration      = _EEREG_EEPROM_READ(EE_BUZZER_QUIET_DURATION);
-    buzzerInfoPeriod        = _EEREG_EEPROM_READ(EE_BUZZER_INFO_PERIOD);
-    buzzerAlarmPeriod       = _EEREG_EEPROM_READ(EE_BUZZER_ALARM_PERIOD);
-    buzzerOnOffDuration     = word(_EEREG_EEPROM_READ(EE_BUZZER_ON_OFF_DURATION), 0); // 256 ms
-    buzzerOnOffPeriod       = word(_EEREG_EEPROM_READ(EE_BUZZER_ON_OFF_PERIOD), 0); 
-    buzzeEscaladeTime       = _EEREG_EEPROM_READ(EE_BUZZER_ESCALADE_TIME);
-    buzzerStartDurationDiv  = _EEREG_EEPROM_READ(EE_BUZZER_START_DURATION_DIV);
+//    buzzeLoudDuration       = _EEREG_EEPROM_READ(EE_BUZZER_LOUD_DURATION);
+//    buzzeQuietDuration      = _EEREG_EEPROM_READ(EE_BUZZER_QUIET_DURATION);
+//    buzzerInfoPeriod        = _EEREG_EEPROM_READ(EE_BUZZER_INFO_PERIOD);
+//    buzzerAlarmPeriod       = _EEREG_EEPROM_READ(EE_BUZZER_ALARM_PERIOD);
+//    buzzerOnOffDuration     = word(_EEREG_EEPROM_READ(EE_BUZZER_ON_OFF_DURATION), 0); // 256 ms
+//    buzzerOnOffPeriod       = word(_EEREG_EEPROM_READ(EE_BUZZER_ON_OFF_PERIOD), 0); 
+//    buzzeEscaladeTime       = _EEREG_EEPROM_READ(EE_BUZZER_ESCALADE_TIME);
+//    buzzerStartDurationDiv  = _EEREG_EEPROM_READ(EE_BUZZER_START_DURATION_DIV);
     eventAcceptTime         = _EEREG_EEPROM_READ(EE_EVENT_ACCEPT_TIME);
-    eveningTimeHour         = _EEREG_EEPROM_READ(EE_EVENING_TIME_HOUR);
-    nightStartHour          = _EEREG_EEPROM_READ(EE_NIGHT_START_HOUR);
-    nightEndHour            = _EEREG_EEPROM_READ(EE_NIGHT_END_HOUR);
-    morningTimeHour         = _EEREG_EEPROM_READ(EE_MORNING_TIME_HOUR);
+//    eveningTimeHour         = _EEREG_EEPROM_READ(EE_EVENING_TIME_HOUR);
+//    nightStartHour          = _EEREG_EEPROM_READ(EE_NIGHT_START_HOUR);
+//    nightEndHour            = _EEREG_EEPROM_READ(EE_NIGHT_END_HOUR);
+//    morningTimeHour         = _EEREG_EEPROM_READ(EE_MORNING_TIME_HOUR);
     blinkDuration           = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_DURATION)) << 6;
     blinkPeriod             = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_PERIOD)) << 6;
     
     eventCount              = _EEREG_EEPROM_READ(EE_EVENT_COUNT);
     
-    SetBuzzerDuty(buzzeLoudDuration); //!!!!!
-    PR2 = buzzerAlarmPeriod;
+//    SetBuzzerDuty(buzzeLoudDuration); //!!!!!
+//    PR2 = buzzerAlarmPeriod;
     
+    // First 3 sounds - are for diary
     _soundCount = _EEREG_EEPROM_READ(EE_SOUNDS_COUNT);
     if(_soundCount == 0xFF)
         _soundCount = 0;
@@ -440,9 +446,13 @@ void InitFromEeprom()
     Modbus(_EEREG_EEPROM_READ(EE_MODBUS_ID), 0, 0);
     SwitchOffAllLeds();
 
+    
+    curEventNum = 0xff;
+    curEventMinute = 0;
+    currentAlarmedEventNum = 0xff;
     LoadNextEvent();
     
-        _MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
+    _MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
 }
 
 #define LightBlock(stat, reg)   \
@@ -576,14 +586,14 @@ void SoundPlayNextStep()
 // playDuration : 0 - once
 // ff - infinite
 // sec
-bool PlaySound(uint8_t soundId, uint8_t playDuration)
+bool PlaySound(uint8_t soundId, uint16_t playDuration)
 {
     if(soundId >= _soundCount)
         return false;
     
     if(playDuration == 0)
         soundTestEnd = 0;
-    else if(playDuration == 0xff)
+    else if(playDuration == PLAY_INFINITE)
         soundTestEnd = ULONG_MAX;
     else 
         soundTestEnd = *GetTime() + playDuration;
@@ -616,6 +626,7 @@ void ResetEvent(bool state)
     LightLed(currentAlarmedEventNum + 1, state ? LED_GREEN : LED_RED, false);  
     currentAlarmedEventNum = 0xff;
     eventResetSecond = 0;
+    StopPlaying();
     _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
     
     //curEventProcessState = CUR_EVENT_NOT_PROCESSED;
@@ -643,12 +654,55 @@ void LoadNextEvent()
             curEventNum++;    
         _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
         if(curEventNum >= eventCount)
+        {
+            curEventNum = 0xff;
+            curEventMinute = 0;
+            curEventHour = 0;
+            _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = word(0, 0);            
             return;
-        // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
+        }
+        // HI: 5-7 - alarmDuration, 0-4 bits - hour | LO: 5-7 soundId 0-5 minute
+        // alarmDuration:
+        // 0 - once
+        // 1 - 10 sec
+        // 2 - 30 sec
+        // 3 - 1 min
+        // 4 - 5 min
+        // 5 - 12 min
+        // 6 - 30 min
+        // 7 - infinite
         uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + curEventNum * 2);
         curEventHour = v1 & 0x1F;
-        curEventType = bitRead(v1, 5);
-        curEventMinute = _EEREG_EEPROM_READ(EE_FIRST_EVENT + curEventNum * 2 + 1);
+        //curEventType = bitRead(v1, 5);
+        _nextEventPlayDuration = (v1 >> 5);
+        switch(_nextEventPlayDuration)
+        {
+            case 1:
+                _nextEventPlayDuration = 10;
+                break;
+            case 2:
+                _nextEventPlayDuration = 30;
+                break;
+            case 3:
+                _nextEventPlayDuration = 60;
+                break;
+            case 4:
+                _nextEventPlayDuration = 60*5;
+                break;
+            case 5:
+                _nextEventPlayDuration = 60*12;
+                break;
+            case 6:
+                _nextEventPlayDuration = 60*30;
+                break;
+            case 7:
+                _nextEventPlayDuration = PLAY_INFINITE;
+                break;
+        }
+        uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + curEventNum * 2 + 1);        
+        curEventMinute = v1 & 0x3F;
+        _nextEventSoundId = v1 >> 6;
+        
         _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = word(curEventHour, curEventMinute);
     }while(curEventHour < hour || curEventMinute <= minute);
     
@@ -683,14 +737,19 @@ void ProcessDiary()
         {
             currentAlarmedEventNum = curEventNum;
             //curEventProcessState == CUR_EVENT_ALARMED;
-            if(curEventType == 0)
+            LightLed(currentAlarmedEventNum + 1, LED_ORANGE, true);  
+            if(_nextEventSoundId != 0)
             {
-                LightLed(currentAlarmedEventNum + 1, LED_GREEN, true);  
+                PlaySound(_nextEventSoundId - 1, _nextEventPlayDuration);
             }
-            else
-            {
-                LightLed(currentAlarmedEventNum + 1, LED_RED, true);  
-            }
+//            if(curEventType == 0)
+//            {
+//                LightLed(currentAlarmedEventNum + 1, LED_GREEN, true);  
+//            }
+//            else
+//            {
+//                LightLed(currentAlarmedEventNum + 1, LED_RED, true);  
+//            }
             eventResetSecond = *GetTime() + eventAcceptTime;
             LoadNextEvent();
         }
@@ -753,21 +812,21 @@ void main(void)
         //LATCbits.LATC0 = PORTCbits.RC3;
         
         
-        if(currentAlarmedEventNum != 0xff)
-        {
-            diffTime = curMs - oldBuzzerOnTime;
-            if(diffTime > buzzerOnOffPeriod)
-            {
-                SetBuzzerDuty(buzzeLoudDuration); //!!!!!
-                PR2 = buzzerAlarmPeriod;
-                StartBuzzer;
-                oldBuzzerOnTime = curMs;
-            }
-            else if(IsBusserOn && diffTime > buzzerOnOffDuration)
-            {
-                StopBuzzer;
-            }
-        }
+//        if(currentAlarmedEventNum != 0xff)
+//        {
+//            diffTime = curMs - oldBuzzerOnTime;
+//            if(diffTime > buzzerOnOffPeriod)
+//            {
+//                SetBuzzerDuty(buzzeLoudDuration); //!!!!!
+//                PR2 = buzzerAlarmPeriod;
+//                StartBuzzer;
+//                oldBuzzerOnTime = curMs;
+//            }
+//            else if(IsBusserOn && diffTime > buzzerOnOffDuration)
+//            {
+//                StopBuzzer;
+//            }
+//        }
         
         if(_isSoundPlaying && curMs >= _playingEndMs)
         {
@@ -781,6 +840,10 @@ void main(void)
             if(currentAlarmedEventNum != 0xff)
             {
                 ResetEvent(true);
+            }
+            else
+            {
+                StopPlaying();
             }
             
             
@@ -880,11 +943,12 @@ void CommandSetStatusLed()
     if(bitRead(commandData, 7) == 0)
     {
         LightStatusLed(led, false, false);
+        StopPlaying();
         return;
     }
     LightStatusLed(led, true, bitRead(commandData, 6));
-    PlaySound(HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]), LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]));
-   
+    PlaySound(HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]), LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]));
+   ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
 }
 
 void io_poll() 
@@ -926,28 +990,28 @@ void io_poll()
                     _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, 0);
                     ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
                     break;
-                case MB_COMMAND_ADD_EVENT:
-                    // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
-                    if(eventCount < MAX_EVENTS)
-                    {
-                        uint8_t eventEeAddr = EE_FIRST_EVENT + (eventCount << 1);
-                        v1 = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
-                        _EEREG_EEPROM_WRITE(eventEeAddr, v1);
-                        v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
-                        _EEREG_EEPROM_WRITE(eventEeAddr + 1, v1);
-                        // 2 bit - blink status
-
-                        LightLed(eventCount, LED_GREEN, false);
-
-                        eventCount++;
-                        _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, eventCount);
-
-                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
-                    }
-                    else
-                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, false);
-                    
-                    break;
+//                case MB_COMMAND_ADD_EVENT:
+//                    // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
+//                    if(eventCount < MAX_EVENTS)
+//                    {
+//                        uint8_t eventEeAddr = EE_FIRST_EVENT + (eventCount << 1);
+//                        v1 = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
+//                        _EEREG_EEPROM_WRITE(eventEeAddr, v1);
+//                        v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
+//                        _EEREG_EEPROM_WRITE(eventEeAddr + 1, v1);
+//                        // 2 bit - blink status
+//
+//                        LightLed(eventCount, LED_GREEN, false);
+//
+//                        eventCount++;
+//                        _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, eventCount);
+//
+//                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+//                    }
+//                    else
+//                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, false);
+//                    
+//                    break;
                 case MB_COMMAND_SET_LED:
                     // 0 Holding reg - First byte - Led num [1..60]
                     // Second byte Value 0 - OFF, 1 - GREEN, 2 - RED 
@@ -957,12 +1021,12 @@ void io_poll()
                     _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA] = 0;
                     ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
                     break;   
-                case MB_COMMAND_TEST_SOUND:
-                    SetBuzzerDuty(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]); //!!!!!
-                    PR2 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
-                    //soundTestEnd = *GetTime() + 2; // 2 sec
-                    //StartBuzzer;
-                    break;
+//                case MB_COMMAND_TEST_SOUND:
+//                    SetBuzzerDuty(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]); //!!!!!
+//                    PR2 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
+//                    //soundTestEnd = *GetTime() + 2; // 2 sec
+//                    //StartBuzzer;
+//                    break;
                 case MB_COMMAND_PLAY_SOUND_NUM:                    
                     //soundTestEnd = *GetTime() + _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]; 
                     PlaySound(LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]), LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]));

@@ -2271,23 +2271,23 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;system.c: 22: asm("\tpsect eeprom_data,class=EEDATA,noexec"); asm("\tdb\t" "0x11" "," "10" "," "0x80" "," "0x0f" "," "0x80" "," "0xff" "," "0x01" "," "0x04");
 [; <" 	psect eeprom_data,class=EEDATA,noexec ;# ">
 [; <" 	db	0x11,10,0x80,0x0f,0x80,0xff,0x01,0x04 ;# ">
-"31
-[; ;system.c: 31: asm("\tpsect eeprom_data,class=EEDATA,noexec"); asm("\tdb\t" "0x10" "," "0x03" "," "0xff" "," "21" "," "23" "," "9" "," "11" "," "0x06");
+"32
+[; ;system.c: 32: asm("\tpsect eeprom_data,class=EEDATA,noexec"); asm("\tdb\t" "0x10" "," "0x03" "," "0xff" "," "21" "," "23" "," "9" "," "11" "," "0x06");
 [; <" 	psect eeprom_data,class=EEDATA,noexec ;# ">
 [; <" 	db	0x10,0x03,0xff,21,23,9,11,0x06 ;# ">
-"39
-[; ;system.c: 39: asm("\tpsect eeprom_data,class=EEDATA,noexec"); asm("\tdb\t" "0x09" "," "0x00" "," "0x01" "," "0x30" "," "0x20" "," "0x00" "," "0x00" "," "0x00");
+"41
+[; ;system.c: 41: asm("\tpsect eeprom_data,class=EEDATA,noexec"); asm("\tdb\t" "0x09" "," "0x00" "," "0x01" "," "0x30" "," "0x20" "," "0x00" "," "0x00" "," "0x00");
 [; <" 	psect eeprom_data,class=EEDATA,noexec ;# ">
 [; <" 	db	0x09,0x00,0x01,0x30,0x20,0x00,0x00,0x00 ;# ">
-"50
+"86
 [v _ConfigureOscillator `(v ~T0 @X0 1 ef ]
-"51
+"87
 {
-[; ;system.c: 50: void ConfigureOscillator(void)
-[; ;system.c: 51: {
+[; ;system.c: 86: void ConfigureOscillator(void)
+[; ;system.c: 87: {
 [e :U _ConfigureOscillator ]
 [f ]
-[; ;system.c: 57: }
-"57
+[; ;system.c: 93: }
+"93
 [e :UE 250 ]
 }
