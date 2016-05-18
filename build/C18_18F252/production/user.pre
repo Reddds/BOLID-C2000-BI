@@ -3036,7 +3036,7 @@ typedef unsigned char bool;
 #pragma config EBTR3 = OFF
 #pragma config EBTRB = OFF
 
-# 69
+# 71
 typedef char int8_t;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -3045,7 +3045,7 @@ typedef unsigned long uint32_t;
 typedef unsigned char boolean;
 typedef unsigned char bool;
 
-# 107
+# 109
 void ConfigureOscillator(void);
 
 # 4 "C:\Program Files (x86)\Microchip\xc8\v1.37\include\__size_t.h"
@@ -3105,7 +3105,7 @@ void PortWrite(uint8_t *buf, uint8_t buflen);
 unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
-void SetHourMin(int *newHour, int *newMin);
+void SetHourMin(int *newHour, int *newMin, int *sec);
 
 # 91 "ModbusRtu.h"
 enum MB_FC
@@ -3201,28 +3201,25 @@ PIR1bits.TMR1IF = 0;
 T1CONbits.TMR1ON = 1;
 
 
+
 T0CONbits.T08BIT = 0;
 T0CONbits.T0CS = 0;
 
 T0CONbits.PSA = 0;
 
-# 116
+# 117
 T0CONbits.T0PS = 7;
 
 
 
 INTCONbits.TMR0IE = 1;
 INTCON2bits.TMR0IP = 1;
-((void)(TMR0H=((0x10000 - (10000000L/4 * 6 / 256 + 0))>>8),TMR0L=((0x10000 - (10000000L/4 * 6 / 256 + 0))&0xFF)));
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * 6)&0xFF)));
 
 
 INTCONbits.TMR0IF = 0;
 
-T0CONbits.TMR0ON = 1;
-
-
-
-
+# 133
 InitUartBuffer();
 
 PortBegin();
@@ -3235,7 +3232,7 @@ IPR1bits.RCIP = 0;
 for (unsigned char i = 0; i < 15; i++)
 _MODBUSInputRegs[i] = 0;
 
-# 148
+# 149
 TRISB = 0;
 
 
@@ -3261,15 +3258,15 @@ void SetTime(time_t *newTime)
 currentTime = *newTime;
 }
 
-# 179
+# 180
 void AddSecond()
 {
 currentTime++;
 
-# 194
+# 195
 }
 
-# 206
+# 207
 time_t *GetTime()
 {
 return &currentTime;

@@ -93,6 +93,17 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _RCIF `Vb ~T0 @X0 0 e@31989 ]
 "2508
 [v _RCREG `Vuc ~T0 @X0 0 e@4014 ]
+"4067
+[s S223 :3 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S223 . T0PS PSA T0SE T0CS T08BIT TMR0ON ]
+"4075
+[s S224 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S224 . T0PS0 T0PS1 T0PS2 ]
+"4066
+[u S222 `S223 1 `S224 1 ]
+[n S222 . . . ]
+"4081
+[v _T0CONbits `VS222 ~T0 @X0 0 e@4053 ]
 [; ;htc.h: 26: extern const char __xc8_OPTIM_SPEED;
 [; ;htc.h: 28: extern double __fpnormalize(double);
 [; ;xc8debug.h: 14: extern void __builtin_software_breakpoint(void);
@@ -2354,13 +2365,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [p x EBTR3=OFF ]
 "38
 [p x EBTRB=OFF ]
-[; ;system.h: 69: typedef char int8_t;
-[; ;system.h: 70: typedef unsigned char uint8_t;
-[; ;system.h: 71: typedef unsigned short uint16_t;
-[; ;system.h: 72: typedef unsigned long uint32_t;
-[; ;system.h: 74: typedef unsigned char boolean;
-[; ;system.h: 75: typedef unsigned char bool;
-[; ;system.h: 107: void ConfigureOscillator(void);
+[; ;system.h: 71: typedef char int8_t;
+[; ;system.h: 72: typedef unsigned char uint8_t;
+[; ;system.h: 73: typedef unsigned short uint16_t;
+[; ;system.h: 74: typedef unsigned long uint32_t;
+[; ;system.h: 76: typedef unsigned char boolean;
+[; ;system.h: 77: typedef unsigned char bool;
+[; ;system.h: 109: void ConfigureOscillator(void);
 [; ;__size_t.h: 4: typedef unsigned size_t;
 [; ;time.h: 8: typedef long time_t;
 [; ;time.h: 9: struct tm {
@@ -2412,7 +2423,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.h: 72: void PortWrite(uint8_t *buf, uint8_t buflen);
 [; ;interrupts.h: 73: unsigned long millis();
 [; ;interrupts.h: 75: bool getHourMin(uint8_t *hour, uint8_t *min);
-[; ;interrupts.h: 76: void SetHourMin(int *newHour, int *newMin);
+[; ;interrupts.h: 76: void SetHourMin(int *newHour, int *newMin, int *sec);
 "28 interrupts.c
 [v _millisecondsFromStart `Vul ~T0 @X0 1 s ]
 [i _millisecondsFromStart
@@ -2608,9 +2619,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 "104
 [e :UE 257 ]
 }
-[v F2366 `(v ~T0 @X0 1 tf ]
+[v F2367 `(v ~T0 @X0 1 tf ]
 "113
-[v _high_isr `IF2366 ~T0 @X0 1 e ]
+[v _high_isr `IF2367 ~T0 @X0 1 e ]
 "122
 {
 [; ;interrupts.c: 113: void interrupt high_isr(void)
@@ -2696,9 +2707,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.c: 157: }
 [; ;interrupts.c: 158: }
 [; ;interrupts.c: 159: }
-[; ;interrupts.c: 160: ((void)(TMR0H=((0x10000 - (10000000L/4 * 6 / 256 + 0))>>8),TMR0L=((0x10000 - (10000000L/4 * 6 / 256 + 0))&0xFF)));
+[; ;interrupts.c: 160: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * 6)&0xFF)));
 "160
-[e ; = _TMR0H -> >> - -> 65536 `l + / * / -> 10000000 `l -> -> 4 `i `l -> -> 6 `i `l -> -> 256 `i `l -> -> 0 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l + / * / -> 10000000 `l -> -> 4 `i `l -> -> 6 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 255 `i `l `uc ]
+[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
 [; ;interrupts.c: 161: return;
 "161
 [e $UE 268  ]
@@ -2710,9 +2721,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 "168
 [e :UE 268 ]
 }
-[v F2371 `(v ~T0 @X0 1 tf ]
+[v F2372 `(v ~T0 @X0 1 tf ]
 "172
-[v _low_isr `ILF2371 ~T0 @X0 1 e ]
+[v _low_isr `ILF2372 ~T0 @X0 1 e ]
 "180
 {
 [; ;interrupts.c: 172: void low_priority interrupt low_isr(void)
@@ -2860,24 +2871,45 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :UE 286 ]
 }
 "256
-[v _SetHourMin `(v ~T0 @X0 1 ef2`*i`*i ]
+[v _SetHourMin `(v ~T0 @X0 1 ef3`*i`*i`*i ]
 "257
 {
-[; ;interrupts.c: 256: void SetHourMin(int *newHour, int *newMin)
+[; ;interrupts.c: 256: void SetHourMin(int *newHour, int *newMin, int *sec)
 [; ;interrupts.c: 257: {
 [e :U _SetHourMin ]
 "256
 [v _newHour `*i ~T0 @X0 1 r1 ]
 [v _newMin `*i ~T0 @X0 1 r2 ]
+[v _sec `*i ~T0 @X0 1 r3 ]
 "257
 [f ]
-[; ;interrupts.c: 258: globalHours = *newHour;
+[; ;interrupts.c: 258: T0CONbits.TMR0ON = 0;
 "258
-[e = _globalHours -> *U _newHour `uc ]
-[; ;interrupts.c: 259: globalMinutes = *newMin;
-"259
-[e = _globalMinutes -> *U _newMin `uc ]
-[; ;interrupts.c: 260: }
+[e = . . _T0CONbits 0 5 -> -> 0 `i `uc ]
+[; ;interrupts.c: 260: globalHours = *newHour;
 "260
+[e = _globalHours -> *U _newHour `uc ]
+[; ;interrupts.c: 261: globalMinutes = *newMin;
+"261
+[e = _globalMinutes -> *U _newMin `uc ]
+"263
+[v _tmpSec `uc ~T0 @X0 1 a ]
+[; ;interrupts.c: 263: uint8_t tmpSec = *sec;
+[e = _tmpSec -> *U _sec `uc ]
+[; ;interrupts.c: 264: _6sCounter = tmpSec / 6;
+"264
+[e = __6sCounter -> / -> _tmpSec `i -> 6 `i `uc ]
+"265
+[v _secToNext6Sec `uc ~T0 @X0 1 a ]
+[; ;interrupts.c: 265: uint8_t secToNext6Sec = 6 - (tmpSec % 6);
+[e = _secToNext6Sec -> - -> 6 `i % -> _tmpSec `i -> 6 `i `uc ]
+[; ;interrupts.c: 266: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * secToNext6Sec)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * secToNext6Sec)&0xFF)));
+"266
+[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 0 `i `l -> _secToNext6Sec `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 0 `i `l -> _secToNext6Sec `l -> -> 255 `i `l `uc ]
+[; ;interrupts.c: 268: T0CONbits.TMR0ON = 1;
+"268
+[e = . . _T0CONbits 0 5 -> -> 1 `i `uc ]
+[; ;interrupts.c: 269: }
+"269
 [e :UE 288 ]
 }

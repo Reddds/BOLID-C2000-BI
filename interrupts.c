@@ -139,7 +139,7 @@ void high_isr(void)
         return;
       }
       
-      if(INTCONbits.TMR0IF) // Watch timer
+      if(INTCONbits.TMR0IF) // Watch timer (6 sec)
       {
           INTCONbits.TMR0IF = 0;
           _6sCounter++;
@@ -157,7 +157,7 @@ void high_isr(void)
                   }
               }
           }
-          WRITETIMER0(WATCH_TIMER_TICKS_IN_6_S);
+          WRITETIMER0(WATCH_TIMER_TICKS_TO_END_6S);
           return;
       }
 
@@ -253,8 +253,17 @@ bool getHourMin(uint8_t *hour, uint8_t *min)
     return true;
 }
 
-void SetHourMin(int *newHour, int *newMin)
+void SetHourMin(int *newHour, int *newMin, int *sec)
 {
+    T0CONbits.TMR0ON = 0; 
+    
     globalHours = *newHour;
     globalMinutes = *newMin;
+    
+    uint8_t tmpSec = *sec;
+    _6sCounter = tmpSec / 6;
+    uint8_t secToNext6Sec = 6 - (tmpSec % 6);
+    WRITETIMER0(0x10000 - WATCH_TIMER_TICKS_IN_1_SEC * secToNext6Sec);
+    
+    T0CONbits.TMR0ON = 1; // Switch on timer
 }

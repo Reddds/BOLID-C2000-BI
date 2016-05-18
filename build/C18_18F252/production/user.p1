@@ -2558,13 +2558,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [p x EBTR3=OFF ]
 "38
 [p x EBTRB=OFF ]
-[; ;system.h: 69: typedef char int8_t;
-[; ;system.h: 70: typedef unsigned char uint8_t;
-[; ;system.h: 71: typedef unsigned short uint16_t;
-[; ;system.h: 72: typedef unsigned long uint32_t;
-[; ;system.h: 74: typedef unsigned char boolean;
-[; ;system.h: 75: typedef unsigned char bool;
-[; ;system.h: 107: void ConfigureOscillator(void);
+[; ;system.h: 71: typedef char int8_t;
+[; ;system.h: 72: typedef unsigned char uint8_t;
+[; ;system.h: 73: typedef unsigned short uint16_t;
+[; ;system.h: 74: typedef unsigned long uint32_t;
+[; ;system.h: 76: typedef unsigned char boolean;
+[; ;system.h: 77: typedef unsigned char bool;
+[; ;system.h: 109: void ConfigureOscillator(void);
 [; ;__size_t.h: 4: typedef unsigned size_t;
 [; ;time.h: 8: typedef long time_t;
 [; ;time.h: 9: struct tm {
@@ -2616,7 +2616,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.h: 72: void PortWrite(uint8_t *buf, uint8_t buflen);
 [; ;interrupts.h: 73: unsigned long millis();
 [; ;interrupts.h: 75: bool getHourMin(uint8_t *hour, uint8_t *min);
-[; ;interrupts.h: 76: void SetHourMin(int *newHour, int *newMin);
+[; ;interrupts.h: 76: void SetHourMin(int *newHour, int *newMin, int *sec);
 [; ;ModbusRtu.h: 91: enum MB_FC
 [; ;ModbusRtu.h: 92: {
 [; ;ModbusRtu.h: 93: MB_FC_NONE = 0,
@@ -2739,151 +2739,148 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.c: 99: T1CONbits.TMR1ON = 1;
 "99
 [e = . . _T1CONbits 1 0 -> -> 1 `i `uc ]
-[; ;user.c: 102: T0CONbits.T08BIT = 0;
-"102
-[e = . . _T0CONbits 0 4 -> -> 0 `i `uc ]
-[; ;user.c: 103: T0CONbits.T0CS = 0;
+[; ;user.c: 103: T0CONbits.T08BIT = 0;
 "103
+[e = . . _T0CONbits 0 4 -> -> 0 `i `uc ]
+[; ;user.c: 104: T0CONbits.T0CS = 0;
+"104
 [e = . . _T0CONbits 0 3 -> -> 0 `i `uc ]
-[; ;user.c: 105: T0CONbits.PSA = 0;
-"105
+[; ;user.c: 106: T0CONbits.PSA = 0;
+"106
 [e = . . _T0CONbits 0 1 -> -> 0 `i `uc ]
-[; ;user.c: 116: T0CONbits.T0PS = 7;
-"116
+[; ;user.c: 117: T0CONbits.T0PS = 7;
+"117
 [e = . . _T0CONbits 0 0 -> -> 7 `i `uc ]
-[; ;user.c: 120: INTCONbits.TMR0IE = 1;
-"120
-[e = . . _INTCONbits 0 5 -> -> 1 `i `uc ]
-[; ;user.c: 121: INTCON2bits.TMR0IP = 1;
+[; ;user.c: 121: INTCONbits.TMR0IE = 1;
 "121
-[e = . . _INTCON2bits 1 2 -> -> 1 `i `uc ]
-[; ;user.c: 122: ((void)(TMR0H=((0x10000 - (10000000L/4 * 6 / 256 + 0))>>8),TMR0L=((0x10000 - (10000000L/4 * 6 / 256 + 0))&0xFF)));
+[e = . . _INTCONbits 0 5 -> -> 1 `i `uc ]
+[; ;user.c: 122: INTCON2bits.TMR0IP = 1;
 "122
-[e ; = _TMR0H -> >> - -> 65536 `l + / * / -> 10000000 `l -> -> 4 `i `l -> -> 6 `i `l -> -> 256 `i `l -> -> 0 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l + / * / -> 10000000 `l -> -> 4 `i `l -> -> 6 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 255 `i `l `uc ]
-[; ;user.c: 125: INTCONbits.TMR0IF = 0;
-"125
+[e = . . _INTCON2bits 1 2 -> -> 1 `i `uc ]
+[; ;user.c: 123: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * 6)&0xFF)));
+"123
+[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
+[; ;user.c: 126: INTCONbits.TMR0IF = 0;
+"126
 [e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]
-[; ;user.c: 127: T0CONbits.TMR0ON = 1;
-"127
-[e = . . _T0CONbits 0 5 -> -> 1 `i `uc ]
-[; ;user.c: 132: InitUartBuffer();
-"132
+[; ;user.c: 133: InitUartBuffer();
+"133
 [e ( _InitUartBuffer ..  ]
-[; ;user.c: 134: PortBegin();
-"134
-[e ( _PortBegin ..  ]
-[; ;user.c: 135: PIE1bits.RCIE = 1;
+[; ;user.c: 135: PortBegin();
 "135
+[e ( _PortBegin ..  ]
+[; ;user.c: 136: PIE1bits.RCIE = 1;
+"136
 [e = . . _PIE1bits 0 5 -> -> 1 `i `uc ]
-[; ;user.c: 137: IPR1bits.RCIP = 0;
-"137
+[; ;user.c: 138: IPR1bits.RCIP = 0;
+"138
 [e = . . _IPR1bits 0 5 -> -> 0 `i `uc ]
-[; ;user.c: 141: for (unsigned char i = 0; i < 15; i++)
-"141
+[; ;user.c: 142: for (unsigned char i = 0; i < 15; i++)
+"142
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 15 `i 253  ]
 [e $U 254  ]
-"142
+"143
 [e :U 253 ]
-[; ;user.c: 142: _MODBUSInputRegs[i] = 0;
+[; ;user.c: 143: _MODBUSInputRegs[i] = 0;
 [e = *U + &U __MODBUSInputRegs * -> _i `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> -> 0 `i `ui ]
-"141
+"142
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 15 `i 253  ]
 [e :U 254 ]
-"142
+"143
 }
-[; ;user.c: 148: TRISB = 0;
-"148
+[; ;user.c: 149: TRISB = 0;
+"149
 [e = _TRISB -> -> 0 `i `uc ]
-[; ;user.c: 151: LATAbits.LATA0 = 0;
-"151
-[e = . . _LATAbits 0 0 -> -> 0 `i `uc ]
-[; ;user.c: 152: LATAbits.LATA1 = 0;
+[; ;user.c: 152: LATAbits.LATA0 = 0;
 "152
-[e = . . _LATAbits 0 1 -> -> 0 `i `uc ]
-[; ;user.c: 153: LATAbits.LATA2 = 0;
+[e = . . _LATAbits 0 0 -> -> 0 `i `uc ]
+[; ;user.c: 153: LATAbits.LATA1 = 0;
 "153
-[e = . . _LATAbits 0 2 -> -> 0 `i `uc ]
-[; ;user.c: 154: LATAbits.LATA3 = 0;
+[e = . . _LATAbits 0 1 -> -> 0 `i `uc ]
+[; ;user.c: 154: LATAbits.LATA2 = 0;
 "154
-[e = . . _LATAbits 0 3 -> -> 0 `i `uc ]
-[; ;user.c: 155: TRISAbits.RA0 = 0;
+[e = . . _LATAbits 0 2 -> -> 0 `i `uc ]
+[; ;user.c: 155: LATAbits.LATA3 = 0;
 "155
-[e = . . _TRISAbits 1 0 -> -> 0 `i `uc ]
-[; ;user.c: 156: TRISAbits.RA1 = 0;
+[e = . . _LATAbits 0 3 -> -> 0 `i `uc ]
+[; ;user.c: 156: TRISAbits.RA0 = 0;
 "156
-[e = . . _TRISAbits 1 1 -> -> 0 `i `uc ]
-[; ;user.c: 157: TRISAbits.RA2 = 0;
+[e = . . _TRISAbits 1 0 -> -> 0 `i `uc ]
+[; ;user.c: 157: TRISAbits.RA1 = 0;
 "157
-[e = . . _TRISAbits 1 2 -> -> 0 `i `uc ]
-[; ;user.c: 158: TRISAbits.RA3 = 0;
+[e = . . _TRISAbits 1 1 -> -> 0 `i `uc ]
+[; ;user.c: 158: TRISAbits.RA2 = 0;
 "158
+[e = . . _TRISAbits 1 2 -> -> 0 `i `uc ]
+[; ;user.c: 159: TRISAbits.RA3 = 0;
+"159
 [e = . . _TRISAbits 1 3 -> -> 0 `i `uc ]
-[; ;user.c: 160: TRISCbits.RC3 = 1;
-"160
-[e = . . _TRISCbits 1 3 -> -> 1 `i `uc ]
-[; ;user.c: 161: TRISCbits.RC1 = 1;
+[; ;user.c: 161: TRISCbits.RC3 = 1;
 "161
-[e = . . _TRISCbits 1 1 -> -> 1 `i `uc ]
-[; ;user.c: 162: TRISCbits.RC0 = 0;
+[e = . . _TRISCbits 1 3 -> -> 1 `i `uc ]
+[; ;user.c: 162: TRISCbits.RC1 = 1;
 "162
+[e = . . _TRISCbits 1 1 -> -> 1 `i `uc ]
+[; ;user.c: 163: TRISCbits.RC0 = 0;
+"163
 [e = . . _TRISCbits 1 0 -> -> 0 `i `uc ]
-[; ;user.c: 164: LATCbits.LATC2 = 0;
-"164
+[; ;user.c: 165: LATCbits.LATC2 = 0;
+"165
 [e = . . _LATCbits 0 2 -> -> 0 `i `uc ]
-[; ;user.c: 166: }
-"166
+[; ;user.c: 167: }
+"167
 [e :UE 252 ]
 }
-"168
+"169
 [v _SetTime `(v ~T0 @X0 1 ef1`*l ]
-"169
-{
-[; ;user.c: 168: void SetTime(time_t *newTime)
-[; ;user.c: 169: {
-[e :U _SetTime ]
-"168
-[v _newTime `*l ~T0 @X0 1 r1 ]
-"169
-[f ]
-[; ;user.c: 170: currentTime = *newTime;
 "170
-[e = _currentTime *U _newTime ]
-[; ;user.c: 171: }
+{
+[; ;user.c: 169: void SetTime(time_t *newTime)
+[; ;user.c: 170: {
+[e :U _SetTime ]
+"169
+[v _newTime `*l ~T0 @X0 1 r1 ]
+"170
+[f ]
+[; ;user.c: 171: currentTime = *newTime;
 "171
+[e = _currentTime *U _newTime ]
+[; ;user.c: 172: }
+"172
 [e :UE 256 ]
 }
-"179
-[v _AddSecond `(v ~T0 @X0 1 ef ]
 "180
+[v _AddSecond `(v ~T0 @X0 1 ef ]
+"181
 {
-[; ;user.c: 179: void AddSecond()
-[; ;user.c: 180: {
+[; ;user.c: 180: void AddSecond()
+[; ;user.c: 181: {
 [e :U _AddSecond ]
 [f ]
-[; ;user.c: 181: currentTime++;
-"181
+[; ;user.c: 182: currentTime++;
+"182
 [e ++ _currentTime -> -> 1 `i `l ]
-[; ;user.c: 194: }
-"194
+[; ;user.c: 195: }
+"195
 [e :UE 257 ]
 }
-"206
-[v _GetTime `(*l ~T0 @X0 1 ef ]
 "207
+[v _GetTime `(*l ~T0 @X0 1 ef ]
+"208
 {
-[; ;user.c: 206: time_t *GetTime()
-[; ;user.c: 207: {
+[; ;user.c: 207: time_t *GetTime()
+[; ;user.c: 208: {
 [e :U _GetTime ]
 [f ]
-[; ;user.c: 208: return &currentTime;
-"208
+[; ;user.c: 209: return &currentTime;
+"209
 [e ) &U _currentTime ]
 [e $UE 258  ]
-[; ;user.c: 209: }
-"209
+[; ;user.c: 210: }
+"210
 [e :UE 258 ]
 }

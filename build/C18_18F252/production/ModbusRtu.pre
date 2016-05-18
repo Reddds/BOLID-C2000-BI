@@ -2943,7 +2943,7 @@ extern __nonreentrant void _delay3(unsigned char);
 #pragma config EBTR3 = OFF
 #pragma config EBTRB = OFF
 
-# 69
+# 71
 typedef char int8_t;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -2952,7 +2952,7 @@ typedef unsigned long uint32_t;
 typedef unsigned char boolean;
 typedef unsigned char bool;
 
-# 107
+# 109
 void ConfigureOscillator(void);
 
 # 91 "ModbusRtu.h"
@@ -3055,7 +3055,7 @@ void PortWrite(uint8_t *buf, uint8_t buflen);
 unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
-void SetHourMin(int *newHour, int *newMin);
+void SetHourMin(int *newHour, int *newMin, int *sec);
 
 # 15 "ModbusRtu.c"
 typedef struct

@@ -3068,7 +3068,7 @@ extern time_t mktime(struct tm *);
 #pragma config EBTR3 = OFF
 #pragma config EBTRB = OFF
 
-# 69
+# 71
 typedef char int8_t;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -3077,7 +3077,7 @@ typedef unsigned long uint32_t;
 typedef unsigned char boolean;
 typedef unsigned char bool;
 
-# 107
+# 109
 void ConfigureOscillator(void);
 
 # 18 "user.h"
@@ -3148,7 +3148,7 @@ void PortWrite(uint8_t *buf, uint8_t buflen);
 unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
-void SetHourMin(int *newHour, int *newMin);
+void SetHourMin(int *newHour, int *newMin, int *sec);
 
 # 46 "main.c"
 bool IsBusserOn = 0;
@@ -3335,22 +3335,17 @@ CCP1CONbits.DC1B = dc & 0x03;
 CCPR1L = (uint8_t)(dc >> 2);
 }
 
-# 418
+
+
 void InitFromEeprom()
 {
-
-# 428
 eventAcceptTime = ( EEADR = 10, (void)0, RD = 1, EEDATA);
-
-
-
-
 blinkDuration = ((uint16_t)( EEADR = 15, (void)0, RD = 1, EEDATA)) << 6;
 blinkPeriod = ((uint16_t)( EEADR = 16, (void)0, RD = 1, EEDATA)) << 6;
 
 eventCount = ( EEADR = 18, (void)0, RD = 1, EEDATA);
 
-# 442
+# 418
 _soundCount = ( EEADR = 140, (void)0, RD = 1, EEDATA);
 if(_soundCount == 0xFF)
 _soundCount = 0;
@@ -3367,7 +3362,7 @@ LoadNextEvent();
 _MODBUSInputRegs[6] = (((uint16_t)_soundCount<<8)|_isSoundPlaying);
 }
 
-# 466
+# 442
 uint8_t currentLedBlock = 0;
 unsigned long diffTime;
 unsigned long oldBlinkOnTime = 0;
@@ -3431,7 +3426,7 @@ currentLedBlock &= 0xFB;
 
 }
 
-# 535
+# 511
 unsigned long _playingEndMs = 0;
 
 
@@ -3467,7 +3462,7 @@ SetBuzzerDuty(duration);
 TRISCbits.TRISC2 = 0; T2CONbits.TMR2ON = 1; IsBusserOn = 1;;
 }
 
-# 589
+# 565
 bool PlaySound(uint8_t soundId, uint16_t playDuration)
 {
 if(soundId >= _soundCount)
@@ -3522,7 +3517,7 @@ uint8_t hour, minute;
 if(!getHourMin(&hour, &minute))
 return;
 
-# 649
+# 625
 do
 {
 if(curEventNum == 0xff)
@@ -3539,7 +3534,7 @@ _MODBUSInputRegs[3] = (((uint16_t)0<<8)|0);
 return;
 }
 
-# 674
+# 650
 uint8_t v1 = ( EEADR = 18 + 1 + curEventNum * 2, (void)0, RD = 1, EEDATA);
 curEventHour = v1 & 0x1F;
 
@@ -3612,7 +3607,7 @@ if(_nextEventSoundId != 0)
 PlaySound(_nextEventSoundId - 1, _nextEventPlayDuration);
 }
 
-# 753
+# 729
 eventResetSecond = *GetTime() + eventAcceptTime;
 LoadNextEvent();
 }
@@ -3620,7 +3615,7 @@ _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
 
 }
 
-# 773
+# 749
 }
 
 void main(void)
@@ -3635,13 +3630,13 @@ InitApp();
 
 InitFromEeprom();
 
-# 794
+# 770
 unsigned long lastMs = millis();
 
 
 pwm_init();
 
-# 803
+# 779
 unsigned long oldBuzzerOnTime = 0;
 uint8_t oldMinute = 0xff;
 
@@ -3652,7 +3647,6 @@ while(1)
 unsigned long curMs = millis();
 ProcessLightBlock(&curMs);
 
-# 831
 if(_isSoundPlaying && curMs >= _playingEndMs)
 {
 SoundPlayNextStep();
@@ -3671,10 +3665,9 @@ else
 StopPlaying();
 }
 
-# 864
 }
 
-# 871
+
 if(curMs - lastMs >= 1000)
 {
 AddSecond();
@@ -3699,7 +3692,6 @@ _MODBUSInputRegs[4] = (((uint16_t)hour<<8)|minute);
 
 lastMs = curMs;
 
-# 900
 }
 modbusState = ModbusPoll(_MODBUSDiscreteInputs, &_MODBUSCoils, _MODBUSInputRegs, 15, _MODBUSHoldingRegs, 15);
 io_poll();
@@ -3707,6 +3699,7 @@ io_poll();
 
 
 }
+
 
 void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth)
 {
@@ -3717,7 +3710,7 @@ newTime.tm_mday = *daySec >> 8;
 newTime.tm_hour = *hourMin >> 8;
 newTime.tm_min = *hourMin & 0xFF;
 newTime.tm_sec = *daySec & 0xFF;
-SetHourMin(&newTime.tm_hour, &newTime.tm_min);
+SetHourMin(&newTime.tm_hour, &newTime.tm_min, &newTime.tm_sec);
 time_t newRawTime = mktime(&newTime);
 SetTime(&newRawTime);
 LightStatusLed(0x05, 0, 0);
@@ -3777,7 +3770,7 @@ switch(command)
 {
 case 0x7F:
 
-# 976
+# 911
 #asm
                         RESET;
 #endasm 
@@ -3796,7 +3789,7 @@ do{ while (WR) { continue; } EEADR = (18); EEDATA = (0); (void)0; CARRY = 0; if 
 ModbusSetExceptionStatusBit(0, 1);
 break;
 
-# 1015
+# 950
 case 0x82:
 
 
@@ -3807,7 +3800,7 @@ _MODBUSHoldingRegs[1] = 0;
 ModbusSetExceptionStatusBit(0, 1);
 break;
 
-# 1030
+# 965
 case 0x91:
 
 PlaySound(((unsigned char)((_MODBUSHoldingRegs[0])&0xFF)), ((unsigned char)((_MODBUSHoldingRegs[1])&0xFF)));

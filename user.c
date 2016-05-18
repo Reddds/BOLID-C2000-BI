@@ -98,7 +98,8 @@ void InitApp(void)
     
     T1CONbits.TMR1ON = 1; // Switch on timer
     //--------------------------------------------------------------------------
-    // Init Timer 0 (1 min) ----------------------------------------------------
+    
+    // Init Timer 0 (6 sec) ----------------------------------------------------
     T0CONbits.T08BIT = 0; // 16 bit
     T0CONbits.T0CS = 0; //Internal instruction cycle clock (CLKO)
     // FCY = 2 500 000
@@ -119,12 +120,12 @@ void InitApp(void)
     
     INTCONbits.TMR0IE   = 1;  // Enable interrupt by tomer 1 (interrupt) TMR1
     INTCON2bits.TMR0IP   = 1;  // Enable interrupt priority TMR1
-    WRITETIMER0(WATCH_TIMER_TICKS_IN_6_S);
+    WRITETIMER0(WATCH_TIMER_TICKS_TO_END_6S);
     //TMR1L              = TIMER_TICKS_IN_1_MS_L; // ???? ???? ?? ????? ??????????? ? ???? ??????? ?? 0xFFFF
     //TMR1H              = TIMER_TICKS_IN_1_MS_H;
     INTCONbits.TMR0IF   = 0; // ??????? ???? ?????????? (????? ????? ?? ????????? ? ??????????)
     
-    T0CONbits.TMR0ON = 1; // Switch on timer
+    //T0CONbits.TMR0ON = 1; // Switch on timer
     //--------------------------------------------------------------------------
     
     

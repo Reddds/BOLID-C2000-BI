@@ -400,36 +400,12 @@ void SetBuzzerDuty(uint16_t dc)
     //tempValue = dc >> 2;
     CCPR1L = (uint8_t)(dc >> 2);
 }
-/*
-void PrintTime()
-{
-    time_t *rawtime = GetTime();
-    struct tm * curTime = gmtime(rawtime);
-    char timeStr[30];
-    int sLen = sprintf(timeStr, "%04d.%02d.%02d %02d:%02d:%02d\n", 
-            curTime->tm_year + 1900, curTime->tm_mon, curTime->tm_mday,
-            curTime->tm_hour, curTime->tm_min, curTime->tm_sec);
-    PortWrite(timeStr, sLen);
-
-}*/
 
 
 
 void InitFromEeprom()
 {
-//    buzzeLoudDuration       = _EEREG_EEPROM_READ(EE_BUZZER_LOUD_DURATION);
-//    buzzeQuietDuration      = _EEREG_EEPROM_READ(EE_BUZZER_QUIET_DURATION);
-//    buzzerInfoPeriod        = _EEREG_EEPROM_READ(EE_BUZZER_INFO_PERIOD);
-//    buzzerAlarmPeriod       = _EEREG_EEPROM_READ(EE_BUZZER_ALARM_PERIOD);
-//    buzzerOnOffDuration     = word(_EEREG_EEPROM_READ(EE_BUZZER_ON_OFF_DURATION), 0); // 256 ms
-//    buzzerOnOffPeriod       = word(_EEREG_EEPROM_READ(EE_BUZZER_ON_OFF_PERIOD), 0); 
-//    buzzeEscaladeTime       = _EEREG_EEPROM_READ(EE_BUZZER_ESCALADE_TIME);
-//    buzzerStartDurationDiv  = _EEREG_EEPROM_READ(EE_BUZZER_START_DURATION_DIV);
     eventAcceptTime         = _EEREG_EEPROM_READ(EE_EVENT_ACCEPT_TIME);
-//    eveningTimeHour         = _EEREG_EEPROM_READ(EE_EVENING_TIME_HOUR);
-//    nightStartHour          = _EEREG_EEPROM_READ(EE_NIGHT_START_HOUR);
-//    nightEndHour            = _EEREG_EEPROM_READ(EE_NIGHT_END_HOUR);
-//    morningTimeHour         = _EEREG_EEPROM_READ(EE_MORNING_TIME_HOUR);
     blinkDuration           = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_DURATION)) << 6;
     blinkPeriod             = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_PERIOD)) << 6;
     
@@ -809,25 +785,7 @@ void main(void)
     {
         unsigned long curMs = millis();
         ProcessLightBlock(&curMs);
-        //LATCbits.LATC0 = PORTCbits.RC3;
-        
-        
-//        if(currentAlarmedEventNum != 0xff)
-//        {
-//            diffTime = curMs - oldBuzzerOnTime;
-//            if(diffTime > buzzerOnOffPeriod)
-//            {
-//                SetBuzzerDuty(buzzeLoudDuration); //!!!!!
-//                PR2 = buzzerAlarmPeriod;
-//                StartBuzzer;
-//                oldBuzzerOnTime = curMs;
-//            }
-//            else if(IsBusserOn && diffTime > buzzerOnOffDuration)
-//            {
-//                StopBuzzer;
-//            }
-//        }
-        
+
         if(_isSoundPlaying && curMs >= _playingEndMs)
         {
             SoundPlayNextStep();
@@ -845,27 +803,8 @@ void main(void)
             {
                 StopPlaying();
             }
-            
-            
-            
-//            diffTime = curMs - oldBuzzerOnTime;
-//            if(diffTime > buzzerOnOffPeriod)
-//            {
-//                SetBuzzerDuty(buzzeLoudDuration); //!!!!!
-//                PR2 = buzzerAlarmPeriod;
-//                StartBuzzer;
-//                oldBuzzerOnTime = curMs;
-//            }
-//            else if(IsBusserOn && diffTime > buzzerOnOffDuration)
-//            {
-//                StopBuzzer;
-//            }
-                
+   
         }
-//        else
-//        {
-//            StopBuzzer;
-//        }
 
         
         if(curMs - lastMs >= 1000)
@@ -892,11 +831,6 @@ void main(void)
             
             lastMs = curMs;
 
-            // tests
-//            if(*GetTime() >= soundTestEnd)
-//            {
-//                StopPlaying();
-//            }
         }
         modbusState = ModbusPoll(_MODBUSDiscreteInputs, &_MODBUSCoils, _MODBUSInputRegs, modbusInputBufLen, _MODBUSHoldingRegs, modbusHoldingBufLen);
         io_poll();
@@ -904,6 +838,7 @@ void main(void)
 
 
 }
+
 
 void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth)
 {
@@ -914,7 +849,7 @@ void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth)
     newTime.tm_hour = *hourMin >> 8;
     newTime.tm_min = *hourMin & 0xFF;
     newTime.tm_sec = *daySec & 0xFF;
-    SetHourMin(&newTime.tm_hour, &newTime.tm_min);
+    SetHourMin(&newTime.tm_hour, &newTime.tm_min, &newTime.tm_sec);
     time_t newRawTime = mktime(&newTime);
     SetTime(&newRawTime);
     LightStatusLed(LED_STATUS_BLOCKING, false, false);

@@ -3036,7 +3036,7 @@ typedef unsigned char bool;
 #pragma config EBTR3 = OFF
 #pragma config EBTRB = OFF
 
-# 69
+# 71
 typedef char int8_t;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -3045,7 +3045,7 @@ typedef unsigned long uint32_t;
 typedef unsigned char boolean;
 typedef unsigned char bool;
 
-# 107
+# 109
 void ConfigureOscillator(void);
 
 # 4 "C:\Program Files (x86)\Microchip\xc8\v1.37\include\__size_t.h"
@@ -3105,7 +3105,7 @@ void PortWrite(uint8_t *buf, uint8_t buflen);
 unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
-void SetHourMin(int *newHour, int *newMin);
+void SetHourMin(int *newHour, int *newMin, int *sec);
 
 # 28 "interrupts.c"
 static volatile unsigned long millisecondsFromStart = 0;
@@ -3199,7 +3199,7 @@ globalHours = 0;
 }
 }
 }
-((void)(TMR0H=((0x10000 - (10000000L/4 * 6 / 256 + 0))>>8),TMR0L=((0x10000 - (10000000L/4 * 6 / 256 + 0))&0xFF)));
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * 6)&0xFF)));
 return;
 }
 
@@ -3266,8 +3266,17 @@ return 0;
 return 1;
 }
 
-void SetHourMin(int *newHour, int *newMin)
+void SetHourMin(int *newHour, int *newMin, int *sec)
 {
+T0CONbits.TMR0ON = 0;
+
 globalHours = *newHour;
 globalMinutes = *newMin;
+
+uint8_t tmpSec = *sec;
+_6sCounter = tmpSec / 6;
+uint8_t secToNext6Sec = 6 - (tmpSec % 6);
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * secToNext6Sec)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * secToNext6Sec)&0xFF)));
+
+T0CONbits.TMR0ON = 1;
 }
