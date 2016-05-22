@@ -2943,7 +2943,7 @@ extern __nonreentrant void _delay3(unsigned char);
 #pragma config EBTR3 = OFF
 #pragma config EBTRB = OFF
 
-# 71
+# 72
 typedef char int8_t;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -2952,10 +2952,10 @@ typedef unsigned long uint32_t;
 typedef unsigned char boolean;
 typedef unsigned char bool;
 
-# 109
+# 110
 void ConfigureOscillator(void);
 
-# 91 "ModbusRtu.h"
+# 99 "ModbusRtu.h"
 enum MB_FC
 {
 MB_FC_NONE = 0,
@@ -2970,8 +2970,13 @@ MB_FC_WRITE_MULTIPLE_COILS = 15,
 MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
 MB_FC_REPORT_SLAVE_ID = 17,
 MB_FC_WRITE_FILE_RECORD = 21,
-MB_FC_READ_DEVICE_ID = 43
+MB_FC_READ_DEVICE_ID = 43,
+
+MB_FC_SYSTEM_COMMAND = 100,
+MB_FC_USER_COMMAND = 101,
+MB_FC_READ_DEVICE_STATUS = 102
 };
+
 
 
 
@@ -2995,8 +3000,20 @@ uint8_t ModbusGetState();
 uint8_t ModbusGetLastError();
 void ModbusSetID( uint8_t u8id );
 void ModbusEnd();
-uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count, uint8_t *command);
 void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
+
+uint8_t *ModbusGetUserCommandId();
+uint8_t *ModbusGetUserCommandData();
+uint16_t ModbusGetUserCommandAdditional1();
+uint8_t *ModbusGetUserCommandAdditional1Hi();
+uint8_t *ModbusGetUserCommandAdditional1Lo();
+uint16_t ModbusGetUserCommandAdditional2();
+uint8_t *ModbusGetUserCommandAdditional2Hi();
+uint8_t *ModbusGetUserCommandAdditional2Lo();
+uint16_t ModbusGetUserCommandAdditional3();
+uint8_t *ModbusGetUserCommandAdditional3Hi();
+uint8_t *ModbusGetUserCommandAdditional3Lo();
 
 # 4 "C:\Program Files (x86)\Microchip\xc8\v1.37\include\__size_t.h"
 typedef unsigned size_t;
@@ -3057,9 +3074,9 @@ unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
 bool getTotalMinutes(uint16_t *totalMinutes);
-void SetHourMin(int *newHour, int *newMin, int *sec);
+void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
 
-# 15 "ModbusRtu.c"
+# 17 "ModbusRtu.c"
 typedef struct
 {
 uint8_t u8id;
@@ -3077,7 +3094,7 @@ EXCEPTION_SIZE = 3,
 CHECKSUM_SIZE = 2
 };
 
-# 37
+# 39
 enum MESSAGE
 {
 ID = 0,
@@ -3098,6 +3115,20 @@ MEI_READ_DEV_ID,
 MEI_OBJ_ID
 };
 
+enum COMMAND_MESSAGE
+{
+COM_ID = 0,
+COM_FUNC,
+COM_COM_ID,
+COM_DATA,
+COM_ADD1_HI,
+COM_ADD1_LO,
+COM_ADD2_HI,
+COM_ADD2_LO,
+COM_ADD3_HI,
+COM_ADD3_LO,
+};
+
 enum FILE_MESSAGE
 {
 FILE_DATA_LEN = 2,
@@ -3110,8 +3141,6 @@ FILE_REC_LEN_HI,
 FILE_REC_LEN_LO,
 FILE_FIRST_BYTE
 };
-
-
 
 enum COM_STATES
 {
@@ -3150,10 +3179,17 @@ MB_FC_WRITE_MULTIPLE_COILS,
 MB_FC_WRITE_MULTIPLE_REGISTERS,
 MB_FC_REPORT_SLAVE_ID,
 MB_FC_WRITE_FILE_RECORD,
-MB_FC_READ_DEVICE_ID
+MB_FC_READ_DEVICE_ID,
+
+MB_FC_SYSTEM_COMMAND,
+MB_FC_USER_COMMAND,
+MB_FC_READ_DEVICE_STATUS
 };
 
-# 116
+
+
+
+uint8_t _deviceStatus;
 uint8_t _u8id;
 uint8_t _u8serno;
 uint8_t _u8txenpin;
@@ -3169,9 +3205,21 @@ uint16_t _u16timeOut;
 uint32_t _u32time, _u32timeOut;
 uint8_t _exceptionStatus = 0;
 
-uint8_t _lastCommand = 0;
+uint8_t _lastFunction = 0;
 uint16_t _lastAddress = 0;
 uint16_t _lastCount = 0;
+uint8_t _lastCommand = 0;
+
+
+uint8_t ModbusUserCommandId;
+uint8_t ModbusUserCommandData;
+uint8_t ModbusUserCommandAdditional1Hi;
+uint8_t ModbusUserCommandAdditional1Lo;
+uint8_t ModbusUserCommandAdditional2Hi;
+uint8_t ModbusUserCommandAdditional2Lo;
+uint8_t ModbusUserCommandAdditional3Hi;
+uint8_t ModbusUserCommandAdditional3Lo;
+
 
 void ModbusInit(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
 void ModbusSendTxBuffer();
@@ -3193,9 +3241,35 @@ int8_t ModbusProcess_FC17();
 
 int8_t ModbusProcess_FC21();
 int8_t ModbusProcess_FC43();
+int8_t ModbusProcess_FC100();
+int8_t ModbusProcess_FC101();
+int8_t ModbusProcess_FC102();
 void ModbusBuildException(uint8_t u8exception);
 
-# 171
+
+
+uint8_t *ModbusGetUserCommandId(){return &ModbusUserCommandId;}
+uint8_t *ModbusGetUserCommandData(){return &ModbusUserCommandData;}
+uint16_t ModbusGetUserCommandAdditional1()
+{
+return (((uint16_t)ModbusUserCommandAdditional1Hi<<8)|ModbusUserCommandAdditional1Lo);
+}
+uint8_t *ModbusGetUserCommandAdditional1Hi(){return &ModbusUserCommandAdditional1Hi;}
+uint8_t *ModbusGetUserCommandAdditional1Lo(){return &ModbusUserCommandAdditional1Lo;}
+uint16_t ModbusGetUserCommandAdditional2()
+{
+return (((uint16_t)ModbusUserCommandAdditional2Hi<<8)|ModbusUserCommandAdditional2Lo);
+}
+uint8_t *ModbusGetUserCommandAdditional2Hi(){return &ModbusUserCommandAdditional2Hi;}
+uint8_t *ModbusGetUserCommandAdditional2Lo(){return &ModbusUserCommandAdditional2Lo;}
+uint16_t ModbusGetUserCommandAdditional3()
+{
+return (((uint16_t)ModbusUserCommandAdditional3Hi<<8)|ModbusUserCommandAdditional3Lo);
+}
+uint8_t *ModbusGetUserCommandAdditional3Hi(){return &ModbusUserCommandAdditional3Hi;}
+uint8_t *ModbusGetUserCommandAdditional3Lo(){return &ModbusUserCommandAdditional3Lo;}
+
+# 227
 void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
 {
 ModbusInit(u8id, u8serno, u8txenpin);
@@ -3206,11 +3280,11 @@ void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value)
 (value ? ((_exceptionStatus) |= ((unsigned short)1 << (bitNum))) : ((_exceptionStatus) &= ~((unsigned short)1 << (bitNum))));
 }
 
-# 405
+# 461
 uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
 uint16_t *holdingRegs, const uint8_t holdingRegsCount)
 {
-_lastCommand = MB_FC_NONE;
+_lastFunction = MB_FC_NONE;
 
 
 
@@ -3298,6 +3372,13 @@ case MB_FC_WRITE_FILE_RECORD:
 return ModbusProcess_FC21();
 case MB_FC_READ_DEVICE_ID:
 return ModbusProcess_FC43();
+case MB_FC_SYSTEM_COMMAND:
+return ModbusProcess_FC100();
+case MB_FC_USER_COMMAND:
+return ModbusProcess_FC101();
+case MB_FC_READ_DEVICE_STATUS:
+return ModbusProcess_FC102();
+
 default:
 break;
 }
@@ -3308,6 +3389,7 @@ return i8state;
 
 void ModbusInit(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
 {
+_deviceStatus = 0;
 _u8id = u8id;
 _u8serno = (u8serno > 3) ? 0 : u8serno;
 _u8txenpin = u8txenpin;
@@ -3328,7 +3410,7 @@ _u8BufferSize++;
 return _u8BufferSize;
 }
 
-# 533
+# 597
 int8_t ModbusGetRxBuffer()
 {
 bool bBuffOverflow = 0;
@@ -3354,7 +3436,7 @@ return ERR_BUFF_OVERFLOW;
 return _u8BufferSize;
 }
 
-# 570
+# 634
 void ModbusSendTxBuffer()
 {
 
@@ -3370,7 +3452,7 @@ _u8BufferSize++;
 
 PortWrite(_au8Buffer, _u8BufferSize);
 
-# 589
+# 653
 _u8BufferSize = 0;
 
 
@@ -3380,7 +3462,7 @@ _u32timeOut = millis() + (unsigned long) _u16timeOut;
 _u16OutCnt++;
 }
 
-# 680
+# 744
 uint16_t ModbusCalcCRC(uint8_t u8length)
 {
 unsigned int temp, temp2, flag;
@@ -3405,7 +3487,7 @@ temp &= 0xFFFF;
 return temp;
 }
 
-# 712
+# 776
 uint8_t ModbusValidateRequest()
 {
 
@@ -3504,12 +3586,23 @@ return EXC_REGS_QUANT;
 if(readDevId == 0x04 && _au8Buffer[ MEI_OBJ_ID ] > 0x06)
 return EXC_ADDR_RANGE;
 break;
+
+case MB_FC_SYSTEM_COMMAND:
+if(_au8Buffer[COM_COM_ID] != 0x7F
+&& _au8Buffer[COM_COM_ID] != 0x01
+&& _au8Buffer[COM_COM_ID] != 0x10)
+return EXC_REGS_QUANT;
+break;
+case MB_FC_USER_COMMAND:
+break;
+case MB_FC_READ_DEVICE_STATUS:
+break;
 }
-_lastCommand = _au8Buffer[ FUNC ];
+_lastFunction = _au8Buffer[ FUNC ];
 return 0;
 }
 
-# 821
+# 896
 void ModbusBuildException(uint8_t u8exception)
 {
 uint8_t u8func = _au8Buffer[ FUNC ];
@@ -3521,16 +3614,18 @@ _u8BufferSize = EXCEPTION_SIZE;
 }
 
 
-uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
+uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count, uint8_t *command)
 {
 if (address != (0))
 *address = _lastAddress;
 if (count != (0))
 *count = _lastCount;
-return &_lastCommand;
+if(command != (0))
+*command = _lastCommand;
+return &_lastFunction;
 }
 
-# 849
+# 926
 int8_t ModbusProcess_FC1(uint16_t regs)
 {
 
@@ -3561,7 +3656,7 @@ u8currentBit = (uint8_t) u16coil;
 
 ((((regs) >> (u8currentBit)) & 0x01) ? ((_au8Buffer[ _u8BufferSize ]) |= ((unsigned short)1 << (u8bitsno))) : ((_au8Buffer[ _u8BufferSize ]) &= ~((unsigned short)1 << (u8bitsno))));
 
-# 881
+# 958
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3579,7 +3674,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 906
+# 983
 int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size)
 {
 uint8_t u8StartAdd = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
@@ -3605,7 +3700,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 939
+# 1016
 int8_t ModbusProcess_FC5(uint16_t *regs)
 {
 
@@ -3621,7 +3716,7 @@ u8currentBit = (uint8_t) (u16coil % 16);
 
 (_au8Buffer[ NB_HI ] == 0xff ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 959
+# 1036
 _u8BufferSize = 6;
 u8CopyBufferSize = _u8BufferSize + 2;
 ModbusSendTxBuffer();
@@ -3629,7 +3724,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 974
+# 1051
 int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
 {
 uint16_t u16add = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
@@ -3659,7 +3754,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1010
+# 1087
 int8_t ModbusProcess_FC15(uint16_t *regs)
 {
 
@@ -3686,10 +3781,10 @@ u8currentBit = (uint8_t) u16coil;
 
 bTemp = (((_au8Buffer[ u8frameByte ]) >> (u8bitsno)) & 0x01);
 
-# 1038
+# 1115
 (bTemp ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 1043
+# 1120
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3707,7 +3802,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1068
+# 1145
 int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size)
 {
 
@@ -3729,7 +3824,7 @@ for (i = 0; i < u8regsno && (u16StartAdd + i) < u8size; i++)
 {
 temp = (((uint16_t)_au8Buffer[ (BYTE_CNT + 1) + i * 2 ]<<8)|_au8Buffer[ (BYTE_CNT + 2) + i * 2 ]);
 
-# 1091
+# 1168
 regs[ u16StartAdd + i ] = temp;
 }
 u8CopyBufferSize = _u8BufferSize + 2;
@@ -3738,25 +3833,25 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1107
+# 1184
 int8_t ModbusProcess_FC17()
 {
-_au8Buffer[ 2 ] = sizeof("Tablo s raspisaniem turo") + 1 + 1;
+_au8Buffer[ 2 ] = 4;
 
 _u8BufferSize = 3;
+_au8Buffer[_u8BufferSize++] = 0x01;
+_au8Buffer[_u8BufferSize++] = 0x01;
+_au8Buffer[_u8BufferSize++] = 0x01;
+_au8Buffer[_u8BufferSize++] = 0x01;
 
-for(uint8_t i = 0; i < sizeof("Tablo s raspisaniem turo"); i++, _u8BufferSize++)
-_au8Buffer[_u8BufferSize] = "Tablo s raspisaniem turo"[i];
-
-_au8Buffer[_u8BufferSize++] = '!';
-_au8Buffer[_u8BufferSize++] = '>';
+_au8Buffer[_u8BufferSize++] = 0xff;
 uint8_t u8CopyBufferSize = _u8BufferSize;
 ModbusSendTxBuffer();
 
 return u8CopyBufferSize;
 }
 
-# 1132
+# 1209
 int8_t ModbusProcess_FC21()
 {
 
@@ -3770,7 +3865,7 @@ _lastCount = recLenBytes;
 uint8_t u8CopyBufferSize;
 uint8_t i;
 
-# 1149
+# 1226
 _u8BufferSize = requestDataLen + 1;
 
 
@@ -3799,10 +3894,10 @@ int8_t ModbusProcess_FC43()
 {
 uint8_t devIdCode = _au8Buffer[ 3 ];
 
-# 1183
+# 1260
 uint8_t objId = _au8Buffer[ 4 ];
 
-# 1194
+# 1271
 _au8Buffer[ 5 ] = 0x00;
 _au8Buffer[ 6 ] = 0x00;
 
@@ -3860,6 +3955,74 @@ break;
 break;
 }
 uint8_t u8CopyBufferSize = _u8BufferSize;
+ModbusSendTxBuffer();
+
+return u8CopyBufferSize;
+}
+
+
+int8_t ModbusProcess_FC100()
+{
+_u8BufferSize = 10;
+_lastCommand = _au8Buffer[COM_COM_ID];
+switch(_lastCommand)
+{
+case 0x7F:
+
+# 1341
+#asm
+                RESET;
+#endasm 
+            break;
+case 0x01:
+break;
+case 0x10:
+SetHourMin(&(_au8Buffer[COM_ADD1_HI]), &(_au8Buffer[COM_ADD1_LO]), &(_au8Buffer[COM_ADD2_LO]));
+
+
+struct tm newTime;
+newTime.tm_year = _au8Buffer[COM_ADD3_LO] + 100;
+newTime.tm_mon = _au8Buffer[COM_ADD3_HI];
+newTime.tm_mday = _au8Buffer[COM_ADD2_HI];
+newTime.tm_hour = _au8Buffer[COM_ADD1_HI];
+newTime.tm_min = _au8Buffer[COM_ADD1_LO];
+newTime.tm_sec = _au8Buffer[COM_ADD2_LO];
+time_t newRawTime = mktime(&newTime);
+SetTime(&newRawTime);
+
+((_deviceStatus) |= ((unsigned short)1 << (0x00)));
+ModbusSetExceptionStatusBit(0, 1);
+break;
+}
+uint8_t u8CopyBufferSize = _u8BufferSize + 2;
+ModbusSendTxBuffer();
+
+return u8CopyBufferSize;
+}
+
+int8_t ModbusProcess_FC101()
+{
+_u8BufferSize = 10;
+ModbusUserCommandId = _au8Buffer[COM_COM_ID];
+ModbusUserCommandData = _au8Buffer[COM_DATA];
+ModbusUserCommandAdditional1Hi = _au8Buffer[COM_ADD1_HI];
+ModbusUserCommandAdditional1Lo = _au8Buffer[COM_ADD1_LO];
+ModbusUserCommandAdditional2Hi = _au8Buffer[COM_ADD2_HI];
+ModbusUserCommandAdditional2Lo = _au8Buffer[COM_ADD2_LO];
+ModbusUserCommandAdditional3Hi = _au8Buffer[COM_ADD3_HI];
+ModbusUserCommandAdditional3Lo = _au8Buffer[COM_ADD3_LO];
+
+uint8_t u8CopyBufferSize = _u8BufferSize + 2;
+ModbusSendTxBuffer();
+
+return u8CopyBufferSize;
+}
+
+int8_t ModbusProcess_FC102()
+{
+_au8Buffer[FUNC + 1] = _deviceStatus;
+_u8BufferSize = 3;
+uint8_t u8CopyBufferSize = _u8BufferSize + 2;
 ModbusSendTxBuffer();
 
 return u8CopyBufferSize;

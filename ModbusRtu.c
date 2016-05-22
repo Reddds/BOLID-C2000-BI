@@ -12,6 +12,8 @@
 #include "user.h"
 #include "interrupts.h"
 
+#define INPUT_TIME_SET 0x00
+
 typedef struct
 {
     uint8_t u8id; /*!< Slave address between 1 and 247. 0 means broadcast */
@@ -54,6 +56,20 @@ enum MEI_MESSAGE
     MEI_OBJ_ID // Object Id
 };
 
+enum COMMAND_MESSAGE
+{
+    COM_ID = 0, //!< ID field
+    COM_FUNC, //!< Function code position
+    COM_COM_ID, // Command Id
+    COM_DATA,
+    COM_ADD1_HI,
+    COM_ADD1_LO,
+    COM_ADD2_HI,
+    COM_ADD2_LO,
+    COM_ADD3_HI,
+    COM_ADD3_LO,
+};
+
 enum FILE_MESSAGE
 {
     FILE_DATA_LEN = 2, //!< Request data length
@@ -66,8 +82,6 @@ enum FILE_MESSAGE
     FILE_REC_LEN_LO, //!< Record length low byte
     FILE_FIRST_BYTE
 };
-
-
 
 enum COM_STATES
 {
@@ -106,13 +120,17 @@ const unsigned char fctsupported[] = {
     MB_FC_WRITE_MULTIPLE_REGISTERS,
     MB_FC_REPORT_SLAVE_ID,
     MB_FC_WRITE_FILE_RECORD,
-    MB_FC_READ_DEVICE_ID
+    MB_FC_READ_DEVICE_ID,
+    
+    MB_FC_SYSTEM_COMMAND,
+    MB_FC_USER_COMMAND,
+    MB_FC_READ_DEVICE_STATUS
 };
 
 #define T35  5
 #define MAX_BUFFER  140	//!< maximum size for the communication buffer in bytes
 
-
+uint8_t _deviceStatus; // 0- Time set, 1 - need time set and sync
 uint8_t _u8id; //!< 0=master, 1..247=slave number
 uint8_t _u8serno; //!< serial port: 0-Serial, 1..3-Serial1..Serial3
 uint8_t _u8txenpin; //!< flow control pin: 0=USB or RS-232 mode, >0=RS-485 mode
@@ -128,9 +146,21 @@ uint16_t _u16timeOut;
 uint32_t _u32time, _u32timeOut;
 uint8_t _exceptionStatus = 0;
 
-uint8_t _lastCommand = 0;
+uint8_t _lastFunction = 0;
 uint16_t _lastAddress = 0;
 uint16_t _lastCount = 0; // number of coils or registers or file length in bytes in last command 
+uint8_t _lastCommand = 0;
+
+
+uint8_t ModbusUserCommandId;
+uint8_t ModbusUserCommandData;
+uint8_t ModbusUserCommandAdditional1Hi;
+uint8_t ModbusUserCommandAdditional1Lo;
+uint8_t ModbusUserCommandAdditional2Hi;
+uint8_t ModbusUserCommandAdditional2Lo;
+uint8_t ModbusUserCommandAdditional3Hi;
+uint8_t ModbusUserCommandAdditional3Lo;
+
 
 void ModbusInit(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
 void ModbusSendTxBuffer();
@@ -152,8 +182,34 @@ int8_t ModbusProcess_FC17(); //Report Slave ID
 // Writing to EEPROM
 int8_t ModbusProcess_FC21(); //Write File Record
 int8_t ModbusProcess_FC43(); // 43 / 14 (0x2B / 0x0E) Read Device Identification
+int8_t ModbusProcess_FC100(); // system commands
+int8_t ModbusProcess_FC101(); // user commands
+int8_t ModbusProcess_FC102(); // Get device state
 void ModbusBuildException(uint8_t u8exception); // build exception message
 /* _____PUBLIC FUNCTIONS_____________________________________________________ */
+
+
+  uint8_t *ModbusGetUserCommandId(){return &ModbusUserCommandId;}
+  uint8_t *ModbusGetUserCommandData(){return &ModbusUserCommandData;}
+  uint16_t ModbusGetUserCommandAdditional1()
+  {
+      return word(ModbusUserCommandAdditional1Hi, ModbusUserCommandAdditional1Lo);
+  }
+  uint8_t *ModbusGetUserCommandAdditional1Hi(){return &ModbusUserCommandAdditional1Hi;}
+  uint8_t *ModbusGetUserCommandAdditional1Lo(){return &ModbusUserCommandAdditional1Lo;}
+  uint16_t ModbusGetUserCommandAdditional2()
+  {
+      return word(ModbusUserCommandAdditional2Hi, ModbusUserCommandAdditional2Lo);
+  }
+  uint8_t *ModbusGetUserCommandAdditional2Hi(){return &ModbusUserCommandAdditional2Hi;}
+  uint8_t *ModbusGetUserCommandAdditional2Lo(){return &ModbusUserCommandAdditional2Lo;}
+  uint16_t ModbusGetUserCommandAdditional3()
+  {
+      return word(ModbusUserCommandAdditional3Hi, ModbusUserCommandAdditional3Lo);
+  }
+  uint8_t *ModbusGetUserCommandAdditional3Hi(){return &ModbusUserCommandAdditional3Hi;}
+  uint8_t *ModbusGetUserCommandAdditional3Lo(){return &ModbusUserCommandAdditional3Lo;}
+
 
 /**
  * @brief
@@ -405,7 +461,7 @@ uint8_t ModbusGetLastError()
 uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
         uint16_t *holdingRegs, const uint8_t holdingRegsCount)
 {
-    _lastCommand = MB_FC_NONE;
+    _lastFunction = MB_FC_NONE;
     //bitClear(_exceptionStatus, MB_EXCEPTION_LAST_COMMAND_STATE);
     //_inputRegs = inputRegs;
     //_holdingRegs = holdingRegs;
@@ -493,6 +549,13 @@ uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs
             return ModbusProcess_FC21();
         case MB_FC_READ_DEVICE_ID:
             return ModbusProcess_FC43();
+        case MB_FC_SYSTEM_COMMAND:
+            return ModbusProcess_FC100();
+        case MB_FC_USER_COMMAND:
+            return ModbusProcess_FC101();
+        case MB_FC_READ_DEVICE_STATUS:
+            return ModbusProcess_FC102();
+    
         default:
             break;
     }
@@ -503,6 +566,7 @@ uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs
 
 void ModbusInit(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
 {
+    _deviceStatus = 0;
     _u8id = u8id;
     _u8serno = (u8serno > 3) ? 0 : u8serno;
     _u8txenpin = u8txenpin;
@@ -807,8 +871,19 @@ uint8_t ModbusValidateRequest()
             if(readDevId == 0x04 && _au8Buffer[ MEI_OBJ_ID ] > 0x06)
                 return EXC_ADDR_RANGE;
             break;
+            
+        case MB_FC_SYSTEM_COMMAND:
+            if(_au8Buffer[COM_COM_ID] != MB_COMMAND_RESET 
+                    && _au8Buffer[COM_COM_ID] != MB_COMMAND_SET_ADDRESS 
+                    && _au8Buffer[COM_COM_ID] != MB_COMMAND_SET_TIME)
+                return EXC_REGS_QUANT;
+            break;
+        case MB_FC_USER_COMMAND:   
+            break;
+        case MB_FC_READ_DEVICE_STATUS:            
+            break;
     }
-    _lastCommand = _au8Buffer[ FUNC ];
+    _lastFunction = _au8Buffer[ FUNC ];
     return 0; // OK, no exception code thrown
 }
 
@@ -829,13 +904,15 @@ void ModbusBuildException(uint8_t u8exception)
 }
 
 
-uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count)
+uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count, uint8_t *command)
 {
     if (address != NULL)
         *address = _lastAddress;
     if (count != NULL)
         *count = _lastCount;
-    return &_lastCommand;
+    if(command != NULL)
+        *command = _lastCommand;
+    return &_lastFunction;
 }
 
 /**
@@ -1106,15 +1183,15 @@ int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size)
  */
 int8_t ModbusProcess_FC17()
 {
-    _au8Buffer[ 2 ] =  sizeof(SLAVE_ID_STRING) + 1 + 1; // 22 Run Indicator Status 1 Byte + Additional Data 1 Byte
+    _au8Buffer[ 2 ] =  4; // 22 Run Indicator Status 1 Byte + Additional Data 1 Byte
 
     _u8BufferSize = 3;
-
-    for(uint8_t i = 0; i < sizeof(SLAVE_ID_STRING); i++, _u8BufferSize++)
-        _au8Buffer[_u8BufferSize] = SLAVE_ID_STRING[i];
-
-    _au8Buffer[_u8BufferSize++] = '!';
-    _au8Buffer[_u8BufferSize++] = '>';
+    _au8Buffer[_u8BufferSize++] = SLAVE_ID_DEVICE_TYPE;
+    _au8Buffer[_u8BufferSize++] = SLAVE_ID_DEVICE_SUB_TYPE;
+    _au8Buffer[_u8BufferSize++] = SLAVE_ID_DEVICE_REVISION;
+    _au8Buffer[_u8BufferSize++] = SLAVE_ID_DEVICE_TYPE;
+    
+    _au8Buffer[_u8BufferSize++] = MODBUS_ON;
     uint8_t u8CopyBufferSize = _u8BufferSize;
     ModbusSendTxBuffer();
 
@@ -1251,4 +1328,70 @@ int8_t ModbusProcess_FC43()
     ModbusSendTxBuffer();
 
     return u8CopyBufferSize;    
+}
+
+// System commands
+int8_t ModbusProcess_FC100()
+{
+    _u8BufferSize = 10;
+    _lastCommand = _au8Buffer[COM_COM_ID];
+    switch(_lastCommand)
+    {
+        case MB_COMMAND_RESET:
+            #asm
+                RESET; 
+            #endasm
+            break;
+        case MB_COMMAND_SET_ADDRESS:
+            break;  
+        case MB_COMMAND_SET_TIME:
+            SetHourMin(&(_au8Buffer[COM_ADD1_HI]), &(_au8Buffer[COM_ADD1_LO]), &(_au8Buffer[COM_ADD2_LO]));
+            
+            //----------------
+            struct tm newTime;
+            newTime.tm_year = _au8Buffer[COM_ADD3_LO] + 100; // since 1900
+            newTime.tm_mon = _au8Buffer[COM_ADD3_HI];
+            newTime.tm_mday = _au8Buffer[COM_ADD2_HI];
+            newTime.tm_hour = _au8Buffer[COM_ADD1_HI];
+            newTime.tm_min = _au8Buffer[COM_ADD1_LO];
+            newTime.tm_sec = _au8Buffer[COM_ADD2_LO];
+            time_t newRawTime = mktime(&newTime);
+            SetTime(&newRawTime);
+            //----------------
+            bitSet(_deviceStatus, INPUT_TIME_SET);
+            ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+            break;
+    }
+    uint8_t u8CopyBufferSize = _u8BufferSize + 2;
+    ModbusSendTxBuffer();
+
+    return u8CopyBufferSize;
+}
+// user commands
+int8_t ModbusProcess_FC101()
+{
+    _u8BufferSize = 10;
+    ModbusUserCommandId = _au8Buffer[COM_COM_ID];
+    ModbusUserCommandData = _au8Buffer[COM_DATA];
+    ModbusUserCommandAdditional1Hi = _au8Buffer[COM_ADD1_HI];
+    ModbusUserCommandAdditional1Lo = _au8Buffer[COM_ADD1_LO];
+    ModbusUserCommandAdditional2Hi = _au8Buffer[COM_ADD2_HI];
+    ModbusUserCommandAdditional2Lo = _au8Buffer[COM_ADD2_LO];
+    ModbusUserCommandAdditional3Hi = _au8Buffer[COM_ADD3_HI];
+    ModbusUserCommandAdditional3Lo = _au8Buffer[COM_ADD3_LO];
+    
+    uint8_t u8CopyBufferSize = _u8BufferSize + 2;
+    ModbusSendTxBuffer();
+
+    return u8CopyBufferSize;
+}
+
+int8_t ModbusProcess_FC102()
+{
+    _au8Buffer[FUNC + 1] = _deviceStatus;
+    _u8BufferSize = 3;
+    uint8_t u8CopyBufferSize = _u8BufferSize + 2;
+    ModbusSendTxBuffer();
+
+    return u8CopyBufferSize;
 }

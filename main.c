@@ -53,7 +53,6 @@ bool IsBusserOn = false;
 #define BUTTON_INTRUSION PORTCbits.RC3
 #define BUTTON_RESET PORTCbits.RC1
 
-#define INPUT_TIME_SET 0x00
 
 #define EE_BUZZER_LOUD_DURATION 2
 #define EE_BUZZER_QUIET_DURATION 3
@@ -105,7 +104,7 @@ bool IsBusserOn = false;
 #define INPUT_REG_EVENT_HOUR_MIN 3
 #define INPUT_REG_CURRENT_HOUR_MIN_2 4
 #define INPUT_REG_SECONDS 5
-#define INPUT_REG_SOUND_LEN_IS_PLAYING 6
+#define INPUT_REG_SOUND_CNT_EVENT_COUNT 6
 #define INPUT_REG_PL_LEN_POS_IN_EE 7
 
 
@@ -419,6 +418,7 @@ void InitFromEeprom()
     _soundCount = _EEREG_EEPROM_READ(EE_SOUNDS_COUNT);
     if(_soundCount == 0xFF)
         _soundCount = 0;
+    _MODBUSInputRegs[INPUT_REG_SOUND_CNT_EVENT_COUNT] = word(_soundCount, eventCount);
     
     Modbus(_EEREG_EEPROM_READ(EE_MODBUS_ID), 0, 0);
     SwitchOffAllLeds();
@@ -429,7 +429,7 @@ void InitFromEeprom()
     currentAlarmedEventNum = 0xff;
     LoadNextEvent();
     
-    _MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
+    //_MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
 }
 
 #define LightBlock(stat, reg)   \
@@ -517,7 +517,7 @@ void StopPlaying()
     _isSoundPlaying = false;
     StopBuzzer;
     
-    _MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
+//    _MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
 }
 
 void SoundPlayNextStep()
@@ -590,7 +590,7 @@ bool PlaySound(uint8_t soundId, uint16_t playDuration)
     _isSoundPlaying = true;
     SoundPlayNextStep();
     
-    _MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
+//    _MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
     
     return true;
 }
@@ -638,7 +638,8 @@ void LoadNextEvent()
         {
             curEventNum = 0xff;
             curEventTotalMinutes = 0;
-            _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = word(0, 0);            
+            _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = 0;            
+            _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
             return;
         }
         // HI: 5-7 - alarmDuration, 0-4 bits - hour | LO: 5-7 soundId 0-5 minute
@@ -847,7 +848,7 @@ void main(void)
 
 }
 
-
+/*
 void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth)
 {
     struct tm newTime;
@@ -873,13 +874,13 @@ void SetTimeCommand()
     uint16_t yearMonth = _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA + 2];
     SetTimeFromRegs(&hourMin, &daySec, &yearMonth);
     bitSet(_MODBUSDiscreteInputs, INPUT_TIME_SET);
-}
+}*/
 
 void CommandSetStatusLed()
 {
     // Data - 7bit - On/Off, 6bit - blink low 3 bits: FIRE, WARNING, Alarm, Napadeniye, NOT_RESPONSE
     // Additional: HI - sound Id, LO playDuration,sec 0 - once
-    uint8_t commandData = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
+    uint8_t commandData = *ModbusGetUserCommandData();
     uint8_t led = commandData & 0x07;
     if(led >= LED_STATUS_BLOCKING)
         return;
@@ -890,102 +891,153 @@ void CommandSetStatusLed()
         return;
     }
     LightStatusLed(led, true, bitRead(commandData, 6));
-    PlaySound(HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]), LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]));
+    PlaySound(*ModbusGetUserCommandAdditional1Hi(), *ModbusGetUserCommandAdditional1Lo());
    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
 }
 
-void io_poll() 
+void ProcessUserCommands()
 {
-    uint16_t lastAddress;
-    uint16_t lastEndAddress;
-    //uint16_t lastCount;
-    uint8_t *lastCommand = ModbusGetLastCommand(&lastAddress, &lastEndAddress);
-    if(*lastCommand == MB_FC_NONE)
-        return;
-    
-    lastEndAddress += lastAddress - 1;
-    
     uint8_t v1;
-    if(*lastCommand == MB_FC_WRITE_REGISTER || *lastCommand == MB_FC_WRITE_MULTIPLE_REGISTERS)
+    switch(*ModbusGetUserCommandId())
     {
-        // Command received
-        if(lastAddress == HOLDING_COMMAND)
-        {
-            uint8_t command = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
-            uint16_t hourMin;
-            switch(command)
-            {
-                case MB_COMMAND_RESET:
-                    #asm
-                        RESET; 
-                    #endasm
-                    return;
-                case MB_COMMAND_SET_ADDRESS:
-                    break;
-                case MB_COMMAND_SET_TIME:
-                    SetTimeCommand();
-                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
-                    break;
-                    
-                    
-                case MB_COMMAND_CLEAR_ALL_EVENTS:
-                    eventCount = 0;
-                    _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, 0);
-                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
-                    break;
-//                case MB_COMMAND_ADD_EVENT:
-//                    // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
-//                    if(eventCount < MAX_EVENTS)
-//                    {
-//                        uint8_t eventEeAddr = EE_FIRST_EVENT + (eventCount << 1);
-//                        v1 = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
-//                        _EEREG_EEPROM_WRITE(eventEeAddr, v1);
-//                        v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
-//                        _EEREG_EEPROM_WRITE(eventEeAddr + 1, v1);
-//                        // 2 bit - blink status
-//
-//                        LightLed(eventCount, LED_GREEN, false);
-//
-//                        eventCount++;
-//                        _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, eventCount);
-//
-//                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
-//                    }
-//                    else
-//                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, false);
-//                    
-//                    break;
-                case MB_COMMAND_SET_LED:
-                    // 0 Holding reg - First byte - Led num [1..60]
-                    // Second byte Value 0 - OFF, 1 - GREEN, 2 - RED 
-                    v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
-                    // 2 bit - blink status
-                    LightLed(HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]), v1 & 0x03, bitRead(v1, 2));
-                    _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA] = 0;
-                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
-                    break;   
+        case MB_COMMAND_CLEAR_ALL_EVENTS:
+            eventCount = 0;
+            _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, 0);
+            ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+            break;
+        case MB_COMMAND_SET_LED:
+            // 0 Holding reg - First byte - Led num [1..60]
+            // Second byte Value 0 - OFF, 1 - GREEN, 2 - RED 
+            v1 = *ModbusGetUserCommandAdditional1Lo();
+            // 2 bit - blink status
+            LightLed(*ModbusGetUserCommandAdditional1Hi(), v1 & 0x03, bitRead(v1, 2));
+            ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+            break;   
 //                case MB_COMMAND_TEST_SOUND:
 //                    SetBuzzerDuty(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]); //!!!!!
 //                    PR2 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
 //                    //soundTestEnd = *GetTime() + 2; // 2 sec
 //                    //StartBuzzer;
 //                    break;
-                case MB_COMMAND_PLAY_SOUND_NUM:                    
-                    //soundTestEnd = *GetTime() + _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]; 
-                    PlaySound(LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]), LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]));
-                    break;       
-            
-                case MB_COMMAND_SET_STATUS_LED:  
-                    CommandSetStatusLed();
-                    break; 
-            }
-            _MODBUSHoldingRegs[HOLDING_COMMAND] = 0;
-            _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA] = 0;
-        }
+        case MB_COMMAND_PLAY_SOUND_NUM:                    
+            //soundTestEnd = *GetTime() + _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]; 
+            PlaySound(*ModbusGetUserCommandData(), *ModbusGetUserCommandAdditional1Lo());
+            break;       
+
+        case MB_COMMAND_SET_STATUS_LED:  
+            CommandSetStatusLed();
+            break; 
+    }
+}
+
+void io_poll() 
+{
+    uint16_t lastAddress;
+    uint16_t lastEndAddress;
+    uint8_t lastCommand;
+    //uint16_t lastCount;
+    uint8_t *lastFunction = ModbusGetLastCommand(&lastAddress, &lastEndAddress, &lastCommand);
+    if(*lastFunction == MB_FC_NONE)
+        return;
+    
+    lastEndAddress += lastAddress - 1;
+    
+    uint8_t v1;
+    if(*lastFunction == MB_FC_SYSTEM_COMMAND)
+    {
+        if(lastCommand == MB_COMMAND_SET_TIME)
+        {
+            LightStatusLed(LED_STATUS_BLOCKING, false, false);
+            LoadNextEvent();
+        }        
+        return;
+    }
+    if(*lastFunction == MB_FC_USER_COMMAND)
+    {
+        ProcessUserCommands();
+        return;
+    }
+    
+    if(*lastFunction == MB_FC_WRITE_REGISTER || *lastFunction == MB_FC_WRITE_MULTIPLE_REGISTERS)
+    {
+//        // Command received
+//        if(lastAddress == HOLDING_COMMAND)
+//        {
+//            uint8_t command = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
+//            uint16_t hourMin;
+//            switch(command)
+//            {
+////                case MB_COMMAND_RESET:
+////                    #asm
+////                        RESET; 
+////                    #endasm
+////                    return;
+////                case MB_COMMAND_SET_ADDRESS:
+////                    break;
+////                case MB_COMMAND_SET_TIME:
+////                    SetTimeCommand();
+////                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+////                    break;
+////                    
+////                    
+//                case MB_COMMAND_CLEAR_ALL_EVENTS:
+//                    eventCount = 0;
+//                    _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, 0);
+//                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+//                    break;
+////                case MB_COMMAND_ADD_EVENT:
+////                    // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
+////                    if(eventCount < MAX_EVENTS)
+////                    {
+////                        uint8_t eventEeAddr = EE_FIRST_EVENT + (eventCount << 1);
+////                        v1 = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
+////                        _EEREG_EEPROM_WRITE(eventEeAddr, v1);
+////                        v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
+////                        _EEREG_EEPROM_WRITE(eventEeAddr + 1, v1);
+////                        // 2 bit - blink status
+////
+////                        LightLed(eventCount, LED_GREEN, false);
+////
+////                        eventCount++;
+////                        _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, eventCount);
+////
+////                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+////                    }
+////                    else
+////                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, false);
+////                    
+////                    break;
+//                case MB_COMMAND_SET_LED:
+//                    // 0 Holding reg - First byte - Led num [1..60]
+//                    // Second byte Value 0 - OFF, 1 - GREEN, 2 - RED 
+//                    v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
+//                    // 2 bit - blink status
+//                    LightLed(HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]), v1 & 0x03, bitRead(v1, 2));
+//                    _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA] = 0;
+//                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+//                    break;   
+////                case MB_COMMAND_TEST_SOUND:
+////                    SetBuzzerDuty(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]); //!!!!!
+////                    PR2 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
+////                    //soundTestEnd = *GetTime() + 2; // 2 sec
+////                    //StartBuzzer;
+////                    break;
+//                case MB_COMMAND_PLAY_SOUND_NUM:                    
+//                    //soundTestEnd = *GetTime() + _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]; 
+//                    PlaySound(LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]), LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]));
+//                    break;       
+//            
+//                case MB_COMMAND_SET_STATUS_LED:  
+//                    CommandSetStatusLed();
+//                    break; 
+//            }
+//            _MODBUSHoldingRegs[HOLDING_COMMAND] = 0;
+//            _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA] = 0;
+//        }
     }
     
 
-    if(*lastCommand == MB_FC_WRITE_FILE_RECORD)
+    if(*lastFunction == MB_FC_WRITE_FILE_RECORD)
     {
         InitFromEeprom();
         ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);

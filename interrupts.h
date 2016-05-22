@@ -75,7 +75,7 @@ unsigned long millis();
 // return true if time set
 bool getHourMin(uint8_t *hour, uint8_t *min);
 bool getTotalMinutes(uint16_t *totalMinutes);
-void SetHourMin(int *newHour, int *newMin, int *sec);
+void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
 
 #ifdef	__cplusplus
 extern "C" {

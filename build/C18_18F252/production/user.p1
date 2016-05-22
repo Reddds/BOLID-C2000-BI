@@ -2558,13 +2558,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [p x EBTR3=OFF ]
 "38
 [p x EBTRB=OFF ]
-[; ;system.h: 71: typedef char int8_t;
-[; ;system.h: 72: typedef unsigned char uint8_t;
-[; ;system.h: 73: typedef unsigned short uint16_t;
-[; ;system.h: 74: typedef unsigned long uint32_t;
-[; ;system.h: 76: typedef unsigned char boolean;
-[; ;system.h: 77: typedef unsigned char bool;
-[; ;system.h: 109: void ConfigureOscillator(void);
+[; ;system.h: 72: typedef char int8_t;
+[; ;system.h: 73: typedef unsigned char uint8_t;
+[; ;system.h: 74: typedef unsigned short uint16_t;
+[; ;system.h: 75: typedef unsigned long uint32_t;
+[; ;system.h: 77: typedef unsigned char boolean;
+[; ;system.h: 78: typedef unsigned char bool;
+[; ;system.h: 110: void ConfigureOscillator(void);
 [; ;__size_t.h: 4: typedef unsigned size_t;
 [; ;time.h: 8: typedef long time_t;
 [; ;time.h: 9: struct tm {
@@ -2618,40 +2618,54 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.h: 74: unsigned long millis();
 [; ;interrupts.h: 76: bool getHourMin(uint8_t *hour, uint8_t *min);
 [; ;interrupts.h: 77: bool getTotalMinutes(uint16_t *totalMinutes);
-[; ;interrupts.h: 78: void SetHourMin(int *newHour, int *newMin, int *sec);
-[; ;ModbusRtu.h: 91: enum MB_FC
-[; ;ModbusRtu.h: 92: {
-[; ;ModbusRtu.h: 93: MB_FC_NONE = 0,
-[; ;ModbusRtu.h: 94: MB_FC_READ_COILS = 1,
-[; ;ModbusRtu.h: 95: MB_FC_READ_DISCRETE_INPUT = 2,
-[; ;ModbusRtu.h: 96: MB_FC_READ_REGISTERS = 3,
-[; ;ModbusRtu.h: 97: MB_FC_READ_INPUT_REGISTER = 4,
-[; ;ModbusRtu.h: 98: MB_FC_WRITE_COIL = 5,
-[; ;ModbusRtu.h: 99: MB_FC_WRITE_REGISTER = 6,
-[; ;ModbusRtu.h: 100: MB_FC_READ_EXCEPTION_STATUS = 7,
-[; ;ModbusRtu.h: 101: MB_FC_WRITE_MULTIPLE_COILS = 15,
-[; ;ModbusRtu.h: 102: MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
-[; ;ModbusRtu.h: 103: MB_FC_REPORT_SLAVE_ID = 17,
-[; ;ModbusRtu.h: 104: MB_FC_WRITE_FILE_RECORD = 21,
-[; ;ModbusRtu.h: 105: MB_FC_READ_DEVICE_ID = 43
-[; ;ModbusRtu.h: 106: };
-[; ;ModbusRtu.h: 110: void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
-[; ;ModbusRtu.h: 111: void ModbusBegin(long u32speed);
-[; ;ModbusRtu.h: 113: void ModbusSetTimeOut( uint16_t u16timeout);
-[; ;ModbusRtu.h: 114: uint16_t ModbusGetTimeOut();
-[; ;ModbusRtu.h: 115: boolean ModbusGetTimeOutState();
-[; ;ModbusRtu.h: 119: int8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
-[; ;ModbusRtu.h: 120: uint16_t *holdingRegs, const uint8_t holdingRegsCount);
-[; ;ModbusRtu.h: 122: uint16_t ModbusGetInCnt();
-[; ;ModbusRtu.h: 123: uint16_t ModbusGetOutCnt();
-[; ;ModbusRtu.h: 124: uint16_t ModbusGetErrCnt();
-[; ;ModbusRtu.h: 125: uint8_t ModbusGetID();
-[; ;ModbusRtu.h: 126: uint8_t ModbusGetState();
-[; ;ModbusRtu.h: 127: uint8_t ModbusGetLastError();
-[; ;ModbusRtu.h: 128: void ModbusSetID( uint8_t u8id );
-[; ;ModbusRtu.h: 129: void ModbusEnd();
-[; ;ModbusRtu.h: 130: uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
-[; ;ModbusRtu.h: 131: void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
+[; ;interrupts.h: 78: void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
+[; ;ModbusRtu.h: 99: enum MB_FC
+[; ;ModbusRtu.h: 100: {
+[; ;ModbusRtu.h: 101: MB_FC_NONE = 0,
+[; ;ModbusRtu.h: 102: MB_FC_READ_COILS = 1,
+[; ;ModbusRtu.h: 103: MB_FC_READ_DISCRETE_INPUT = 2,
+[; ;ModbusRtu.h: 104: MB_FC_READ_REGISTERS = 3,
+[; ;ModbusRtu.h: 105: MB_FC_READ_INPUT_REGISTER = 4,
+[; ;ModbusRtu.h: 106: MB_FC_WRITE_COIL = 5,
+[; ;ModbusRtu.h: 107: MB_FC_WRITE_REGISTER = 6,
+[; ;ModbusRtu.h: 108: MB_FC_READ_EXCEPTION_STATUS = 7,
+[; ;ModbusRtu.h: 109: MB_FC_WRITE_MULTIPLE_COILS = 15,
+[; ;ModbusRtu.h: 110: MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
+[; ;ModbusRtu.h: 111: MB_FC_REPORT_SLAVE_ID = 17,
+[; ;ModbusRtu.h: 112: MB_FC_WRITE_FILE_RECORD = 21,
+[; ;ModbusRtu.h: 113: MB_FC_READ_DEVICE_ID = 43,
+[; ;ModbusRtu.h: 115: MB_FC_SYSTEM_COMMAND = 100,
+[; ;ModbusRtu.h: 116: MB_FC_USER_COMMAND = 101,
+[; ;ModbusRtu.h: 117: MB_FC_READ_DEVICE_STATUS = 102
+[; ;ModbusRtu.h: 118: };
+[; ;ModbusRtu.h: 123: void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
+[; ;ModbusRtu.h: 124: void ModbusBegin(long u32speed);
+[; ;ModbusRtu.h: 126: void ModbusSetTimeOut( uint16_t u16timeout);
+[; ;ModbusRtu.h: 127: uint16_t ModbusGetTimeOut();
+[; ;ModbusRtu.h: 128: boolean ModbusGetTimeOutState();
+[; ;ModbusRtu.h: 132: int8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
+[; ;ModbusRtu.h: 133: uint16_t *holdingRegs, const uint8_t holdingRegsCount);
+[; ;ModbusRtu.h: 135: uint16_t ModbusGetInCnt();
+[; ;ModbusRtu.h: 136: uint16_t ModbusGetOutCnt();
+[; ;ModbusRtu.h: 137: uint16_t ModbusGetErrCnt();
+[; ;ModbusRtu.h: 138: uint8_t ModbusGetID();
+[; ;ModbusRtu.h: 139: uint8_t ModbusGetState();
+[; ;ModbusRtu.h: 140: uint8_t ModbusGetLastError();
+[; ;ModbusRtu.h: 141: void ModbusSetID( uint8_t u8id );
+[; ;ModbusRtu.h: 142: void ModbusEnd();
+[; ;ModbusRtu.h: 143: uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count, uint8_t *command);
+[; ;ModbusRtu.h: 144: void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
+[; ;ModbusRtu.h: 146: uint8_t *ModbusGetUserCommandId();
+[; ;ModbusRtu.h: 147: uint8_t *ModbusGetUserCommandData();
+[; ;ModbusRtu.h: 148: uint16_t ModbusGetUserCommandAdditional1();
+[; ;ModbusRtu.h: 149: uint8_t *ModbusGetUserCommandAdditional1Hi();
+[; ;ModbusRtu.h: 150: uint8_t *ModbusGetUserCommandAdditional1Lo();
+[; ;ModbusRtu.h: 151: uint16_t ModbusGetUserCommandAdditional2();
+[; ;ModbusRtu.h: 152: uint8_t *ModbusGetUserCommandAdditional2Hi();
+[; ;ModbusRtu.h: 153: uint8_t *ModbusGetUserCommandAdditional2Lo();
+[; ;ModbusRtu.h: 154: uint16_t ModbusGetUserCommandAdditional3();
+[; ;ModbusRtu.h: 155: uint8_t *ModbusGetUserCommandAdditional3Hi();
+[; ;ModbusRtu.h: 156: uint8_t *ModbusGetUserCommandAdditional3Lo();
 "42 user.c
 [v _currentTime `l ~T0 @X0 1 e ]
 [i _currentTime
@@ -2759,9 +2773,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.c: 122: INTCON2bits.TMR0IP = 1;
 "122
 [e = . . _INTCON2bits 1 2 -> -> 1 `i `uc ]
-[; ;user.c: 123: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 30) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 30) * 6)&0xFF)));
+[; ;user.c: 123: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + - 10) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + - 10) * 6)&0xFF)));
 "123
-[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 30 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 30 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
+[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 10 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 10 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
 [; ;user.c: 126: INTCONbits.TMR0IF = 0;
 "126
 [e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]

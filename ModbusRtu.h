@@ -55,8 +55,16 @@
  * Arduino class library for communicating with Modbus devices over
  * USB/RS232/485 (via RTU protocol).
  */
+#define MODBUS_ON 0xff
+#define MODBUS_OFF 0x00
 
-#define SLAVE_ID_STRING "Tablo s raspisaniem turo"
+#define DEVICE_TYPE_INDICATOR 0x01
+
+#define SLAVE_ID_DEVICE_TYPE DEVICE_TYPE_INDICATOR // Indicator
+#define SLAVE_ID_DEVICE_SUB_TYPE 0x01
+#define SLAVE_ID_DEVICE_REVISION 0x01
+#define SLAVE_ID_DEVICE_NUMBER 0x00
+
 
 #define VENDOR_NAME "BOLID"
 #define PRODUCT_CODE "C2000-BI"
@@ -70,8 +78,8 @@
 
 //#define INPUT_REG_LAST_COMMAND_STATE 0 // State after execution last command 0x8080 - All Right
 
-#define HOLDING_COMMAND 0 // HI - command Lo - data
-#define HOLDING_COMMAND_ADDITIONAL_DATA 1
+//#define HOLDING_COMMAND 0 // HI - command Lo - data
+//#define HOLDING_COMMAND_ADDITIONAL_DATA 1
 
 #define MB_COMMAND_RESET 0x7F
 #define MB_COMMAND_SET_ADDRESS 0x01
@@ -102,8 +110,13 @@ enum MB_FC
     MB_FC_WRITE_MULTIPLE_REGISTERS = 16,    /*!< FCT=16 -> write multiple registers */
     MB_FC_REPORT_SLAVE_ID = 17,             /*!< FCT=17 -> Report Slave ID */
     MB_FC_WRITE_FILE_RECORD = 21,           // (0x15) Write File Record
-    MB_FC_READ_DEVICE_ID = 43               //43 / 14 (0x2B / 0x0E) Read Device Identification
+    MB_FC_READ_DEVICE_ID = 43,               //43 / 14 (0x2B / 0x0E) Read Device Identification
+    
+    MB_FC_SYSTEM_COMMAND = 100,
+    MB_FC_USER_COMMAND = 101,
+    MB_FC_READ_DEVICE_STATUS = 102
 };
+
 
 //  Modbus();
 //  Modbus(uint8_t u8id, uint8_t u8serno);
@@ -127,6 +140,17 @@ enum MB_FC
   uint8_t ModbusGetLastError(); //!<get last error message
   void ModbusSetID( uint8_t u8id ); //!<write new ID for the slave
   void ModbusEnd(); //!<finish any communication and release serial communication port
-  uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+  uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count, uint8_t *command);
   void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
-
+  
+  uint8_t *ModbusGetUserCommandId();
+  uint8_t *ModbusGetUserCommandData();
+  uint16_t ModbusGetUserCommandAdditional1();
+  uint8_t *ModbusGetUserCommandAdditional1Hi();
+  uint8_t *ModbusGetUserCommandAdditional1Lo();
+  uint16_t ModbusGetUserCommandAdditional2();
+  uint8_t *ModbusGetUserCommandAdditional2Hi();
+  uint8_t *ModbusGetUserCommandAdditional2Lo();
+  uint16_t ModbusGetUserCommandAdditional3();
+  uint8_t *ModbusGetUserCommandAdditional3Hi();
+  uint8_t *ModbusGetUserCommandAdditional3Lo();

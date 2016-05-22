@@ -2260,13 +2260,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [p x EBTR3=OFF ]
 "38
 [p x EBTRB=OFF ]
-[; ;system.h: 71: typedef char int8_t;
-[; ;system.h: 72: typedef unsigned char uint8_t;
-[; ;system.h: 73: typedef unsigned short uint16_t;
-[; ;system.h: 74: typedef unsigned long uint32_t;
-[; ;system.h: 76: typedef unsigned char boolean;
-[; ;system.h: 77: typedef unsigned char bool;
-[; ;system.h: 109: void ConfigureOscillator(void);
+[; ;system.h: 72: typedef char int8_t;
+[; ;system.h: 73: typedef unsigned char uint8_t;
+[; ;system.h: 74: typedef unsigned short uint16_t;
+[; ;system.h: 75: typedef unsigned long uint32_t;
+[; ;system.h: 77: typedef unsigned char boolean;
+[; ;system.h: 78: typedef unsigned char bool;
+[; ;system.h: 110: void ConfigureOscillator(void);
 "22 system.c
 [; ;system.c: 22: asm("\tpsect eeprom_data,class=EEDATA,noexec"); asm("\tdb\t" "0x11" "," "10" "," "0x80" "," "0x0f" "," "0x80" "," "0xff" "," "0x01" "," "0x04");
 [; <" 	psect eeprom_data,class=EEDATA,noexec ;# ">

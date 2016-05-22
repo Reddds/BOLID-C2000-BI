@@ -274,7 +274,7 @@ bool getTotalMinutes(uint16_t *totalMinutes)
     return true;    
 }
 
-void SetHourMin(int *newHour, int *newMin, int *sec)
+void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec)
 {
     T0CONbits.TMR0ON = 0; 
     

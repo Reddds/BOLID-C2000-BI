@@ -3036,7 +3036,7 @@ typedef unsigned char bool;
 #pragma config EBTR3 = OFF
 #pragma config EBTRB = OFF
 
-# 71
+# 72
 typedef char int8_t;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -3045,7 +3045,7 @@ typedef unsigned long uint32_t;
 typedef unsigned char boolean;
 typedef unsigned char bool;
 
-# 109
+# 110
 void ConfigureOscillator(void);
 
 # 22 "system.c"

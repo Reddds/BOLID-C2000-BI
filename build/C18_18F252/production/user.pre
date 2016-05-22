@@ -3036,7 +3036,7 @@ typedef unsigned char bool;
 #pragma config EBTR3 = OFF
 #pragma config EBTRB = OFF
 
-# 71
+# 72
 typedef char int8_t;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -3045,7 +3045,7 @@ typedef unsigned long uint32_t;
 typedef unsigned char boolean;
 typedef unsigned char bool;
 
-# 109
+# 110
 void ConfigureOscillator(void);
 
 # 4 "C:\Program Files (x86)\Microchip\xc8\v1.37\include\__size_t.h"
@@ -3107,9 +3107,9 @@ unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
 bool getTotalMinutes(uint16_t *totalMinutes);
-void SetHourMin(int *newHour, int *newMin, int *sec);
+void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
 
-# 91 "ModbusRtu.h"
+# 99 "ModbusRtu.h"
 enum MB_FC
 {
 MB_FC_NONE = 0,
@@ -3124,8 +3124,13 @@ MB_FC_WRITE_MULTIPLE_COILS = 15,
 MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
 MB_FC_REPORT_SLAVE_ID = 17,
 MB_FC_WRITE_FILE_RECORD = 21,
-MB_FC_READ_DEVICE_ID = 43
+MB_FC_READ_DEVICE_ID = 43,
+
+MB_FC_SYSTEM_COMMAND = 100,
+MB_FC_USER_COMMAND = 101,
+MB_FC_READ_DEVICE_STATUS = 102
 };
+
 
 
 
@@ -3149,8 +3154,20 @@ uint8_t ModbusGetState();
 uint8_t ModbusGetLastError();
 void ModbusSetID( uint8_t u8id );
 void ModbusEnd();
-uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count);
+uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count, uint8_t *command);
 void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
+
+uint8_t *ModbusGetUserCommandId();
+uint8_t *ModbusGetUserCommandData();
+uint16_t ModbusGetUserCommandAdditional1();
+uint8_t *ModbusGetUserCommandAdditional1Hi();
+uint8_t *ModbusGetUserCommandAdditional1Lo();
+uint16_t ModbusGetUserCommandAdditional2();
+uint8_t *ModbusGetUserCommandAdditional2Hi();
+uint8_t *ModbusGetUserCommandAdditional2Lo();
+uint16_t ModbusGetUserCommandAdditional3();
+uint8_t *ModbusGetUserCommandAdditional3Hi();
+uint8_t *ModbusGetUserCommandAdditional3Lo();
 
 # 42 "user.c"
 time_t currentTime = 0;
@@ -3216,7 +3233,7 @@ T0CONbits.T0PS = 7;
 
 INTCONbits.TMR0IE = 1;
 INTCON2bits.TMR0IP = 1;
-((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 30) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 30) * 6)&0xFF)));
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + - 10) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + - 10) * 6)&0xFF)));
 
 
 INTCONbits.TMR0IF = 0;
