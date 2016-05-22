@@ -3105,15 +3105,17 @@ void PortWrite(uint8_t *buf, uint8_t buflen);
 unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
+bool getTotalMinutes(uint16_t *totalMinutes);
 void SetHourMin(int *newHour, int *newMin, int *sec);
 
 # 28 "interrupts.c"
 static volatile unsigned long millisecondsFromStart = 0;
 static volatile uint8_t globalMinutes = 0;
+static volatile uint16_t _totalMinutesFromDayStart = 0;
 static volatile uint8_t _6sCounter = 0;
 static volatile uint8_t globalHours = 0xFF;
 
-# 38
+# 39
 static uint8_t UartBufferHead;
 static volatile uint8_t UartBufferTail;
 static volatile uint8_t UartBufferLen;
@@ -3152,7 +3154,7 @@ return ret;
 return 0;
 }
 
-# 93
+# 94
 void PortWrite(uint8_t *buf, uint8_t buflen)
 {
 LATCbits.LATC5 = 1;
@@ -3166,13 +3168,13 @@ while(!TRMT);
 LATCbits.LATC5 = 0;
 }
 
-# 113
+# 114
 void interrupt high_isr(void)
 
-# 122
+# 123
 {
 
-# 134
+# 135
 if(PIR1bits.TMR1IF && PIE1bits.TMR1IE)
 {
 PIR1bits.TMR1IF = 0;
@@ -3189,31 +3191,33 @@ if(_6sCounter == 10)
 {
 _6sCounter = 0;
 globalMinutes++;
+_totalMinutesFromDayStart++;
 if(globalMinutes == 60)
 {
 globalMinutes = 0;
 globalHours++;
 if(globalHours == 24)
 {
+_totalMinutesFromDayStart = 0;
 globalHours = 0;
 }
 }
 }
-((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * 6)&0xFF)));
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 30) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 30) * 6)&0xFF)));
 return;
 }
 
-# 168
+# 171
 }
 
 
 
 void low_priority interrupt low_isr(void)
 
-# 180
+# 183
 {
 
-# 186
+# 189
 if (PIR1bits.RCIF && PIE1bits.RCIE)
 {
 
@@ -3243,7 +3247,7 @@ PIR1bits.RCIF = 0;
 return;
 }
 
-# 234
+# 237
 }
 
 unsigned long millis()
@@ -3266,17 +3270,28 @@ return 0;
 return 1;
 }
 
+bool getTotalMinutes(uint16_t *totalMinutes)
+{
+if(globalHours == 0xFF)
+return 0;
+(INTCONbits.GIE = 0);
+*totalMinutes = _totalMinutesFromDayStart;
+(INTCONbits.GIE = 1);
+return 1;
+}
+
 void SetHourMin(int *newHour, int *newMin, int *sec)
 {
 T0CONbits.TMR0ON = 0;
 
 globalHours = *newHour;
 globalMinutes = *newMin;
+_totalMinutesFromDayStart = globalHours * 60 + globalMinutes;
 
 uint8_t tmpSec = *sec;
 _6sCounter = tmpSec / 6;
 uint8_t secToNext6Sec = 6 - (tmpSec % 6);
-((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * secToNext6Sec)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * secToNext6Sec)&0xFF)));
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 30) * secToNext6Sec)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 30) * secToNext6Sec)&0xFF)));
 
 T0CONbits.TMR0ON = 1;
 }

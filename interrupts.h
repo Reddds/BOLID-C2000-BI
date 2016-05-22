@@ -73,6 +73,7 @@ void PortWrite(uint8_t *buf, uint8_t buflen);
 unsigned long millis();
 // return true if time set
 bool getHourMin(uint8_t *hour, uint8_t *min);
+bool getTotalMinutes(uint16_t *totalMinutes);
 void SetHourMin(int *newHour, int *newMin, int *sec);
 
 #ifdef	__cplusplus

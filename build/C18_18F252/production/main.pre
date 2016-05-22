@@ -3148,6 +3148,7 @@ void PortWrite(uint8_t *buf, uint8_t buflen);
 unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
+bool getTotalMinutes(uint16_t *totalMinutes);
 void SetHourMin(int *newHour, int *newMin, int *sec);
 
 # 46 "main.c"
@@ -3166,8 +3167,9 @@ uint16_t currentEventMinetesFromMidnight = 0;
 uint8_t currentEventType = 0;
 
 
-uint8_t curEventHour;
-uint8_t curEventMinute;
+
+
+uint16_t curEventTotalMinutes;
 
 uint8_t currentAlarmedEventNum = 0xff;
 uint8_t curEventNum = 0xff;
@@ -3193,7 +3195,7 @@ time_t soundTestEnd = 0;
 
 uint8_t statusLedState = 0x00;
 
-# 247
+# 248
 uint8_t ledStatuses[16];
 
 uint16_t blinkDuration;
@@ -3305,10 +3307,10 @@ return;
 void pwm_init(void)
 {
 
-# 367
+# 368
 CCP1CONbits.CCP1M = 0x0f;
 
-# 374
+# 375
 PR2 = 255;
 
 
@@ -3322,7 +3324,7 @@ TRISCbits.RC2 = 0;
 
 }
 
-# 392
+# 393
 void SetBuzzerDuty(uint16_t dc)
 {
 
@@ -3345,7 +3347,7 @@ blinkPeriod = ((uint16_t)( EEADR = 16, (void)0, RD = 1, EEDATA)) << 6;
 
 eventCount = ( EEADR = 18, (void)0, RD = 1, EEDATA);
 
-# 418
+# 419
 _soundCount = ( EEADR = 140, (void)0, RD = 1, EEDATA);
 if(_soundCount == 0xFF)
 _soundCount = 0;
@@ -3355,14 +3357,14 @@ SwitchOffAllLeds();
 
 
 curEventNum = 0xff;
-curEventMinute = 0;
+curEventTotalMinutes = 0;
 currentAlarmedEventNum = 0xff;
 LoadNextEvent();
 
 _MODBUSInputRegs[6] = (((uint16_t)_soundCount<<8)|_isSoundPlaying);
 }
 
-# 442
+# 443
 uint8_t currentLedBlock = 0;
 unsigned long diffTime;
 unsigned long oldBlinkOnTime = 0;
@@ -3426,7 +3428,7 @@ currentLedBlock &= 0xFB;
 
 }
 
-# 511
+# 512
 unsigned long _playingEndMs = 0;
 
 
@@ -3462,7 +3464,7 @@ SetBuzzerDuty(duration);
 TRISCbits.TRISC2 = 0; T2CONbits.TMR2ON = 1; IsBusserOn = 1;;
 }
 
-# 565
+# 566
 bool PlaySound(uint8_t soundId, uint16_t playDuration)
 {
 if(soundId >= _soundCount)
@@ -3513,11 +3515,14 @@ void LoadNextEvent()
 {
 if(eventCount == 0)
 return;
-uint8_t hour, minute;
-if(!getHourMin(&hour, &minute))
+
+uint16_t totalMinutes;
+
+
+if(!getTotalMinutes(&totalMinutes))
 return;
 
-# 625
+# 630
 do
 {
 if(curEventNum == 0xff)
@@ -3528,15 +3533,14 @@ _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
 if(curEventNum >= eventCount)
 {
 curEventNum = 0xff;
-curEventMinute = 0;
-curEventHour = 0;
+curEventTotalMinutes = 0;
 _MODBUSInputRegs[3] = (((uint16_t)0<<8)|0);
 return;
 }
 
-# 650
+# 654
 uint8_t v1 = ( EEADR = 18 + 1 + curEventNum * 2, (void)0, RD = 1, EEDATA);
-curEventHour = v1 & 0x1F;
+curEventTotalMinutes = (v1 & 0x1F) * 60;
 
 _nextEventPlayDuration = (v1 >> 5);
 switch(_nextEventPlayDuration)
@@ -3564,11 +3568,11 @@ _nextEventPlayDuration = 65535;
 break;
 }
 uint8_t v1 = ( EEADR = 18 + 1 + curEventNum * 2 + 1, (void)0, RD = 1, EEDATA);
-curEventMinute = v1 & 0x3F;
+curEventTotalMinutes += v1 & 0x3F;
 _nextEventSoundId = v1 >> 6;
 
-_MODBUSInputRegs[3] = (((uint16_t)curEventHour<<8)|curEventMinute);
-}while(curEventHour < hour || curEventMinute <= minute);
+}while(curEventTotalMinutes <= totalMinutes);
+_MODBUSInputRegs[3] = curEventTotalMinutes;
 
 }
 
@@ -3577,20 +3581,23 @@ void ProcessDiary()
 
 if(curEventNum == 0xff)
 return;
-uint8_t hour, minute;
-if(!getHourMin(&hour, &minute))
+uint16_t totalMinutes;
+
+
+
+if(!getTotalMinutes(&totalMinutes))
 return;
 
-if(hour == 0 && minute == 0)
+if(totalMinutes == 0)
 {
 SwitchOffAllLeds();
 curEventNum = 0xff;
+LoadNextEvent();
 _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
-
 }
 
 
-if(curEventHour == hour && curEventMinute == minute)
+if(curEventTotalMinutes == totalMinutes)
 {
 
 if(currentAlarmedEventNum != 0xff)
@@ -3607,15 +3614,16 @@ if(_nextEventSoundId != 0)
 PlaySound(_nextEventSoundId - 1, _nextEventPlayDuration);
 }
 
-# 729
+# 736
 eventResetSecond = *GetTime() + eventAcceptTime;
+
 LoadNextEvent();
 }
 _MODBUSInputRegs[2] = (((uint16_t)currentAlarmedEventNum<<8)|curEventNum);
 
 }
 
-# 749
+# 757
 }
 
 void main(void)
@@ -3630,13 +3638,13 @@ InitApp();
 
 InitFromEeprom();
 
-# 770
+# 778
 unsigned long lastMs = millis();
 
 
 pwm_init();
 
-# 779
+# 787
 unsigned long oldBuzzerOnTime = 0;
 uint8_t oldMinute = 0xff;
 
@@ -3770,7 +3778,7 @@ switch(command)
 {
 case 0x7F:
 
-# 911
+# 919
 #asm
                         RESET;
 #endasm 
@@ -3789,7 +3797,7 @@ do{ while (WR) { continue; } EEADR = (18); EEDATA = (0); (void)0; CARRY = 0; if 
 ModbusSetExceptionStatusBit(0, 1);
 break;
 
-# 950
+# 958
 case 0x82:
 
 
@@ -3800,7 +3808,7 @@ _MODBUSHoldingRegs[1] = 0;
 ModbusSetExceptionStatusBit(0, 1);
 break;
 
-# 965
+# 973
 case 0x91:
 
 PlaySound(((unsigned char)((_MODBUSHoldingRegs[0])&0xFF)), ((unsigned char)((_MODBUSHoldingRegs[1])&0xFF)));

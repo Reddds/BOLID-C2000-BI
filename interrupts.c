@@ -27,6 +27,7 @@
 
 static volatile unsigned long millisecondsFromStart = 0;
 static volatile uint8_t globalMinutes = 0;
+static volatile uint16_t _totalMinutesFromDayStart = 0;
 static volatile uint8_t _6sCounter = 0;
 static volatile uint8_t globalHours = TIME_NOT_SET;
 //static volatile time_t currentTime = 0;
@@ -147,12 +148,14 @@ void high_isr(void)
           {
               _6sCounter = 0;
               globalMinutes++;
+              _totalMinutesFromDayStart++;
               if(globalMinutes == 60)
               {
                   globalMinutes = 0;
                   globalHours++;
                   if(globalHours == 24)
                   {
+                      _totalMinutesFromDayStart = 0;
                       globalHours = 0;
                   }
               }
@@ -253,12 +256,23 @@ bool getHourMin(uint8_t *hour, uint8_t *min)
     return true;
 }
 
+bool getTotalMinutes(uint16_t *totalMinutes)
+{
+    if(globalHours == TIME_NOT_SET)
+        return false;
+    di();
+    *totalMinutes = _totalMinutesFromDayStart;
+    ei();
+    return true;    
+}
+
 void SetHourMin(int *newHour, int *newMin, int *sec)
 {
     T0CONbits.TMR0ON = 0; 
     
     globalHours = *newHour;
     globalMinutes = *newMin;
+    _totalMinutesFromDayStart = globalHours * 60 + globalMinutes;
     
     uint8_t tmpSec = *sec;
     _6sCounter = tmpSec / 6;

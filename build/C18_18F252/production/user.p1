@@ -2616,7 +2616,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.h: 72: void PortWrite(uint8_t *buf, uint8_t buflen);
 [; ;interrupts.h: 73: unsigned long millis();
 [; ;interrupts.h: 75: bool getHourMin(uint8_t *hour, uint8_t *min);
-[; ;interrupts.h: 76: void SetHourMin(int *newHour, int *newMin, int *sec);
+[; ;interrupts.h: 76: bool getTotalMinutes(uint16_t *totalMinutes);
+[; ;interrupts.h: 77: void SetHourMin(int *newHour, int *newMin, int *sec);
 [; ;ModbusRtu.h: 91: enum MB_FC
 [; ;ModbusRtu.h: 92: {
 [; ;ModbusRtu.h: 93: MB_FC_NONE = 0,
@@ -2757,9 +2758,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.c: 122: INTCON2bits.TMR0IP = 1;
 "122
 [e = . . _INTCON2bits 1 2 -> -> 1 `i `uc ]
-[; ;user.c: 123: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * 6)&0xFF)));
+[; ;user.c: 123: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 30) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 30) * 6)&0xFF)));
 "123
-[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 0 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
+[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 30 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -> 30 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
 [; ;user.c: 126: INTCONbits.TMR0IF = 0;
 "126
 [e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]

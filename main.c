@@ -195,8 +195,9 @@ uint16_t currentEventMinetesFromMidnight = 0; // Minutes when event signal
 uint8_t currentEventType = 0; // Alarm(1) Info(0)
         
 
-uint8_t curEventHour;
-uint8_t curEventMinute;
+//uint8_t curEventHour;
+//uint8_t curEventMinute;
+uint16_t curEventTotalMinutes;
 //uint8_t curEventType; // 0 - info 1 - alarm
 uint8_t currentAlarmedEventNum = 0xff;
 uint8_t curEventNum = 0xff;
@@ -424,7 +425,7 @@ void InitFromEeprom()
 
     
     curEventNum = 0xff;
-    curEventMinute = 0;
+    curEventTotalMinutes = 0;
     currentAlarmedEventNum = 0xff;
     LoadNextEvent();
     
@@ -612,9 +613,13 @@ void LoadNextEvent()
 {
     if(eventCount == 0)
         return;
-    uint8_t hour, minute;
-    if(!getHourMin(&hour, &minute))
+//    uint8_t hour, minute;
+    uint16_t totalMinutes;
+//    if(!getHourMin(&hour, &minute))
+//        return;
+    if(!getTotalMinutes(&totalMinutes))
         return;
+    
 //    uint8_t *hour = GetHour();
 //    if(*hour == HOUR_NOT_SET) // time not set 
 //    {
@@ -632,8 +637,7 @@ void LoadNextEvent()
         if(curEventNum >= eventCount)
         {
             curEventNum = 0xff;
-            curEventMinute = 0;
-            curEventHour = 0;
+            curEventTotalMinutes = 0;
             _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = word(0, 0);            
             return;
         }
@@ -648,7 +652,7 @@ void LoadNextEvent()
         // 6 - 30 min
         // 7 - infinite
         uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + curEventNum * 2);
-        curEventHour = v1 & 0x1F;
+        curEventTotalMinutes = (v1 & 0x1F) * 60;
         //curEventType = bitRead(v1, 5);
         _nextEventPlayDuration = (v1 >> 5);
         switch(_nextEventPlayDuration)
@@ -676,11 +680,11 @@ void LoadNextEvent()
                 break;
         }
         uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + curEventNum * 2 + 1);        
-        curEventMinute = v1 & 0x3F;
+        curEventTotalMinutes += v1 & 0x3F;
         _nextEventSoundId = v1 >> 6;
         
-        _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = word(curEventHour, curEventMinute);
-    }while(curEventHour < hour || curEventMinute <= minute);
+    }while(curEventTotalMinutes <= totalMinutes);
+    _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = curEventTotalMinutes;
     
 }
 // Fires every minute
@@ -689,20 +693,23 @@ void ProcessDiary()
     // If no event loaded
     if(curEventNum == 0xff)
         return;
-    uint8_t hour, minute;
-    if(!getHourMin(&hour, &minute))
+    uint16_t totalMinutes;
+//    uint8_t hour, minute;
+//    if(!getHourMin(&hour, &minute))
+//        return;
+    if(!getTotalMinutes(&totalMinutes))
         return;
     // If midnight reset all diodes
-    if(hour == 0 && minute == 0)
+    if(totalMinutes == 0)
     {
         SwitchOffAllLeds(); //TODO process if event alarmed yet
         curEventNum = 0xff;
+        LoadNextEvent();
         _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
-
     }
     
     
-    if(curEventHour == hour && curEventMinute == minute) // Event is equal
+    if(curEventTotalMinutes == totalMinutes) // Event is equal
     {
         // old Event Is Alarmd yet
         if(currentAlarmedEventNum != 0xff)
@@ -727,6 +734,7 @@ void ProcessDiary()
 //                LightLed(currentAlarmedEventNum + 1, LED_RED, true);  
 //            }
             eventResetSecond = *GetTime() + eventAcceptTime;
+            
             LoadNextEvent();
         }
         _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);

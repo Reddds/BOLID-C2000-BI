@@ -3105,6 +3105,7 @@ void PortWrite(uint8_t *buf, uint8_t buflen);
 unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
+bool getTotalMinutes(uint16_t *totalMinutes);
 void SetHourMin(int *newHour, int *newMin, int *sec);
 
 # 91 "ModbusRtu.h"
@@ -3214,7 +3215,7 @@ T0CONbits.T0PS = 7;
 
 INTCONbits.TMR0IE = 1;
 INTCON2bits.TMR0IP = 1;
-((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 0) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 0) * 6)&0xFF)));
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + 30) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + 30) * 6)&0xFF)));
 
 
 INTCONbits.TMR0IF = 0;

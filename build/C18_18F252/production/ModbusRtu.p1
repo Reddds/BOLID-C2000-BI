@@ -11,13 +11,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 "137 ModbusRtu.c
 [v _ModbusGetRxBuffer `(uc ~T0 @X0 0 ef ]
 "440
-[c E2385 0 1 2 3 4 5 6 .. ]
-[n E2385 MESSAGE ID FUNC ADD_HI ADD_LO NB_HI NB_LO BYTE_CNT  ]
+[c E2387 0 1 2 3 4 5 6 .. ]
+[n E2387 MESSAGE ID FUNC ADD_HI ADD_LO NB_HI NB_LO BYTE_CNT  ]
 "140
 [v _ModbusValidateRequest `(uc ~T0 @X0 0 ef ]
 "447
-[c E2418 255 1 2 3 4 .. ]
-[n E2418 . NO_REPLY EXC_FUNC_CODE EXC_ADDR_RANGE EXC_REGS_QUANT EXC_EXECUTE  ]
+[c E2420 255 1 2 3 4 .. ]
+[n E2420 . NO_REPLY EXC_FUNC_CODE EXC_ADDR_RANGE EXC_REGS_QUANT EXC_EXECUTE  ]
 "154
 [v _ModbusBuildException `(v ~T0 @X0 0 ef1`uc ]
 "136
@@ -45,21 +45,21 @@ Version 3.2 HI-TECH Software Intermediate Code
 "70 interrupts.h
 [v _PortRead `(uc ~T0 @X0 0 ef ]
 "532 ModbusRtu.c
-[c E2412 -1 -2 -3 -4 -5 .. ]
-[n E2412 ERR_LIST ERR_NOT_MASTER ERR_POLLING ERR_BUFF_OVERFLOW ERR_BAD_CRC ERR_EXCEPTION  ]
+[c E2414 -1 -2 -3 -4 -5 .. ]
+[n E2414 ERR_LIST ERR_NOT_MASTER ERR_POLLING ERR_BUFF_OVERFLOW ERR_BAD_CRC ERR_EXCEPTION  ]
 "138
 [v _ModbusCalcCRC `(us ~T0 @X0 0 ef1`uc ]
 "72 interrupts.h
 [v _PortWrite `(v ~T0 @X0 0 ef2`*uc`uc ]
 "768 ModbusRtu.c
-[c E2399 2 3 4 5 6 7 8 9 10 .. ]
-[n E2399 FILE_MESSAGE FILE_DATA_LEN FILE_REF_TYPE FILE_NUM_HI FILE_NUM_LO FILE_REC_HI FILE_REC_LO FILE_REC_LEN_HI FILE_REC_LEN_LO FILE_FIRST_BYTE  ]
+[c E2401 2 3 4 5 6 7 8 9 10 .. ]
+[n E2401 FILE_MESSAGE FILE_DATA_LEN FILE_REF_TYPE FILE_NUM_HI FILE_NUM_LO FILE_REC_HI FILE_REC_LO FILE_REC_LEN_HI FILE_REC_LEN_LO FILE_FIRST_BYTE  ]
 "781
-[c E2393 0 1 2 3 4 .. ]
-[n E2393 MEI_MESSAGE MEI_ID MEI_FUNC MEI_TYPE MEI_READ_DEV_ID MEI_OBJ_ID  ]
+[c E2395 0 1 2 3 4 .. ]
+[n E2395 MEI_MESSAGE MEI_ID MEI_FUNC MEI_TYPE MEI_READ_DEV_ID MEI_OBJ_ID  ]
 "807
-[c E2381 6 3 2 .. ]
-[n E2381 . RESPONSE_SIZE EXCEPTION_SIZE CHECKSUM_SIZE  ]
+[c E2383 6 3 2 .. ]
+[n E2383 . RESPONSE_SIZE EXCEPTION_SIZE CHECKSUM_SIZE  ]
 "5807 C:\Program Files (x86)\Microchip\xc8\v1.37\include\pic18f252.h
 [v _WR `Vb ~T0 @X0 0 e@32049 ]
 "1967
@@ -2397,7 +2397,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.h: 72: void PortWrite(uint8_t *buf, uint8_t buflen);
 [; ;interrupts.h: 73: unsigned long millis();
 [; ;interrupts.h: 75: bool getHourMin(uint8_t *hour, uint8_t *min);
-[; ;interrupts.h: 76: void SetHourMin(int *newHour, int *newMin, int *sec);
+[; ;interrupts.h: 76: bool getTotalMinutes(uint16_t *totalMinutes);
+[; ;interrupts.h: 77: void SetHourMin(int *newHour, int *newMin, int *sec);
 [; ;ModbusRtu.c: 15: typedef struct
 [; ;ModbusRtu.c: 16: {
 [; ;ModbusRtu.c: 17: uint8_t u8id;
@@ -2715,7 +2716,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 258 ]
 [; ;ModbusRtu.c: 440: if (_au8Buffer[ ID ] != _u8id)
 "440
-[e $ ! != -> *U + &U __au8Buffer * -> . `E2385 0 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> __u8id `i 259  ]
+[e $ ! != -> *U + &U __au8Buffer * -> . `E2387 0 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> __u8id `i 259  ]
 [; ;ModbusRtu.c: 441: return 0;
 "441
 [e ) -> -> 0 `i `uc ]
@@ -2733,7 +2734,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 {
 [; ;ModbusRtu.c: 447: if (u8exception != NO_REPLY)
 "447
-[e $ ! != -> _u8exception `i -> . `E2418 0 `i 261  ]
+[e $ ! != -> _u8exception `i -> . `E2420 0 `i 261  ]
 [; ;ModbusRtu.c: 448: {
 "448
 {
@@ -2866,7 +2867,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $U 262  ]
 "460
 [e :U 263 ]
-[e [\ *U + &U __au8Buffer * -> . `E2385 1 `ux -> -> # *U &U __au8Buffer `ui `ux , $ -> . `E2270 1 `uc 264
+[e [\ *U + &U __au8Buffer * -> . `E2387 1 `ux -> -> # *U &U __au8Buffer `ui `ux , $ -> . `E2270 1 `uc 264
  , $ -> . `E2270 2 `uc 265
  , $ -> . `E2270 3 `uc 266
  , $ -> . `E2270 4 `uc 267
@@ -2974,7 +2975,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e ++ __u16errCnt -> -> 1 `i `us ]
 [; ;ModbusRtu.c: 532: return ERR_BUFF_OVERFLOW;
 "532
-[e ) -> . `E2412 2 `uc ]
+[e ) -> . `E2414 2 `uc ]
 [e $UE 278  ]
 "533
 }
@@ -3146,7 +3147,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e ++ __u16errCnt -> -> 1 `i `us ]
 [; ;ModbusRtu.c: 700: return NO_REPLY;
 "700
-[e ) -> . `E2418 0 `uc ]
+[e ) -> . `E2420 0 `uc ]
 [e $UE 294  ]
 "701
 }
@@ -3169,7 +3170,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 {
 [; ;ModbusRtu.c: 707: if (fctsupported[i] == _au8Buffer[FUNC])
 "707
-[e $ ! == -> *U + &U _fctsupported * -> _i `ux -> -> # *U &U _fctsupported `ui `ux `i -> *U + &U __au8Buffer * -> . `E2385 1 `ux -> -> # *U &U __au8Buffer `ui `ux `i 299  ]
+[e $ ! == -> *U + &U _fctsupported * -> _i `ux -> -> # *U &U _fctsupported `ui `ux `i -> *U + &U __au8Buffer * -> . `E2387 1 `ux -> -> # *U &U __au8Buffer `ui `ux `i 299  ]
 [; ;ModbusRtu.c: 708: {
 "708
 {
@@ -3203,7 +3204,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e ++ __u16errCnt -> -> 1 `i `us ]
 [; ;ModbusRtu.c: 716: return EXC_FUNC_CODE;
 "716
-[e ) -> . `E2418 1 `uc ]
+[e ) -> . `E2420 1 `uc ]
 [e $UE 294  ]
 "717
 }
@@ -3237,16 +3238,16 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;ModbusRtu.c: 727: case MB_FC_WRITE_MULTIPLE_COILS:
 [; ;ModbusRtu.c: 729: u16regs = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 "729
-[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 730: u16count = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
 "730
-[e = _u16count -> | << -> -> *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16count -> | << -> -> *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 731: if (u16count > 16)
 "731
 [e $ ! > -> _u16count `ui -> -> 16 `i `ui 306  ]
 [; ;ModbusRtu.c: 732: return EXC_REGS_QUANT;
 "732
-[e ) -> . `E2418 3 `uc ]
+[e ) -> . `E2420 3 `uc ]
 [e $UE 294  ]
 [e :U 306 ]
 [; ;ModbusRtu.c: 733: if (u16regs > 15 || u16regs + u16count > 16)
@@ -3254,7 +3255,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $ ! || > -> _u16regs `ui -> -> 15 `i `ui > + -> _u16regs `ui -> _u16count `ui -> -> 16 `i `ui 307  ]
 [; ;ModbusRtu.c: 734: return EXC_ADDR_RANGE;
 "734
-[e ) -> . `E2418 2 `uc ]
+[e ) -> . `E2420 2 `uc ]
 [e $UE 294  ]
 [e :U 307 ]
 [; ;ModbusRtu.c: 735: break;
@@ -3265,16 +3266,16 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 308 ]
 [; ;ModbusRtu.c: 737: u16regs = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 "737
-[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 738: u8regs = _au8Buffer[ NB_HI ];
 "738
-[e = _u8regs *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux ]
+[e = _u8regs *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux ]
 [; ;ModbusRtu.c: 739: if (u8regs != 0x00 && u8regs != 0xFF)
 "739
 [e $ ! && != -> _u8regs `i -> 0 `i != -> _u8regs `i -> 255 `i 309  ]
 [; ;ModbusRtu.c: 740: return EXC_REGS_QUANT;
 "740
-[e ) -> . `E2418 3 `uc ]
+[e ) -> . `E2420 3 `uc ]
 [e $UE 294  ]
 [e :U 309 ]
 [; ;ModbusRtu.c: 741: if (u16regs > 15)
@@ -3282,7 +3283,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $ ! > -> _u16regs `ui -> -> 15 `i `ui 310  ]
 [; ;ModbusRtu.c: 742: return EXC_ADDR_RANGE;
 "742
-[e ) -> . `E2418 2 `uc ]
+[e ) -> . `E2420 2 `uc ]
 [e $UE 294  ]
 [e :U 310 ]
 [; ;ModbusRtu.c: 743: break;
@@ -3293,14 +3294,14 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 311 ]
 [; ;ModbusRtu.c: 745: u16regs = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 "745
-[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 746: u8regs = (uint8_t) u16regs;
 "746
 [e = _u8regs -> _u16regs `uc ]
 [; ;ModbusRtu.c: 747: if (u8regs > _holdingRegsCount) return EXC_ADDR_RANGE;
 "747
 [e $ ! > -> _u8regs `i -> __holdingRegsCount `i 312  ]
-[e ) -> . `E2418 2 `uc ]
+[e ) -> . `E2420 2 `uc ]
 [e $UE 294  ]
 [e :U 312 ]
 [; ;ModbusRtu.c: 748: break;
@@ -3311,10 +3312,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 313 ]
 [; ;ModbusRtu.c: 750: u16regs = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 "750
-[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 751: u16regs += (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
 "751
-[e =+ _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e =+ _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 752: u8regs = (uint8_t) u16regs;
 "752
 [e = _u8regs -> _u16regs `uc ]
@@ -3323,7 +3324,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $ ! > -> _u8regs `i -> __inputRegsCount `i 314  ]
 [; ;ModbusRtu.c: 754: return EXC_ADDR_RANGE;
 "754
-[e ) -> . `E2418 2 `uc ]
+[e ) -> . `E2420 2 `uc ]
 [e $UE 294  ]
 [e :U 314 ]
 [; ;ModbusRtu.c: 755: break;
@@ -3337,10 +3338,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;ModbusRtu.c: 757: case MB_FC_WRITE_MULTIPLE_REGISTERS:
 [; ;ModbusRtu.c: 758: u16regs = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
 "758
-[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 759: u16regs += (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
 "759
-[e =+ _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e =+ _u16regs -> | << -> -> *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 760: u8regs = (uint8_t) u16regs;
 "760
 [e = _u8regs -> _u16regs `uc ]
@@ -3349,7 +3350,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $ ! > -> _u8regs `i -> __holdingRegsCount `i 317  ]
 [; ;ModbusRtu.c: 762: return EXC_ADDR_RANGE;
 "762
-[e ) -> . `E2418 2 `uc ]
+[e ) -> . `E2420 2 `uc ]
 [e $UE 294  ]
 [e :U 317 ]
 [; ;ModbusRtu.c: 763: break;
@@ -3366,34 +3367,34 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 319 ]
 [; ;ModbusRtu.c: 768: if (_au8Buffer[ FILE_REF_TYPE ] != 6)
 "768
-[e $ ! != -> *U + &U __au8Buffer * -> . `E2399 1 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 6 `i 320  ]
+[e $ ! != -> *U + &U __au8Buffer * -> . `E2401 1 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 6 `i 320  ]
 [; ;ModbusRtu.c: 769: return EXC_ADDR_RANGE;
 "769
-[e ) -> . `E2418 2 `uc ]
+[e ) -> . `E2420 2 `uc ]
 [e $UE 294  ]
 [e :U 320 ]
 [; ;ModbusRtu.c: 771: if (_au8Buffer[ FILE_NUM_HI ] != 0x00 || _au8Buffer[ FILE_NUM_LO ] != 0x01)
 "771
-[e $ ! || != -> *U + &U __au8Buffer * -> . `E2399 2 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 0 `i != -> *U + &U __au8Buffer * -> . `E2399 3 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 1 `i 321  ]
+[e $ ! || != -> *U + &U __au8Buffer * -> . `E2401 2 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 0 `i != -> *U + &U __au8Buffer * -> . `E2401 3 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 1 `i 321  ]
 [; ;ModbusRtu.c: 772: return EXC_ADDR_RANGE;
 "772
-[e ) -> . `E2418 2 `uc ]
+[e ) -> . `E2420 2 `uc ]
 [e $UE 294  ]
 [e :U 321 ]
 "774
 [v _startAddrBytes `ul ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 774: unsigned long startAddrBytes = ((_au8Buffer[ FILE_REC_HI ] << 8) | _au8Buffer[ FILE_REC_LO ]) << 1;
-[e = _startAddrBytes -> -> << | << -> *U + &U __au8Buffer * -> . `E2399 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2399 5 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 1 `i `l `ul ]
+[e = _startAddrBytes -> -> << | << -> *U + &U __au8Buffer * -> . `E2401 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2401 5 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 1 `i `l `ul ]
 "775
 [v _recLenBytes `ul ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 775: unsigned long recLenBytes = ((_au8Buffer[ FILE_REC_LEN_HI ] << 8) | _au8Buffer[ FILE_REC_LEN_LO ]) << 1;
-[e = _recLenBytes -> -> << | << -> *U + &U __au8Buffer * -> . `E2399 6 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2399 7 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 1 `i `l `ul ]
+[e = _recLenBytes -> -> << | << -> *U + &U __au8Buffer * -> . `E2401 6 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2401 7 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 1 `i `l `ul ]
 [; ;ModbusRtu.c: 777: if (startAddrBytes + recLenBytes >= 256)
 "777
 [e $ ! >= + _startAddrBytes _recLenBytes -> -> -> 256 `i `l `ul 322  ]
 [; ;ModbusRtu.c: 778: return EXC_ADDR_RANGE;
 "778
-[e ) -> . `E2418 2 `uc ]
+[e ) -> . `E2420 2 `uc ]
 [e $UE 294  ]
 [e :U 322 ]
 [; ;ModbusRtu.c: 779: break;
@@ -3404,30 +3405,30 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 323 ]
 [; ;ModbusRtu.c: 781: if(_au8Buffer[ MEI_TYPE ] != 0x0E)
 "781
-[e $ ! != -> *U + &U __au8Buffer * -> . `E2393 2 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 14 `i 324  ]
+[e $ ! != -> *U + &U __au8Buffer * -> . `E2395 2 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 14 `i 324  ]
 [; ;ModbusRtu.c: 782: return EXC_FUNC_CODE;
 "782
-[e ) -> . `E2418 1 `uc ]
+[e ) -> . `E2420 1 `uc ]
 [e $UE 294  ]
 [e :U 324 ]
 "783
 [v _readDevId `uc ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 783: uint8_t readDevId = _au8Buffer[ MEI_READ_DEV_ID ];
-[e = _readDevId *U + &U __au8Buffer * -> . `E2393 3 `ux -> -> # *U &U __au8Buffer `ui `ux ]
+[e = _readDevId *U + &U __au8Buffer * -> . `E2395 3 `ux -> -> # *U &U __au8Buffer `ui `ux ]
 [; ;ModbusRtu.c: 784: if(readDevId != 0x01 && readDevId != 0x02 && readDevId != 0x04)
 "784
 [e $ ! && && != -> _readDevId `i -> 1 `i != -> _readDevId `i -> 2 `i != -> _readDevId `i -> 4 `i 325  ]
 [; ;ModbusRtu.c: 785: return EXC_REGS_QUANT;
 "785
-[e ) -> . `E2418 3 `uc ]
+[e ) -> . `E2420 3 `uc ]
 [e $UE 294  ]
 [e :U 325 ]
 [; ;ModbusRtu.c: 786: if(readDevId == 0x04 && _au8Buffer[ MEI_OBJ_ID ] > 0x06)
 "786
-[e $ ! && == -> _readDevId `i -> 4 `i > -> *U + &U __au8Buffer * -> . `E2393 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 6 `i 326  ]
+[e $ ! && == -> _readDevId `i -> 4 `i > -> *U + &U __au8Buffer * -> . `E2395 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 6 `i 326  ]
 [; ;ModbusRtu.c: 787: return EXC_ADDR_RANGE;
 "787
-[e ) -> . `E2418 2 `uc ]
+[e ) -> . `E2420 2 `uc ]
 [e $UE 294  ]
 [e :U 326 ]
 [; ;ModbusRtu.c: 788: break;
@@ -3439,7 +3440,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $U 301  ]
 "723
 [e :U 302 ]
-[e [\ *U + &U __au8Buffer * -> . `E2385 1 `ux -> -> # *U &U __au8Buffer `ui `ux , $ -> . `E2270 1 `uc 303
+[e [\ *U + &U __au8Buffer * -> . `E2387 1 `ux -> -> # *U &U __au8Buffer `ui `ux , $ -> . `E2270 1 `uc 303
  , $ -> . `E2270 2 `uc 304
  , $ -> . `E2270 8 `uc 305
  , $ -> . `E2270 5 `uc 308
@@ -3455,7 +3456,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 301 ]
 [; ;ModbusRtu.c: 790: _lastCommand = _au8Buffer[ FUNC ];
 "790
-[e = __lastCommand *U + &U __au8Buffer * -> . `E2385 1 `ux -> -> # *U &U __au8Buffer `ui `ux ]
+[e = __lastCommand *U + &U __au8Buffer * -> . `E2387 1 `ux -> -> # *U &U __au8Buffer `ui `ux ]
 [; ;ModbusRtu.c: 791: return 0;
 "791
 [e ) -> -> 0 `i `uc ]
@@ -3478,19 +3479,19 @@ Version 3.2 HI-TECH Software Intermediate Code
 "802
 [v _u8func `uc ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 802: uint8_t u8func = _au8Buffer[ FUNC ];
-[e = _u8func *U + &U __au8Buffer * -> . `E2385 1 `ux -> -> # *U &U __au8Buffer `ui `ux ]
+[e = _u8func *U + &U __au8Buffer * -> . `E2387 1 `ux -> -> # *U &U __au8Buffer `ui `ux ]
 [; ;ModbusRtu.c: 804: _au8Buffer[ ID ] = _u8id;
 "804
-[e = *U + &U __au8Buffer * -> . `E2385 0 `ux -> -> # *U &U __au8Buffer `ui `ux __u8id ]
+[e = *U + &U __au8Buffer * -> . `E2387 0 `ux -> -> # *U &U __au8Buffer `ui `ux __u8id ]
 [; ;ModbusRtu.c: 805: _au8Buffer[ FUNC ] = u8func + 0x80;
 "805
-[e = *U + &U __au8Buffer * -> . `E2385 1 `ux -> -> # *U &U __au8Buffer `ui `ux -> + -> _u8func `i -> 128 `i `uc ]
+[e = *U + &U __au8Buffer * -> . `E2387 1 `ux -> -> # *U &U __au8Buffer `ui `ux -> + -> _u8func `i -> 128 `i `uc ]
 [; ;ModbusRtu.c: 806: _au8Buffer[ 2 ] = u8exception;
 "806
 [e = *U + &U __au8Buffer * -> -> -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux _u8exception ]
 [; ;ModbusRtu.c: 807: _u8BufferSize = EXCEPTION_SIZE;
 "807
-[e = __u8BufferSize -> . `E2381 1 `uc ]
+[e = __u8BufferSize -> . `E2383 1 `uc ]
 [; ;ModbusRtu.c: 808: }
 "808
 [e :UE 327 ]
@@ -3555,14 +3556,14 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;ModbusRtu.c: 832: uint8_t u8CopyBufferSize;
 [; ;ModbusRtu.c: 833: uint16_t u16currentCoil, u16coil;
 [; ;ModbusRtu.c: 836: uint16_t u16StartCoil = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
-[e = _u16StartCoil -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16StartCoil -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 837: _lastAddress = u16StartCoil;
 "837
 [e = __lastAddress _u16StartCoil ]
 "838
 [v _u16Coilno `us ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 838: uint16_t u16Coilno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
-[e = _u16Coilno -> | << -> -> *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16Coilno -> | << -> -> *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 839: _lastCount = u16Coilno;
 "839
 [e = __lastCount _u16Coilno ]
@@ -3578,10 +3579,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U 332 ]
 [; ;ModbusRtu.c: 844: _au8Buffer[ ADD_HI ] = u8bytesno;
 "844
-[e = *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux _u8bytesno ]
+[e = *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux _u8bytesno ]
 [; ;ModbusRtu.c: 845: _u8BufferSize = ADD_LO;
 "845
-[e = __u8BufferSize -> . `E2385 3 `uc ]
+[e = __u8BufferSize -> . `E2387 3 `uc ]
 [; ;ModbusRtu.c: 848: u8bitsno = 0;
 "848
 [e = _u8bitsno -> -> 0 `i `uc ]
@@ -3668,14 +3669,14 @@ Version 3.2 HI-TECH Software Intermediate Code
 "887
 [v _u8StartAdd `uc ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 887: uint8_t u8StartAdd = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
-[e = _u8StartAdd -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `uc ]
+[e = _u8StartAdd -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `uc ]
 [; ;ModbusRtu.c: 888: _lastAddress = u8StartAdd;
 "888
 [e = __lastAddress -> _u8StartAdd `us ]
 "889
 [v _u16regsno `us ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 889: uint16_t u16regsno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
-[e = _u16regsno -> | << -> -> *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16regsno -> | << -> -> *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 890: _lastCount = u16regsno;
 "890
 [e = __lastCount _u16regsno ]
@@ -3756,7 +3757,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;ModbusRtu.c: 921: uint8_t u8currentBit;
 [; ;ModbusRtu.c: 922: uint8_t u8CopyBufferSize;
 [; ;ModbusRtu.c: 923: uint16_t u16coil = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
-[e = _u16coil -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16coil -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 924: _lastAddress = u16coil;
 "924
 [e = __lastAddress _u16coil ]
@@ -3768,7 +3769,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _u8currentBit -> % -> _u16coil `ui -> -> 16 `i `ui `uc ]
 [; ;ModbusRtu.c: 931: (_au8Buffer[ NB_HI ] == 0xff ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 "931
-[e ? == -> *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 255 `i : -> =| *U _regs -> << -> -> -> 1 `i `us `ui _u8currentBit `us `ui -> =& *U _regs -> ~ << -> -> -> 1 `i `us `ui _u8currentBit `us `ui ]
+[e ? == -> *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 255 `i : -> =| *U _regs -> << -> -> -> 1 `i `us `ui _u8currentBit `us `ui -> =& *U _regs -> ~ << -> -> -> 1 `i `us `ui _u8currentBit `us `ui ]
 [; ;ModbusRtu.c: 938: _u8BufferSize = 6;
 "938
 [e = __u8BufferSize -> -> 6 `i `uc ]
@@ -3801,7 +3802,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 "955
 [v _u16add `us ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 955: uint16_t u16add = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
-[e = _u16add -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16add -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 956: _lastAddress = u16add;
 "956
 [e = __lastAddress _u16add ]
@@ -3814,13 +3815,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _u16val `us ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 958: uint8_t u8CopyBufferSize;
 [; ;ModbusRtu.c: 959: uint16_t u16val = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
-[e = _u16val -> | << -> -> *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16val -> | << -> -> *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 961: regs[ u16add ] = u16val;
 "961
 [e = *U + _regs * -> _u16add `ux -> -> # *U _regs `ui `ux _u16val ]
 [; ;ModbusRtu.c: 964: _u8BufferSize = RESPONSE_SIZE;
 "964
-[e = __u8BufferSize -> . `E2381 0 `uc ]
+[e = __u8BufferSize -> . `E2383 0 `uc ]
 [; ;ModbusRtu.c: 966: u8CopyBufferSize = _u8BufferSize + 2;
 "966
 [e = _u8CopyBufferSize -> + -> __u8BufferSize `i -> 2 `i `uc ]
@@ -3893,14 +3894,14 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;ModbusRtu.c: 994: uint16_t u16currentCoil, u16coil;
 [; ;ModbusRtu.c: 995: boolean bTemp;
 [; ;ModbusRtu.c: 998: uint16_t u16StartCoil = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
-[e = _u16StartCoil -> | << -> -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16StartCoil -> | << -> -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 999: _lastAddress = u16StartCoil;
 "999
 [e = __lastAddress _u16StartCoil ]
 "1000
 [v _u16Coilno `us ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 1000: uint16_t u16Coilno = (((uint16_t)_au8Buffer[ NB_HI ]<<8)|_au8Buffer[ NB_LO ]);
-[e = _u16Coilno -> | << -> -> *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _u16Coilno -> | << -> -> *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 1001: _lastCount = u16Coilno;
 "1001
 [e = __lastCount _u16Coilno ]
@@ -3992,14 +3993,14 @@ Version 3.2 HI-TECH Software Intermediate Code
 "1050
 [v _u16StartAdd `us ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 1050: uint16_t u16StartAdd = _au8Buffer[ ADD_HI ] << 8 | _au8Buffer[ ADD_LO ];
-[e = _u16StartAdd -> | << -> *U + &U __au8Buffer * -> . `E2385 2 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 3 `ux -> -> # *U &U __au8Buffer `ui `ux `i `us ]
+[e = _u16StartAdd -> | << -> *U + &U __au8Buffer * -> . `E2387 2 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 3 `ux -> -> # *U &U __au8Buffer `ui `ux `i `us ]
 [; ;ModbusRtu.c: 1051: _lastAddress = u16StartAdd;
 "1051
 [e = __lastAddress _u16StartAdd ]
 "1052
 [v _u8regsno `uc ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 1052: int8_t u8regsno = _au8Buffer[ NB_HI ] << 8 | _au8Buffer[ NB_LO ];
-[e = _u8regsno -> | << -> *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2385 5 `ux -> -> # *U &U __au8Buffer `ui `ux `i `uc ]
+[e = _u8regsno -> | << -> *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux `i -> 8 `i -> *U + &U __au8Buffer * -> . `E2387 5 `ux -> -> # *U &U __au8Buffer `ui `ux `i `uc ]
 [; ;ModbusRtu.c: 1053: _lastCount = u8regsno;
 "1053
 [e = __lastCount -> _u8regsno `us ]
@@ -4014,13 +4015,13 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;ModbusRtu.c: 1056: uint16_t temp;
 [; ;ModbusRtu.c: 1059: _au8Buffer[ NB_HI ] = 0;
 "1059
-[e = *U + &U __au8Buffer * -> . `E2385 4 `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 0 `i `uc ]
+[e = *U + &U __au8Buffer * -> . `E2387 4 `ux -> -> # *U &U __au8Buffer `ui `ux -> -> 0 `i `uc ]
 [; ;ModbusRtu.c: 1060: _au8Buffer[ NB_LO ] = u8regsno;
 "1060
-[e = *U + &U __au8Buffer * -> . `E2385 5 `ux -> -> # *U &U __au8Buffer `ui `ux _u8regsno ]
+[e = *U + &U __au8Buffer * -> . `E2387 5 `ux -> -> # *U &U __au8Buffer `ui `ux _u8regsno ]
 [; ;ModbusRtu.c: 1061: _u8BufferSize = RESPONSE_SIZE;
 "1061
-[e = __u8BufferSize -> . `E2381 0 `uc ]
+[e = __u8BufferSize -> . `E2383 0 `uc ]
 [; ;ModbusRtu.c: 1064: for (i = 0; i < u8regsno && (u16StartAdd + i) < u8size; i++)
 "1064
 {
@@ -4032,7 +4033,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 {
 [; ;ModbusRtu.c: 1066: temp = (((uint16_t)_au8Buffer[ (BYTE_CNT + 1) + i * 2 ]<<8)|_au8Buffer[ (BYTE_CNT + 2) + i * 2 ]);
 "1066
-[e = _temp -> | << -> -> *U + &U __au8Buffer * -> -> + + -> . `E2385 6 `i -> 1 `i * -> _i `i -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> -> + + -> . `E2385 6 `i -> 2 `i * -> _i `i -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
+[e = _temp -> | << -> -> *U + &U __au8Buffer * -> -> + + -> . `E2387 6 `i -> 1 `i * -> _i `i -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> -> + + -> . `E2387 6 `i -> 2 `i * -> _i `i -> 2 `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux `ui `us ]
 [; ;ModbusRtu.c: 1070: regs[ u16StartAdd + i ] = temp;
 "1070
 [e = *U + _regs * -> + -> _u16StartAdd `ui -> _i `ui `ux -> -> # *U _regs `ui `ux _temp ]
@@ -4123,18 +4124,18 @@ Version 3.2 HI-TECH Software Intermediate Code
 "1115
 [v _requestDataLen `uc ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 1115: int8_t requestDataLen = _au8Buffer[ FILE_DATA_LEN ];
-[e = _requestDataLen *U + &U __au8Buffer * -> . `E2399 0 `ux -> -> # *U &U __au8Buffer `ui `ux ]
+[e = _requestDataLen *U + &U __au8Buffer * -> . `E2401 0 `ux -> -> # *U &U __au8Buffer `ui `ux ]
 "1117
 [v _startAddrsBytes `us ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 1117: uint16_t startAddrsBytes = ((((uint16_t)_au8Buffer[ FILE_REC_HI ]<<8)|_au8Buffer[ FILE_REC_LO ])) << 1;
-[e = _startAddrsBytes -> << | << -> -> *U + &U __au8Buffer * -> . `E2399 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2399 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui -> 1 `i `us ]
+[e = _startAddrsBytes -> << | << -> -> *U + &U __au8Buffer * -> . `E2401 4 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2401 5 `ux -> -> # *U &U __au8Buffer `ui `ux `ui -> 1 `i `us ]
 [; ;ModbusRtu.c: 1118: _lastAddress = startAddrsBytes;
 "1118
 [e = __lastAddress _startAddrsBytes ]
 "1119
 [v _recLenBytes `us ~T0 @X0 1 a ]
 [; ;ModbusRtu.c: 1119: uint16_t recLenBytes = ((((uint16_t)_au8Buffer[ FILE_REC_LEN_HI ]<<8)|_au8Buffer[ FILE_REC_LEN_LO ])) << 1;
-[e = _recLenBytes -> << | << -> -> *U + &U __au8Buffer * -> . `E2399 6 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2399 7 `ux -> -> # *U &U __au8Buffer `ui `ux `ui -> 1 `i `us ]
+[e = _recLenBytes -> << | << -> -> *U + &U __au8Buffer * -> . `E2401 6 `ux -> -> # *U &U __au8Buffer `ui `ux `us `ui -> 8 `i -> *U + &U __au8Buffer * -> . `E2401 7 `ux -> -> # *U &U __au8Buffer `ui `ux `ui -> 1 `i `us ]
 [; ;ModbusRtu.c: 1120: _lastCount = recLenBytes;
 "1120
 [e = __lastCount _recLenBytes ]
@@ -4169,7 +4170,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $ _WR 371  ]
 [e :U 372 ]
 [e = _EEADR -> + -> _startAddrsBytes `ui -> _i `ui `uc ]
-[e = _EEDATA *U + &U __au8Buffer * -> -> + -> . `E2399 8 `i -> _i `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux ]
+[e = _EEDATA *U + &U __au8Buffer * -> -> + -> . `E2401 8 `i -> _i `i `ui `ux -> -> # *U &U __au8Buffer `ui `ux ]
 [e -> 0 `i ]
 [e = _CARRY -> -> 0 `i `b ]
 [e $ ! _GIE 373  ]
