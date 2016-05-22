@@ -134,6 +134,7 @@ uint16_t _lastCount = 0; // number of coils or registers or file length in bytes
 
 void ModbusInit(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
 void ModbusSendTxBuffer();
+int8_t ModbusGetRxBufferHeader();
 int8_t ModbusGetRxBuffer();
 uint16_t ModbusCalcCRC(uint8_t u8length);
 uint8_t ModbusValidateAnswer();
@@ -416,8 +417,6 @@ uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs
 
     uint8_t u8current = PortAvailable();
 
-
-
     if (u8current == 0) return 0;
 
     // check T35 after frame end or still no frame end
@@ -431,15 +430,26 @@ uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs
         return 0;
 
     _u8lastRec = 0;
-    int8_t i8state = ModbusGetRxBuffer();
+    int8_t i8state = ModbusGetRxBufferHeader();
     _u8lastError = i8state;
     if (i8state < 4) // Minimum request len
+    {
+        PortClearReadBuffer();
         return i8state;
-
+    }
     // check slave id
     if (_au8Buffer[ ID ] != _u8id)
+    {
+        PortClearReadBuffer();
         return 0;
+    }
+    
+    i8state = ModbusGetRxBuffer();
+    PortClearReadBuffer();
+    _u8lastError = i8state;
+    
 
+ 
     // validate message: CRC, FCT, address and size
     uint8_t u8exception = ModbusValidateRequest();
     if (u8exception > 0)
@@ -499,6 +509,20 @@ void ModbusInit(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
     _u16timeOut = 1000;
 }
 
+// Read first 4 bytes
+int8_t ModbusGetRxBufferHeader()
+{
+    _u8BufferSize = 0;
+    for(uint8_t i = 0; i < 4; i++)
+    {
+        if(!PortAvailable())
+            return ERR_EXCEPTION;
+        _au8Buffer[ _u8BufferSize ] = PortRead();
+        _u8BufferSize++;
+    }
+    return _u8BufferSize;
+}
+
 /**
  * @brief
  * This method moves Serial buffer data to the Modbus au8Buffer.
@@ -513,19 +537,16 @@ int8_t ModbusGetRxBuffer()
     //!!!  if (u8txenpin > 1) 
     //!!!      digitalWrite( u8txenpin, LOW );
 
-    _u8BufferSize = 0;
+    _u8BufferSize = 4;
 
     while (PortAvailable())
     {
         _au8Buffer[ _u8BufferSize ] = PortRead();
-
         _u8BufferSize++;
-
         if (_u8BufferSize >= MAX_BUFFER)
             bBuffOverflow = true;
     }
     _u16InCnt++;
-
     if (bBuffOverflow)
     {
         _u16errCnt++;

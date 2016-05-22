@@ -86,8 +86,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 "1339
 [v _TRISCbits `VS61 ~T0 @X0 0 e@3988 ]
 "305 main.c
-[c E2430 0 1 2 3 .. ]
-[n E2430 . LED_OFF LED_GREEN LED_RED LED_ORANGE  ]
+[c E2431 0 1 2 3 .. ]
+[n E2431 . LED_OFF LED_GREEN LED_RED LED_ORANGE  ]
 "2781 C:\Program Files (x86)\Microchip\xc8\v1.37\include\pic18f252.h
 [s S142 :4 `uc 1 :2 `uc 1 ]
 [n S142 . CCP1M DC1B ]
@@ -133,9 +133,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _LATB `Vuc ~T0 @X0 0 e@3978 ]
 "84 user.h
 [v _GetTime `(*l ~T0 @X0 0 ef ]
-"73 interrupts.h
+"74 interrupts.h
 [v _millis `(ul ~T0 @X0 0 ef ]
-"76
+"77
 [v _getTotalMinutes `(uc ~T0 @X0 0 ef1`*ui ]
 [p mainexit ]
 "109 system.h
@@ -164,7 +164,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _PORTCbits `VS12 ~T0 @X0 0 e@3970 ]
 "83 user.h
 [v _AddSecond `(v ~T0 @X0 0 ef ]
-"75 interrupts.h
+"76 interrupts.h
 [v _getHourMin `(uc ~T0 @X0 0 ef2`*uc`*uc ]
 "119 ModbusRtu.h
 [v _ModbusPoll `(c ~T0 @X0 0 ef6`ui`*ui`*ui`Cuc`*ui`Cuc ]
@@ -173,7 +173,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 "9 C:\Program Files (x86)\Microchip\xc8\v1.37\include\time.h
 [s S250 `i 1 `i 1 `i 1 `i 1 `i 1 `i 1 `i 1 `i 1 `i 1 ]
 [n S250 tm tm_sec tm_min tm_hour tm_mday tm_mon tm_year tm_wday tm_yday tm_isdst ]
-"77 interrupts.h
+"78 interrupts.h
 [v _SetHourMin `(v ~T0 @X0 0 ef3`*i`*i`*i ]
 "52 C:\Program Files (x86)\Microchip\xc8\v1.37\include\time.h
 [v _mktime `(l ~T0 @X0 0 ef1`*S250 ]
@@ -2546,10 +2546,11 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.h: 70: uint8_t PortRead();
 [; ;interrupts.h: 71: void PortWriteByte(uint8_t b);
 [; ;interrupts.h: 72: void PortWrite(uint8_t *buf, uint8_t buflen);
-[; ;interrupts.h: 73: unsigned long millis();
-[; ;interrupts.h: 75: bool getHourMin(uint8_t *hour, uint8_t *min);
-[; ;interrupts.h: 76: bool getTotalMinutes(uint16_t *totalMinutes);
-[; ;interrupts.h: 77: void SetHourMin(int *newHour, int *newMin, int *sec);
+[; ;interrupts.h: 73: void PortClearReadBuffer();
+[; ;interrupts.h: 74: unsigned long millis();
+[; ;interrupts.h: 76: bool getHourMin(uint8_t *hour, uint8_t *min);
+[; ;interrupts.h: 77: bool getTotalMinutes(uint16_t *totalMinutes);
+[; ;interrupts.h: 78: void SetHourMin(int *newHour, int *newMin, int *sec);
 "46 main.c
 [v _IsBusserOn `uc ~T0 @X0 1 e ]
 [i _IsBusserOn
@@ -2819,7 +2820,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :UE 258 ]
 }
 "304
-[v _LightLed `(v ~T0 @X0 1 ef3`uc`E2430`uc ]
+[v _LightLed `(v ~T0 @X0 1 ef3`uc`E2431`uc ]
 "305
 {
 [; ;main.c: 304: void LightLed(uint8_t ledNum, LED_STATES ledState, bool blink)
@@ -2827,7 +2828,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :U _LightLed ]
 "304
 [v _ledNum `uc ~T0 @X0 1 r1 ]
-[v _ledState `E2430 ~T0 @X0 1 r2 ]
+[v _ledState `E2431 ~T0 @X0 1 r2 ]
 [v _blink `uc ~T0 @X0 1 r3 ]
 "305
 [f ]
@@ -2933,10 +2934,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e $U 264  ]
 "313
 [e :U 265 ]
-[e [\ _ledState , $ . `E2430 0 266
- , $ . `E2430 1 267
- , $ . `E2430 2 268
- , $ . `E2430 3 269
+[e [\ _ledState , $ . `E2431 0 266
+ , $ . `E2431 1 267
+ , $ . `E2431 2 268
+ , $ . `E2431 3 269
  264 ]
 "339
 [e :U 264 ]
@@ -3581,7 +3582,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [f ]
 [; ;main.c: 603: LightLed(currentAlarmedEventNum + 1, state ? LED_GREEN : LED_RED, 0);
 "603
-[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc -> ? != -> _state `i -> -> -> 0 `i `uc `i : -> . `E2430 1 `i -> . `E2430 2 `i `E2430 -> -> 0 `i `uc ]
+[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc -> ? != -> _state `i -> -> -> 0 `i `uc `i : -> . `E2431 1 `i -> . `E2431 2 `i `E2431 -> -> 0 `i `uc ]
 [; ;main.c: 604: currentAlarmedEventNum = 0xff;
 "604
 [e = _currentAlarmedEventNum -> -> 255 `i `uc ]
@@ -3845,7 +3846,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 {
 [; ;main.c: 717: LightLed(currentAlarmedEventNum + 1, LED_RED, 0);
 "717
-[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2430 2 -> -> 0 `i `uc ]
+[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2431 2 -> -> 0 `i `uc ]
 "718
 }
 [e :U 355 ]
@@ -3858,7 +3859,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _currentAlarmedEventNum _curEventNum ]
 [; ;main.c: 723: LightLed(currentAlarmedEventNum + 1, LED_ORANGE, 1);
 "723
-[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2430 3 -> -> 1 `i `uc ]
+[e ( _LightLed (3 , , -> + -> _currentAlarmedEventNum `i -> 1 `i `uc . `E2431 3 -> -> 1 `i `uc ]
 [; ;main.c: 724: if(_nextEventSoundId != 0)
 "724
 [e $ ! != -> __nextEventSoundId `i -> 0 `i 356  ]
@@ -4344,7 +4345,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _v1 -> & *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 255 `i `ui `uc ]
 [; ;main.c: 963: LightLed(((unsigned char)(((_MODBUSHoldingRegs[1])>>8)&0xFF)), v1 & 0x03, (((v1) >> (2)) & 0x01));
 "963
-[e ( _LightLed (3 , , -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc -> & -> _v1 `i -> 3 `i `E2430 -> & >> -> _v1 `i -> 2 `i -> 1 `i `uc ]
+[e ( _LightLed (3 , , -> & >> *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> 8 `i -> -> 255 `i `ui `uc -> & -> _v1 `i -> 3 `i `E2431 -> & >> -> _v1 `i -> 2 `i -> 1 `i `uc ]
 [; ;main.c: 964: _MODBUSHoldingRegs[1] = 0;
 "964
 [e = *U + &U __MODBUSHoldingRegs * -> -> -> 1 `i `ui `ux -> -> # *U &U __MODBUSHoldingRegs `ui `ux -> -> 0 `i `ui ]

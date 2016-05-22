@@ -2614,10 +2614,11 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.h: 70: uint8_t PortRead();
 [; ;interrupts.h: 71: void PortWriteByte(uint8_t b);
 [; ;interrupts.h: 72: void PortWrite(uint8_t *buf, uint8_t buflen);
-[; ;interrupts.h: 73: unsigned long millis();
-[; ;interrupts.h: 75: bool getHourMin(uint8_t *hour, uint8_t *min);
-[; ;interrupts.h: 76: bool getTotalMinutes(uint16_t *totalMinutes);
-[; ;interrupts.h: 77: void SetHourMin(int *newHour, int *newMin, int *sec);
+[; ;interrupts.h: 73: void PortClearReadBuffer();
+[; ;interrupts.h: 74: unsigned long millis();
+[; ;interrupts.h: 76: bool getHourMin(uint8_t *hour, uint8_t *min);
+[; ;interrupts.h: 77: bool getTotalMinutes(uint16_t *totalMinutes);
+[; ;interrupts.h: 78: void SetHourMin(int *newHour, int *newMin, int *sec);
 [; ;ModbusRtu.h: 91: enum MB_FC
 [; ;ModbusRtu.h: 92: {
 [; ;ModbusRtu.h: 93: MB_FC_NONE = 0,

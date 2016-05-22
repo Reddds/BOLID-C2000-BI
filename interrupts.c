@@ -36,7 +36,7 @@ static volatile uint8_t globalHours = TIME_NOT_SET;
 // UART Buffer
 
 #define UART_BUF_LEN 256u
-static uint8_t UartBufferHead;
+static volatile uint8_t UartBufferHead;
 static volatile uint8_t UartBufferTail;
 static volatile uint8_t UartBufferLen;
 static volatile uint8_t UartRingBuffer[UART_BUF_LEN];
@@ -46,7 +46,6 @@ void InitUartBuffer()
     UartBufferHead = 0;
     UartBufferTail = 0;
     UartBufferLen = 0;
-
 }
 
 
@@ -72,6 +71,14 @@ uint8_t PortRead()
     }
     ei();
     return 0;
+}
+
+
+void PortClearReadBuffer()
+{
+    di();
+    InitUartBuffer();
+    ei();
 }
 
 //void SetRS485TxPin(bool value)
@@ -103,6 +110,7 @@ void PortWrite(uint8_t *buf, uint8_t buflen)
     while(!TRMT);
     LATCbits.LATC5 = 0;
 }
+
 
 /******************************************************************************/
 /* Interrupt Routines                                                         */

@@ -3052,6 +3052,7 @@ uint8_t PortAvailable();
 uint8_t PortRead();
 void PortWriteByte(uint8_t b);
 void PortWrite(uint8_t *buf, uint8_t buflen);
+void PortClearReadBuffer();
 unsigned long millis();
 
 bool getHourMin(uint8_t *hour, uint8_t *min);
@@ -3174,6 +3175,7 @@ uint16_t _lastCount = 0;
 
 void ModbusInit(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
 void ModbusSendTxBuffer();
+int8_t ModbusGetRxBufferHeader();
 int8_t ModbusGetRxBuffer();
 uint16_t ModbusCalcCRC(uint8_t u8length);
 uint8_t ModbusValidateAnswer();
@@ -3193,7 +3195,7 @@ int8_t ModbusProcess_FC21();
 int8_t ModbusProcess_FC43();
 void ModbusBuildException(uint8_t u8exception);
 
-# 170
+# 171
 void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
 {
 ModbusInit(u8id, u8serno, u8txenpin);
@@ -3204,7 +3206,7 @@ void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value)
 (value ? ((_exceptionStatus) |= ((unsigned short)1 << (bitNum))) : ((_exceptionStatus) &= ~((unsigned short)1 << (bitNum))));
 }
 
-# 404
+# 405
 uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
 uint16_t *holdingRegs, const uint8_t holdingRegsCount)
 {
@@ -3220,8 +3222,6 @@ _holdingRegsCount = holdingRegsCount;
 
 uint8_t u8current = PortAvailable();
 
-
-
 if (u8current == 0) return 0;
 
 
@@ -3235,14 +3235,25 @@ if (millis() < _u32time)
 return 0;
 
 _u8lastRec = 0;
-int8_t i8state = ModbusGetRxBuffer();
+int8_t i8state = ModbusGetRxBufferHeader();
 _u8lastError = i8state;
 if (i8state < 4)
+{
+PortClearReadBuffer();
 return i8state;
-
+}
 
 if (_au8Buffer[ ID ] != _u8id)
+{
+PortClearReadBuffer();
 return 0;
+}
+
+i8state = ModbusGetRxBuffer();
+PortClearReadBuffer();
+_u8lastError = i8state;
+
+
 
 
 uint8_t u8exception = ModbusValidateRequest();
@@ -3303,7 +3314,21 @@ _u8txenpin = u8txenpin;
 _u16timeOut = 1000;
 }
 
-# 509
+
+int8_t ModbusGetRxBufferHeader()
+{
+_u8BufferSize = 0;
+for(uint8_t i = 0; i < 4; i++)
+{
+if(!PortAvailable())
+return ERR_EXCEPTION;
+_au8Buffer[ _u8BufferSize ] = PortRead();
+_u8BufferSize++;
+}
+return _u8BufferSize;
+}
+
+# 533
 int8_t ModbusGetRxBuffer()
 {
 bool bBuffOverflow = 0;
@@ -3311,19 +3336,16 @@ bool bBuffOverflow = 0;
 
 
 
-_u8BufferSize = 0;
+_u8BufferSize = 4;
 
 while (PortAvailable())
 {
 _au8Buffer[ _u8BufferSize ] = PortRead();
-
 _u8BufferSize++;
-
 if (_u8BufferSize >= 140)
 bBuffOverflow = 1;
 }
 _u16InCnt++;
-
 if (bBuffOverflow)
 {
 _u16errCnt++;
@@ -3332,7 +3354,7 @@ return ERR_BUFF_OVERFLOW;
 return _u8BufferSize;
 }
 
-# 549
+# 570
 void ModbusSendTxBuffer()
 {
 
@@ -3348,7 +3370,7 @@ _u8BufferSize++;
 
 PortWrite(_au8Buffer, _u8BufferSize);
 
-# 568
+# 589
 _u8BufferSize = 0;
 
 
@@ -3358,7 +3380,7 @@ _u32timeOut = millis() + (unsigned long) _u16timeOut;
 _u16OutCnt++;
 }
 
-# 659
+# 680
 uint16_t ModbusCalcCRC(uint8_t u8length)
 {
 unsigned int temp, temp2, flag;
@@ -3383,7 +3405,7 @@ temp &= 0xFFFF;
 return temp;
 }
 
-# 691
+# 712
 uint8_t ModbusValidateRequest()
 {
 
@@ -3487,7 +3509,7 @@ _lastCommand = _au8Buffer[ FUNC ];
 return 0;
 }
 
-# 800
+# 821
 void ModbusBuildException(uint8_t u8exception)
 {
 uint8_t u8func = _au8Buffer[ FUNC ];
@@ -3508,7 +3530,7 @@ if (count != (0))
 return &_lastCommand;
 }
 
-# 828
+# 849
 int8_t ModbusProcess_FC1(uint16_t regs)
 {
 
@@ -3539,7 +3561,7 @@ u8currentBit = (uint8_t) u16coil;
 
 ((((regs) >> (u8currentBit)) & 0x01) ? ((_au8Buffer[ _u8BufferSize ]) |= ((unsigned short)1 << (u8bitsno))) : ((_au8Buffer[ _u8BufferSize ]) &= ~((unsigned short)1 << (u8bitsno))));
 
-# 860
+# 881
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3557,7 +3579,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 885
+# 906
 int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size)
 {
 uint8_t u8StartAdd = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
@@ -3583,7 +3605,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 918
+# 939
 int8_t ModbusProcess_FC5(uint16_t *regs)
 {
 
@@ -3599,7 +3621,7 @@ u8currentBit = (uint8_t) (u16coil % 16);
 
 (_au8Buffer[ NB_HI ] == 0xff ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 938
+# 959
 _u8BufferSize = 6;
 u8CopyBufferSize = _u8BufferSize + 2;
 ModbusSendTxBuffer();
@@ -3607,7 +3629,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 953
+# 974
 int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
 {
 uint16_t u16add = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
@@ -3637,7 +3659,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 989
+# 1010
 int8_t ModbusProcess_FC15(uint16_t *regs)
 {
 
@@ -3664,10 +3686,10 @@ u8currentBit = (uint8_t) u16coil;
 
 bTemp = (((_au8Buffer[ u8frameByte ]) >> (u8bitsno)) & 0x01);
 
-# 1017
+# 1038
 (bTemp ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 1022
+# 1043
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3685,7 +3707,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1047
+# 1068
 int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size)
 {
 
@@ -3707,7 +3729,7 @@ for (i = 0; i < u8regsno && (u16StartAdd + i) < u8size; i++)
 {
 temp = (((uint16_t)_au8Buffer[ (BYTE_CNT + 1) + i * 2 ]<<8)|_au8Buffer[ (BYTE_CNT + 2) + i * 2 ]);
 
-# 1070
+# 1091
 regs[ u16StartAdd + i ] = temp;
 }
 u8CopyBufferSize = _u8BufferSize + 2;
@@ -3716,7 +3738,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1086
+# 1107
 int8_t ModbusProcess_FC17()
 {
 _au8Buffer[ 2 ] = sizeof("Tablo s raspisaniem turo") + 1 + 1;
@@ -3734,7 +3756,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1111
+# 1132
 int8_t ModbusProcess_FC21()
 {
 
@@ -3748,7 +3770,7 @@ _lastCount = recLenBytes;
 uint8_t u8CopyBufferSize;
 uint8_t i;
 
-# 1128
+# 1149
 _u8BufferSize = requestDataLen + 1;
 
 
@@ -3777,10 +3799,10 @@ int8_t ModbusProcess_FC43()
 {
 uint8_t devIdCode = _au8Buffer[ 3 ];
 
-# 1162
+# 1183
 uint8_t objId = _au8Buffer[ 4 ];
 
-# 1173
+# 1194
 _au8Buffer[ 5 ] = 0x00;
 _au8Buffer[ 6 ] = 0x00;
 

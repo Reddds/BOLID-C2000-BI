@@ -4,7 +4,7 @@
 [d chip 18F252 ]
 [d frameptr 4065 ]
 "305 D:\Work\GitHub\BOLID-C2000-BI\main.c
-[e E2430 . `uc
+[e E2431 . `uc
 LED_OFF 0
 LED_GREEN 1
 LED_RED 2
@@ -42,8 +42,8 @@ MB_FC_REPORT_SLAVE_ID 17
 MB_FC_WRITE_FILE_RECORD 21
 MB_FC_READ_DEVICE_ID 43
 ]
-"440
-[e E2387 MESSAGE `uc
+"441
+[e E2388 MESSAGE `uc
 ID 0
 FUNC 1
 ADD_HI 2
@@ -52,24 +52,24 @@ NB_HI 4
 NB_LO 5
 BYTE_CNT 6
 ]
-"447
-[e E2420 . `uc
+"457
+[e E2421 . `uc
 NO_REPLY 255
 EXC_FUNC_CODE 1
 EXC_ADDR_RANGE 2
 EXC_REGS_QUANT 3
 EXC_EXECUTE 4
 ]
-"532
-[e E2414 ERR_LIST `c
+"519
+[e E2415 ERR_LIST `c
 ERR_NOT_MASTER -1
 ERR_POLLING -2
 ERR_BUFF_OVERFLOW -3
 ERR_BAD_CRC -4
 ERR_EXCEPTION -5
 ]
-"768
-[e E2401 FILE_MESSAGE `uc
+"789
+[e E2402 FILE_MESSAGE `uc
 FILE_DATA_LEN 2
 FILE_REF_TYPE 3
 FILE_NUM_HI 4
@@ -80,16 +80,16 @@ FILE_REC_LEN_HI 8
 FILE_REC_LEN_LO 9
 FILE_FIRST_BYTE 10
 ]
-"781
-[e E2395 MEI_MESSAGE `uc
+"802
+[e E2396 MEI_MESSAGE `uc
 MEI_ID 0
 MEI_FUNC 1
 MEI_TYPE 2
 MEI_READ_DEV_ID 3
 MEI_OBJ_ID 4
 ]
-"807
-[e E2383 . `uc
+"828
+[e E2384 . `uc
 RESPONSE_SIZE 6
 EXCEPTION_SIZE 3
 CHECKSUM_SIZE 2
@@ -134,23 +134,25 @@ CHECKSUM_SIZE 2
 [v ___lmul __lmul `(ul  1 e 4 0 ]
 "44 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
 [v _InitUartBuffer InitUartBuffer `(v  1 e 1 0 ]
-"53
+"52
 [v _PortAvailable PortAvailable `(uc  1 e 1 0 ]
-"58
+"57
 [v _PortRead PortRead `(uc  1 e 1 0 ]
-"94
+"77
+[v _PortClearReadBuffer PortClearReadBuffer `(v  1 e 1 0 ]
+"101
 [v _PortWrite PortWrite `(v  1 e 1 0 ]
-"114
+"122
 [v _high_isr high_isr `II(v  1 e 1 0 ]
-"175
+"183
 [v _low_isr low_isr `IIL(v  1 e 1 0 ]
-"239
+"247
 [v _millis millis `(ul  1 e 4 0 ]
-"248
+"256
 [v _getHourMin getHourMin `(uc  1 e 1 0 ]
-"259
+"267
 [v _getTotalMinutes getTotalMinutes `(uc  1 e 1 0 ]
-"269
+"277
 [v _SetHourMin SetHourMin `(v  1 e 1 0 ]
 "261 D:\Work\GitHub\BOLID-C2000-BI\main.c
 [v _UpdateLedRegister UpdateLedRegister `(v  1 e 1 0 ]
@@ -190,47 +192,49 @@ CHECKSUM_SIZE 2
 [v _CommandSetStatusLed CommandSetStatusLed `(v  1 e 1 0 ]
 "897
 [v _io_poll io_poll `(v  1 e 1 0 ]
-"170 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
+"171 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
 [v _Modbus Modbus `(v  1 e 1 0 ]
-"175
+"176
 [v _ModbusSetExceptionStatusBit ModbusSetExceptionStatusBit `(v  1 e 1 0 ]
-"404
+"405
 [v _ModbusPoll ModbusPoll `(c  1 e 1 0 ]
-"494
+"504
 [v _ModbusInit ModbusInit `(v  1 e 1 0 ]
-"509
+"513
+[v _ModbusGetRxBufferHeader ModbusGetRxBufferHeader `(uc  1 e 1 0 ]
+"533
 [v _ModbusGetRxBuffer ModbusGetRxBuffer `(uc  1 e 1 0 ]
-"549
+"570
 [v _ModbusSendTxBuffer ModbusSendTxBuffer `(v  1 e 1 0 ]
-"659
+"680
 [v _ModbusCalcCRC ModbusCalcCRC `(us  1 e 2 0 ]
-"691
+"712
 [v _ModbusValidateRequest ModbusValidateRequest `(uc  1 e 1 0 ]
-"800
+"821
 [v _ModbusBuildException ModbusBuildException `(v  1 e 1 0 ]
-"811
+"832
 [v _ModbusGetLastCommand ModbusGetLastCommand `(*.30uc  1 e 2 0 ]
-"828
+"849
 [v _ModbusProcess_FC1 ModbusProcess_FC1 `(uc  1 e 1 0 ]
-"885
+"906
 [v _ModbusProcess_FC3 ModbusProcess_FC3 `(uc  1 e 1 0 ]
-"918
+"939
 [v _ModbusProcess_FC5 ModbusProcess_FC5 `(uc  1 e 1 0 ]
-"953
+"974
 [v _ModbusProcess_FC6 ModbusProcess_FC6 `(uc  1 e 1 0 ]
-"973
+"994
 [v _ModbusProcess_FC7 ModbusProcess_FC7 `(uc  1 e 1 0 ]
-"989
+"1010
 [v _ModbusProcess_FC15 ModbusProcess_FC15 `(uc  1 e 1 0 ]
-"1047
+"1068
 [v _ModbusProcess_FC16 ModbusProcess_FC16 `(uc  1 e 1 0 ]
-"1086
+"1107
 [v _ModbusProcess_FC17 ModbusProcess_FC17 `(uc  1 e 1 0 ]
-"1111
+"1132
 [v _ModbusProcess_FC21 ModbusProcess_FC21 `(uc  1 e 1 0 ]
-"1143
+"1164
 [v _CopyStringToBuffer CopyStringToBuffer `(v  1 e 1 0 ]
-"1152
+"1173
 [v _ModbusProcess_FC43 ModbusProcess_FC43 `(uc  1 e 1 0 ]
 "86 D:\Work\GitHub\BOLID-C2000-BI\system.c
 [v _ConfigureOscillator ConfigureOscillator `(v  1 e 1 0 ]
@@ -244,7 +248,7 @@ CHECKSUM_SIZE 2
 [v _AddSecond AddSecond `(v  1 e 1 0 ]
 "207
 [v _GetTime GetTime `(*.30l  1 e 2 0 ]
-[s S488 . 1 `uc 1 RC0 1 0 :1:0 
+[s S490 . 1 `uc 1 RC0 1 0 :1:0 
 `uc 1 RC1 1 0 :1:1 
 `uc 1 RC2 1 0 :1:2 
 `uc 1 RC3 1 0 :1:3 
@@ -254,7 +258,7 @@ CHECKSUM_SIZE 2
 `uc 1 RC7 1 0 :1:7 
 ]
 "362 C:\Program Files (x86)\Microchip\xc8\v1.37\include\pic18f252.h
-[s S633 . 1 `uc 1 T1OSO 1 0 :1:0 
+[s S635 . 1 `uc 1 T1OSO 1 0 :1:0 
 `uc 1 T1OSI 1 0 :1:1 
 `uc 1 . 1 0 :1:2 
 `uc 1 SCK 1 0 :1:3 
@@ -263,7 +267,7 @@ CHECKSUM_SIZE 2
 `uc 1 TX 1 0 :1:6 
 `uc 1 RX 1 0 :1:7 
 ]
-[s S642 . 1 `uc 1 T1CKI 1 0 :1:0 
+[s S644 . 1 `uc 1 T1CKI 1 0 :1:0 
 `uc 1 CCP2 1 0 :1:1 
 `uc 1 CCP1 1 0 :1:2 
 `uc 1 SCL 1 0 :1:3 
@@ -272,17 +276,17 @@ CHECKSUM_SIZE 2
 `uc 1 CK 1 0 :1:6 
 `uc 1 DT 1 0 :1:7 
 ]
-[s S651 . 1 `uc 1 . 1 0 :2:0 
+[s S653 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 PA1 1 0 :1:2 
 ]
-[s S654 . 1 `uc 1 . 1 0 :1:0 
+[s S656 . 1 `uc 1 . 1 0 :1:0 
 `uc 1 PA2 1 0 :1:1 
 ]
-[u S657 . 1 `S488 1 . 1 0 `S633 1 . 1 0 `S642 1 . 1 0 `S651 1 . 1 0 `S654 1 . 1 0 ]
-[v _PORTCbits PORTCbits `VES657  1 e 1 @3970 ]
+[u S659 . 1 `S490 1 . 1 0 `S635 1 . 1 0 `S644 1 . 1 0 `S653 1 . 1 0 `S656 1 . 1 0 ]
+[v _PORTCbits PORTCbits `VES659  1 e 1 @3970 ]
 "486
 [v _LATA LATA `VEuc  1 e 1 @3977 ]
-[s S334 . 1 `uc 1 LATA0 1 0 :1:0 
+[s S336 . 1 `uc 1 LATA0 1 0 :1:0 
 `uc 1 LATA1 1 0 :1:1 
 `uc 1 LATA2 1 0 :1:2 
 `uc 1 LATA3 1 0 :1:3 
@@ -291,28 +295,28 @@ CHECKSUM_SIZE 2
 `uc 1 LATA6 1 0 :1:6 
 ]
 "529
-[s S342 . 1 `uc 1 LA0 1 0 :1:0 
+[s S344 . 1 `uc 1 LA0 1 0 :1:0 
 ]
-[s S344 . 1 `uc 1 . 1 0 :1:0 
+[s S346 . 1 `uc 1 . 1 0 :1:0 
 `uc 1 LA1 1 0 :1:1 
 ]
-[s S347 . 1 `uc 1 . 1 0 :2:0 
+[s S349 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 LA2 1 0 :1:2 
 ]
-[s S350 . 1 `uc 1 . 1 0 :3:0 
+[s S352 . 1 `uc 1 . 1 0 :3:0 
 `uc 1 LA3 1 0 :1:3 
 ]
-[s S353 . 1 `uc 1 . 1 0 :4:0 
+[s S355 . 1 `uc 1 . 1 0 :4:0 
 `uc 1 LA4 1 0 :1:4 
 ]
-[s S356 . 1 `uc 1 . 1 0 :5:0 
+[s S358 . 1 `uc 1 . 1 0 :5:0 
 `uc 1 LA5 1 0 :1:5 
 ]
-[s S359 . 1 `uc 1 . 1 0 :6:0 
+[s S361 . 1 `uc 1 . 1 0 :6:0 
 `uc 1 LA6 1 0 :1:6 
 ]
-[u S362 . 1 `S334 1 . 1 0 `S342 1 . 1 0 `S344 1 . 1 0 `S347 1 . 1 0 `S350 1 . 1 0 `S353 1 . 1 0 `S356 1 . 1 0 `S359 1 . 1 0 ]
-[v _LATAbits LATAbits `VES362  1 e 1 @3977 ]
+[u S364 . 1 `S336 1 . 1 0 `S344 1 . 1 0 `S346 1 . 1 0 `S349 1 . 1 0 `S352 1 . 1 0 `S355 1 . 1 0 `S358 1 . 1 0 `S361 1 . 1 0 ]
+[v _LATAbits LATAbits `VES364  1 e 1 @3977 ]
 "603
 [v _LATB LATB `VEuc  1 e 1 @3978 ]
 [s S70 . 1 `uc 1 LATC0 1 0 :1:0 
@@ -350,7 +354,7 @@ CHECKSUM_SIZE 2
 ]
 [u S102 . 1 `S70 1 . 1 0 `S79 1 . 1 0 `S81 1 . 1 0 `S84 1 . 1 0 `S87 1 . 1 0 `S90 1 . 1 0 `S93 1 . 1 0 `S96 1 . 1 0 `S99 1 . 1 0 ]
 [v _LATCbits LATCbits `VES102  1 e 1 @3979 ]
-[s S400 . 1 `uc 1 TRISA0 1 0 :1:0 
+[s S402 . 1 `uc 1 TRISA0 1 0 :1:0 
 `uc 1 TRISA1 1 0 :1:1 
 `uc 1 TRISA2 1 0 :1:2 
 `uc 1 TRISA3 1 0 :1:3 
@@ -359,7 +363,7 @@ CHECKSUM_SIZE 2
 `uc 1 TRISA6 1 0 :1:6 
 ]
 "897
-[s S408 . 1 `uc 1 RA0 1 0 :1:0 
+[s S410 . 1 `uc 1 RA0 1 0 :1:0 
 `uc 1 RA1 1 0 :1:1 
 `uc 1 RA2 1 0 :1:2 
 `uc 1 RA3 1 0 :1:3 
@@ -367,11 +371,11 @@ CHECKSUM_SIZE 2
 `uc 1 RA5 1 0 :1:5 
 `uc 1 RA6 1 0 :1:6 
 ]
-[u S416 . 1 `S400 1 . 1 0 `S408 1 . 1 0 ]
-[v _TRISAbits TRISAbits `VES416  1 e 1 @3986 ]
+[u S418 . 1 `S402 1 . 1 0 `S410 1 . 1 0 ]
+[v _TRISAbits TRISAbits `VES418  1 e 1 @3986 ]
 "1064
 [v _TRISB TRISB `VEuc  1 e 1 @3987 ]
-[s S479 . 1 `uc 1 TRISC0 1 0 :1:0 
+[s S481 . 1 `uc 1 TRISC0 1 0 :1:0 
 `uc 1 TRISC1 1 0 :1:1 
 `uc 1 TRISC2 1 0 :1:2 
 `uc 1 TRISC3 1 0 :1:3 
@@ -381,11 +385,11 @@ CHECKSUM_SIZE 2
 `uc 1 TRISC7 1 0 :1:7 
 ]
 "1339
-[s S497 . 1 `uc 1 . 1 0 :1:0 
+[s S499 . 1 `uc 1 . 1 0 :1:0 
 `uc 1 CCP2 1 0 :1:1 
 ]
-[u S500 . 1 `S479 1 . 1 0 `S488 1 . 1 0 `S497 1 . 1 0 ]
-[v _TRISCbits TRISCbits `VES500  1 e 1 @3988 ]
+[u S502 . 1 `S481 1 . 1 0 `S490 1 . 1 0 `S499 1 . 1 0 ]
+[v _TRISCbits TRISCbits `VES502  1 e 1 @3988 ]
 [s S186 . 1 `uc 1 TMR1IE 1 0 :1:0 
 `uc 1 TMR2IE 1 0 :1:1 
 `uc 1 CCP1IE 1 0 :1:2 
@@ -420,7 +424,7 @@ CHECKSUM_SIZE 2
 ]
 [u S167 . 1 `S153 1 . 1 0 `S161 1 . 1 0 `S164 1 . 1 0 ]
 [v _PIR1bits PIR1bits `VES167  1 e 1 @3998 ]
-[s S1346 . 1 `uc 1 TMR1IP 1 0 :1:0 
+[s S1348 . 1 `uc 1 TMR1IP 1 0 :1:0 
 `uc 1 TMR2IP 1 0 :1:1 
 `uc 1 CCP1IP 1 0 :1:2 
 `uc 1 SSPIP 1 0 :1:3 
@@ -429,14 +433,14 @@ CHECKSUM_SIZE 2
 `uc 1 ADIP 1 0 :1:6 
 ]
 "1712
-[s S1354 . 1 `uc 1 . 1 0 :5:0 
+[s S1356 . 1 `uc 1 . 1 0 :5:0 
 `uc 1 RC1IP 1 0 :1:5 
 ]
-[s S1357 . 1 `uc 1 . 1 0 :4:0 
+[s S1359 . 1 `uc 1 . 1 0 :4:0 
 `uc 1 TX1IP 1 0 :1:4 
 ]
-[u S1360 . 1 `S1346 1 . 1 0 `S1354 1 . 1 0 `S1357 1 . 1 0 ]
-[v _IPR1bits IPR1bits `VES1360  1 e 1 @3999 ]
+[u S1362 . 1 `S1348 1 . 1 0 `S1356 1 . 1 0 `S1359 1 . 1 0 ]
+[v _IPR1bits IPR1bits `VES1362  1 e 1 @3999 ]
 "1955
 [v _EECON2 EECON2 `VEuc  1 e 1 @4007 ]
 "1961
@@ -445,7 +449,7 @@ CHECKSUM_SIZE 2
 [v _EEADR EEADR `VEuc  1 e 1 @4009 ]
 "1973
 [v _RCSTA RCSTA `VEuc  1 e 1 @4011 ]
-[s S1037 . 1 `uc 1 RX9D 1 0 :1:0 
+[s S1039 . 1 `uc 1 RX9D 1 0 :1:0 
 `uc 1 OERR 1 0 :1:1 
 `uc 1 FERR 1 0 :1:2 
 `uc 1 ADDEN 1 0 :1:3 
@@ -455,27 +459,27 @@ CHECKSUM_SIZE 2
 `uc 1 SPEN 1 0 :1:7 
 ]
 "2016
-[s S1046 . 1 `uc 1 RCD8 1 0 :1:0 
+[s S1048 . 1 `uc 1 RCD8 1 0 :1:0 
 `uc 1 . 1 0 :5:1 
 `uc 1 RC8_9 1 0 :1:6 
 ]
-[s S1050 . 1 `uc 1 . 1 0 :6:0 
+[s S1052 . 1 `uc 1 . 1 0 :6:0 
 `uc 1 NOT_RC8 1 0 :1:6 
 ]
-[s S1053 . 1 `uc 1 . 1 0 :6:0 
+[s S1055 . 1 `uc 1 . 1 0 :6:0 
 `uc 1 nRC8 1 0 :1:6 
 ]
-[s S1056 . 1 `uc 1 . 1 0 :6:0 
+[s S1058 . 1 `uc 1 . 1 0 :6:0 
 `uc 1 RC9 1 0 :1:6 
 ]
-[s S1059 . 1 `uc 1 . 1 0 :5:0 
+[s S1061 . 1 `uc 1 . 1 0 :5:0 
 `uc 1 SRENA 1 0 :1:5 
 ]
-[u S1062 . 1 `S1037 1 . 1 0 `S1046 1 . 1 0 `S1050 1 . 1 0 `S1053 1 . 1 0 `S1056 1 . 1 0 `S1059 1 . 1 0 ]
-[v _RCSTAbits RCSTAbits `VES1062  1 e 1 @4011 ]
+[u S1064 . 1 `S1039 1 . 1 0 `S1048 1 . 1 0 `S1052 1 . 1 0 `S1055 1 . 1 0 `S1058 1 . 1 0 `S1061 1 . 1 0 ]
+[v _RCSTAbits RCSTAbits `VES1064  1 e 1 @4011 ]
 "2196
 [v _TXSTA TXSTA `VEuc  1 e 1 @4012 ]
-[s S944 . 1 `uc 1 TX9D 1 0 :1:0 
+[s S946 . 1 `uc 1 TX9D 1 0 :1:0 
 `uc 1 TRMT 1 0 :1:1 
 `uc 1 BRGH 1 0 :1:2 
 `uc 1 . 1 0 :1:3 
@@ -485,69 +489,69 @@ CHECKSUM_SIZE 2
 `uc 1 CSRC 1 0 :1:7 
 ]
 "2258
-[s S953 . 1 `uc 1 TXD8 1 0 :1:0 
+[s S955 . 1 `uc 1 TXD8 1 0 :1:0 
 `uc 1 . 1 0 :5:1 
 `uc 1 TX8_9 1 0 :1:6 
 ]
-[s S957 . 1 `uc 1 . 1 0 :6:0 
+[s S959 . 1 `uc 1 . 1 0 :6:0 
 `uc 1 NOT_TX8 1 0 :1:6 
 ]
-[s S960 . 1 `uc 1 . 1 0 :6:0 
+[s S962 . 1 `uc 1 . 1 0 :6:0 
 `uc 1 nTX8 1 0 :1:6 
 ]
-[s S963 . 1 `uc 1 . 1 0 :2:0 
+[s S965 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 BRGH1 1 0 :1:2 
 ]
-[s S966 . 1 `uc 1 . 1 0 :7:0 
+[s S968 . 1 `uc 1 . 1 0 :7:0 
 `uc 1 CSRC1 1 0 :1:7 
 ]
-[s S969 . 1 `uc 1 . 1 0 :4:0 
+[s S971 . 1 `uc 1 . 1 0 :4:0 
 `uc 1 SYNC1 1 0 :1:4 
 ]
-[s S972 . 1 `uc 1 . 1 0 :1:0 
+[s S974 . 1 `uc 1 . 1 0 :1:0 
 `uc 1 TRMT1 1 0 :1:1 
 ]
-[s S975 . 1 `uc 1 . 1 0 :6:0 
+[s S977 . 1 `uc 1 . 1 0 :6:0 
 `uc 1 TX91 1 0 :1:6 
 ]
-[s S978 . 1 `uc 1 TX9D1 1 0 :1:0 
+[s S980 . 1 `uc 1 TX9D1 1 0 :1:0 
 ]
-[s S980 . 1 `uc 1 . 1 0 :5:0 
+[s S982 . 1 `uc 1 . 1 0 :5:0 
 `uc 1 TXEN1 1 0 :1:5 
 ]
-[u S983 . 1 `S944 1 . 1 0 `S953 1 . 1 0 `S957 1 . 1 0 `S960 1 . 1 0 `S963 1 . 1 0 `S966 1 . 1 0 `S969 1 . 1 0 `S972 1 . 1 0 `S975 1 . 1 0 `S978 1 . 1 0 `S980 1 . 1 0 ]
-[v _TXSTAbits TXSTAbits `VES983  1 e 1 @4012 ]
+[u S985 . 1 `S946 1 . 1 0 `S955 1 . 1 0 `S959 1 . 1 0 `S962 1 . 1 0 `S965 1 . 1 0 `S968 1 . 1 0 `S971 1 . 1 0 `S974 1 . 1 0 `S977 1 . 1 0 `S980 1 . 1 0 `S982 1 . 1 0 ]
+[v _TXSTAbits TXSTAbits `VES985  1 e 1 @4012 ]
 "2497
 [v _TXREG TXREG `VEuc  1 e 1 @4013 ]
 "2508
 [v _RCREG RCREG `VEuc  1 e 1 @4014 ]
 "2519
 [v _SPBRG SPBRG `VEuc  1 e 1 @4015 ]
-[s S531 . 1 `uc 1 CCP1M 1 0 :4:0 
+[s S533 . 1 `uc 1 CCP1M 1 0 :4:0 
 `uc 1 DC1B 1 0 :2:4 
 ]
 "2799
-[s S534 . 1 `uc 1 CCP1M0 1 0 :1:0 
+[s S536 . 1 `uc 1 CCP1M0 1 0 :1:0 
 `uc 1 CCP1M1 1 0 :1:1 
 `uc 1 CCP1M2 1 0 :1:2 
 `uc 1 CCP1M3 1 0 :1:3 
 `uc 1 DC1B0 1 0 :1:4 
 `uc 1 DC1B1 1 0 :1:5 
 ]
-[s S541 . 1 `uc 1 . 1 0 :4:0 
+[s S543 . 1 `uc 1 . 1 0 :4:0 
 `uc 1 CCP1Y 1 0 :1:4 
 `uc 1 CCP1X 1 0 :1:5 
 ]
-[u S545 . 1 `S531 1 . 1 0 `S534 1 . 1 0 `S541 1 . 1 0 ]
-[v _CCP1CONbits CCP1CONbits `VES545  1 e 1 @4029 ]
+[u S547 . 1 `S533 1 . 1 0 `S536 1 . 1 0 `S543 1 . 1 0 ]
+[v _CCP1CONbits CCP1CONbits `VES547  1 e 1 @4029 ]
 "2859
 [v _CCPR1L CCPR1L `VEuc  1 e 1 @4030 ]
-[s S565 . 1 `uc 1 T2CKPS 1 0 :2:0 
+[s S567 . 1 `uc 1 T2CKPS 1 0 :2:0 
 `uc 1 TMR2ON 1 0 :1:2 
 `uc 1 TOUTPS 1 0 :4:3 
 ]
 "3526
-[s S569 . 1 `uc 1 T2CKPS0 1 0 :1:0 
+[s S571 . 1 `uc 1 T2CKPS0 1 0 :1:0 
 `uc 1 T2CKPS1 1 0 :1:1 
 `uc 1 . 1 0 :1:2 
 `uc 1 TOUTPS0 1 0 :1:3 
@@ -555,15 +559,15 @@ CHECKSUM_SIZE 2
 `uc 1 TOUTPS2 1 0 :1:5 
 `uc 1 TOUTPS3 1 0 :1:6 
 ]
-[u S577 . 1 `S565 1 . 1 0 `S569 1 . 1 0 ]
-[v _T2CONbits T2CONbits `VES577  1 e 1 @4042 ]
+[u S579 . 1 `S567 1 . 1 0 `S571 1 . 1 0 ]
+[v _T2CONbits T2CONbits `VES579  1 e 1 @4042 ]
 "3575
 [v _PR2 PR2 `VEuc  1 e 1 @4043 ]
-[s S1267 . 1 `uc 1 . 1 0 :2:0 
+[s S1269 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 NOT_T1SYNC 1 0 :1:2 
 ]
 "3729
-[s S1270 . 1 `uc 1 TMR1ON 1 0 :1:0 
+[s S1272 . 1 `uc 1 TMR1ON 1 0 :1:0 
 `uc 1 TMR1CS 1 0 :1:1 
 `uc 1 nT1SYNC 1 0 :1:2 
 `uc 1 T1OSCEN 1 0 :1:3 
@@ -571,43 +575,43 @@ CHECKSUM_SIZE 2
 `uc 1 . 1 0 :1:6 
 `uc 1 RD16 1 0 :1:7 
 ]
-[s S1278 . 1 `uc 1 . 1 0 :2:0 
+[s S1280 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 T1SYNC 1 0 :1:2 
 `uc 1 . 1 0 :1:3 
 `uc 1 T1CKPS0 1 0 :1:4 
 `uc 1 T1CKPS1 1 0 :1:5 
 ]
-[s S1284 . 1 `uc 1 . 1 0 :2:0 
+[s S1286 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 T1INSYNC 1 0 :1:2 
 ]
-[s S1287 . 1 `uc 1 . 1 0 :3:0 
+[s S1289 . 1 `uc 1 . 1 0 :3:0 
 `uc 1 SOSCEN 1 0 :1:3 
 ]
-[s S1290 . 1 `uc 1 . 1 0 :7:0 
+[s S1292 . 1 `uc 1 . 1 0 :7:0 
 `uc 1 T1RD16 1 0 :1:7 
 ]
-[u S1293 . 1 `S1267 1 . 1 0 `S1270 1 . 1 0 `S1278 1 . 1 0 `S1284 1 . 1 0 `S1287 1 . 1 0 `S1290 1 . 1 0 ]
-[v _T1CONbits T1CONbits `VES1293  1 e 1 @4045 ]
+[u S1295 . 1 `S1269 1 . 1 0 `S1272 1 . 1 0 `S1280 1 . 1 0 `S1286 1 . 1 0 `S1289 1 . 1 0 `S1292 1 . 1 0 ]
+[v _T1CONbits T1CONbits `VES1295  1 e 1 @4045 ]
 "3804
 [v _TMR1L TMR1L `VEuc  1 e 1 @4046 ]
 "3810
 [v _TMR1H TMR1H `VEuc  1 e 1 @4047 ]
-[s S1191 . 1 `uc 1 NOT_BOR 1 0 :1:0 
+[s S1193 . 1 `uc 1 NOT_BOR 1 0 :1:0 
 ]
 "3864
-[s S1193 . 1 `uc 1 . 1 0 :1:0 
+[s S1195 . 1 `uc 1 . 1 0 :1:0 
 `uc 1 NOT_POR 1 0 :1:1 
 ]
-[s S1196 . 1 `uc 1 . 1 0 :2:0 
+[s S1198 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 NOT_PD 1 0 :1:2 
 ]
-[s S1199 . 1 `uc 1 . 1 0 :3:0 
+[s S1201 . 1 `uc 1 . 1 0 :3:0 
 `uc 1 NOT_TO 1 0 :1:3 
 ]
-[s S1202 . 1 `uc 1 . 1 0 :4:0 
+[s S1204 . 1 `uc 1 . 1 0 :4:0 
 `uc 1 NOT_RI 1 0 :1:4 
 ]
-[s S1205 . 1 `uc 1 nBOR 1 0 :1:0 
+[s S1207 . 1 `uc 1 nBOR 1 0 :1:0 
 `uc 1 nPOR 1 0 :1:1 
 `uc 1 nPD 1 0 :1:2 
 `uc 1 nTO 1 0 :1:3 
@@ -615,10 +619,10 @@ CHECKSUM_SIZE 2
 `uc 1 . 1 0 :2:5 
 `uc 1 IPEN 1 0 :1:7 
 ]
-[s S1213 . 1 `uc 1 . 1 0 :7:0 
+[s S1215 . 1 `uc 1 . 1 0 :7:0 
 `uc 1 NOT_IPEN 1 0 :1:7 
 ]
-[s S1216 . 1 `uc 1 BOR 1 0 :1:0 
+[s S1218 . 1 `uc 1 BOR 1 0 :1:0 
 `uc 1 POR 1 0 :1:1 
 `uc 1 PD 1 0 :1:2 
 `uc 1 TO 1 0 :1:3 
@@ -626,8 +630,8 @@ CHECKSUM_SIZE 2
 `uc 1 . 1 0 :2:5 
 `uc 1 nIPEN 1 0 :1:7 
 ]
-[u S1224 . 1 `S1191 1 . 1 0 `S1193 1 . 1 0 `S1196 1 . 1 0 `S1199 1 . 1 0 `S1202 1 . 1 0 `S1205 1 . 1 0 `S1213 1 . 1 0 `S1216 1 . 1 0 ]
-[v _RCONbits RCONbits `VES1224  1 e 1 @4048 ]
+[u S1226 . 1 `S1193 1 . 1 0 `S1195 1 . 1 0 `S1198 1 . 1 0 `S1201 1 . 1 0 `S1204 1 . 1 0 `S1207 1 . 1 0 `S1215 1 . 1 0 `S1218 1 . 1 0 ]
+[v _RCONbits RCONbits `VES1226  1 e 1 @4048 ]
 [s S225 . 1 `uc 1 T0PS 1 0 :3:0 
 `uc 1 PSA 1 0 :1:3 
 `uc 1 T0SE 1 0 :1:4 
@@ -646,11 +650,11 @@ CHECKSUM_SIZE 2
 [v _TMR0L TMR0L `VEuc  1 e 1 @4054 ]
 "4142
 [v _TMR0H TMR0H `VEuc  1 e 1 @4055 ]
-[s S1415 . 1 `uc 1 . 1 0 :7:0 
+[s S1417 . 1 `uc 1 . 1 0 :7:0 
 `uc 1 NOT_RBPU 1 0 :1:7 
 ]
 "4505
-[s S1418 . 1 `uc 1 RBIP 1 0 :1:0 
+[s S1420 . 1 `uc 1 RBIP 1 0 :1:0 
 `uc 1 . 1 0 :1:1 
 `uc 1 TMR0IP 1 0 :1:2 
 `uc 1 . 1 0 :1:3 
@@ -659,13 +663,13 @@ CHECKSUM_SIZE 2
 `uc 1 INTEDG0 1 0 :1:6 
 `uc 1 nRBPU 1 0 :1:7 
 ]
-[s S1427 . 1 `uc 1 . 1 0 :2:0 
+[s S1429 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 T0IP 1 0 :1:2 
 `uc 1 . 1 0 :4:3 
 `uc 1 RBPU 1 0 :1:7 
 ]
-[u S1432 . 1 `S1415 1 . 1 0 `S1418 1 . 1 0 `S1427 1 . 1 0 ]
-[v _INTCON2bits INTCON2bits `VES1432  1 e 1 @4081 ]
+[u S1434 . 1 `S1417 1 . 1 0 `S1420 1 . 1 0 `S1429 1 . 1 0 ]
+[v _INTCON2bits INTCON2bits `VES1434  1 e 1 @4081 ]
 [s S21 . 1 `uc 1 RBIF 1 0 :1:0 
 `uc 1 INT0IF 1 0 :1:1 
 `uc 1 TMR0IF 1 0 :1:2 
@@ -716,7 +720,7 @@ CHECKSUM_SIZE 2
 "32
 [v _globalHours globalHours `VEuc  1 s 1 globalHours ]
 "39
-[v _UartBufferHead UartBufferHead `uc  1 s 1 UartBufferHead ]
+[v _UartBufferHead UartBufferHead `VEuc  1 s 1 UartBufferHead ]
 "40
 [v _UartBufferTail UartBufferTail `VEuc  1 s 1 UartBufferTail ]
 "41
@@ -851,9 +855,9 @@ CHECKSUM_SIZE 2
 [v _SetTimeFromRegs SetTimeFromRegs `(v  1 e 1 0 ]
 {
 [v SetTimeFromRegs@hourMin hourMin `*.30ui  1 a 1 wreg ]
-[s S716 tm 18 `i 1 tm_sec 2 0 `i 1 tm_min 2 2 `i 1 tm_hour 2 4 `i 1 tm_mday 2 6 `i 1 tm_mon 2 8 `i 1 tm_year 2 10 `i 1 tm_wday 2 12 `i 1 tm_yday 2 14 `i 1 tm_isdst 2 16 ]
+[s S718 tm 18 `i 1 tm_sec 2 0 `i 1 tm_min 2 2 `i 1 tm_hour 2 4 `i 1 tm_mday 2 6 `i 1 tm_mon 2 8 `i 1 tm_year 2 10 `i 1 tm_wday 2 12 `i 1 tm_yday 2 14 `i 1 tm_isdst 2 16 ]
 "853
-[v SetTimeFromRegs@newTime newTime `S716  1 a 18 77 ]
+[v SetTimeFromRegs@newTime newTime `S718  1 a 18 77 ]
 "861
 [v SetTimeFromRegs@newRawTime newRawTime `l  1 a 4 72 ]
 "851
@@ -867,15 +871,15 @@ CHECKSUM_SIZE 2
 "52 C:\Program Files (x86)\Microchip\xc8\v1.37\sources\common\mktime.c
 [v _mktime mktime `(l  1 e 4 0 ]
 {
-[s S716 tm 18 `i 1 tm_sec 2 0 `i 1 tm_min 2 2 `i 1 tm_hour 2 4 `i 1 tm_mday 2 6 `i 1 tm_mon 2 8 `i 1 tm_year 2 10 `i 1 tm_wday 2 12 `i 1 tm_yday 2 14 `i 1 tm_isdst 2 16 ]
-[v mktime@timeptr timeptr `*.30S716  1 a 1 wreg ]
+[s S718 tm 18 `i 1 tm_sec 2 0 `i 1 tm_min 2 2 `i 1 tm_hour 2 4 `i 1 tm_mday 2 6 `i 1 tm_mon 2 8 `i 1 tm_year 2 10 `i 1 tm_wday 2 12 `i 1 tm_yday 2 14 `i 1 tm_isdst 2 16 ]
+[v mktime@timeptr timeptr `*.30S718  1 a 1 wreg ]
 "54
 [v mktime@tt tt `l  1 a 4 63 ]
 "52
-[v mktime@timeptr timeptr `*.30S716  1 a 1 wreg ]
+[v mktime@timeptr timeptr `*.30S718  1 a 1 wreg ]
 "56
 "52
-[v mktime@timeptr timeptr `*.30S716  1 a 1 67 ]
+[v mktime@timeptr timeptr `*.30S718  1 a 1 67 ]
 "71
 } 0
 "40
@@ -941,21 +945,21 @@ CHECKSUM_SIZE 2
 [v SetTime@newTime newTime `*.30l  1 a 1 6 ]
 "172
 } 0
-"269 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
+"277 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
 [v _SetHourMin SetHourMin `(v  1 e 1 0 ]
 {
 [v SetHourMin@newHour newHour `*.30i  1 a 1 wreg ]
-"279
+"287
 [v SetHourMin@secToNext6Sec secToNext6Sec `uc  1 a 1 26 ]
-"277
+"285
 [v SetHourMin@tmpSec tmpSec `uc  1 a 1 25 ]
-"269
+"277
 [v SetHourMin@newHour newHour `*.30i  1 a 1 wreg ]
 [v SetHourMin@newMin newMin `*.30i  1 p 1 10 ]
 [v SetHourMin@sec sec `*.30i  1 p 1 11 ]
-"271
+"279
 [v SetHourMin@newHour newHour `*.30i  1 a 1 24 ]
-"283
+"291
 } 0
 "4 C:\Program Files (x86)\Microchip\xc8\v1.37\sources\common\lbmod.c
 [v ___lbmod __lbmod `(uc  1 e 1 0 ]
@@ -987,42 +991,42 @@ CHECKSUM_SIZE 2
 [v ___lbdiv@dividend dividend `uc  1 a 1 7 ]
 "26
 } 0
-"811 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
+"832 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
 [v _ModbusGetLastCommand ModbusGetLastCommand `(*.30uc  1 e 2 0 ]
 {
 [v ModbusGetLastCommand@address address `*.30us  1 a 1 wreg ]
 [v ModbusGetLastCommand@address address `*.30us  1 a 1 wreg ]
 [v ModbusGetLastCommand@count count `*.30us  1 p 1 6 ]
-"813
+"834
 [v ModbusGetLastCommand@address address `*.30us  1 a 1 8 ]
-"818
+"839
 } 0
 "407 D:\Work\GitHub\BOLID-C2000-BI\main.c
 [v _InitFromEeprom InitFromEeprom `(v  1 e 1 0 ]
 {
 "433
 } 0
-"170 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
+"171 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
 [v _Modbus Modbus `(v  1 e 1 0 ]
 {
 [v Modbus@u8id u8id `uc  1 a 1 wreg ]
 [v Modbus@u8id u8id `uc  1 a 1 wreg ]
 [v Modbus@u8serno u8serno `uc  1 p 1 11 ]
 [v Modbus@u8txenpin u8txenpin `uc  1 p 1 12 ]
-"172
-[v Modbus@u8id u8id `uc  1 a 1 13 ]
 "173
+[v Modbus@u8id u8id `uc  1 a 1 13 ]
+"174
 } 0
-"494
+"504
 [v _ModbusInit ModbusInit `(v  1 e 1 0 ]
 {
 [v ModbusInit@u8id u8id `uc  1 a 1 wreg ]
 [v ModbusInit@u8id u8id `uc  1 a 1 wreg ]
 [v ModbusInit@u8serno u8serno `uc  1 p 1 6 ]
 [v ModbusInit@u8txenpin u8txenpin `uc  1 p 1 7 ]
-"496
+"506
 [v ModbusInit@u8id u8id `uc  1 a 1 10 ]
-"500
+"510
 } 0
 "878 D:\Work\GitHub\BOLID-C2000-BI\main.c
 [v _CommandSetStatusLed CommandSetStatusLed `(v  1 e 1 0 ]
@@ -1033,15 +1037,15 @@ CHECKSUM_SIZE 2
 [v CommandSetStatusLed@commandData commandData `uc  1 a 1 29 ]
 "895
 } 0
-"175 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
+"176 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
 [v _ModbusSetExceptionStatusBit ModbusSetExceptionStatusBit `(v  1 e 1 0 ]
 {
 [v ModbusSetExceptionStatusBit@bitNum bitNum `uc  1 a 1 wreg ]
 [v ModbusSetExceptionStatusBit@bitNum bitNum `uc  1 a 1 wreg ]
 [v ModbusSetExceptionStatusBit@value value `uc  1 p 1 6 ]
-"177
-[v ModbusSetExceptionStatusBit@bitNum bitNum `uc  1 a 1 9 ]
 "178
+[v ModbusSetExceptionStatusBit@bitNum bitNum `uc  1 a 1 9 ]
+"179
 } 0
 "345 D:\Work\GitHub\BOLID-C2000-BI\main.c
 [v _LightStatusLed LightStatusLed `(v  1 e 1 0 ]
@@ -1054,15 +1058,15 @@ CHECKSUM_SIZE 2
 [v LightStatusLed@row row `uc  1 a 1 13 ]
 "353
 } 0
-"248 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
+"256 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
 [v _getHourMin getHourMin `(uc  1 e 1 0 ]
 {
 [v getHourMin@hour hour `*.30uc  1 a 1 wreg ]
 [v getHourMin@hour hour `*.30uc  1 a 1 wreg ]
 [v getHourMin@min min `*.30uc  1 p 1 6 ]
-"250
+"258
 [v getHourMin@hour hour `*.30uc  1 a 1 7 ]
-"257
+"265
 } 0
 "601 D:\Work\GitHub\BOLID-C2000-BI\main.c
 [v _ResetEvent ResetEvent `(v  1 e 1 0 ]
@@ -1149,14 +1153,14 @@ CHECKSUM_SIZE 2
 [v LoadNextEvent@totalMinutes totalMinutes `ui  1 a 2 9 ]
 "689
 } 0
-"259 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
+"267 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
 [v _getTotalMinutes getTotalMinutes `(uc  1 e 1 0 ]
 {
 [v getTotalMinutes@totalMinutes totalMinutes `*.30ui  1 a 1 wreg ]
 [v getTotalMinutes@totalMinutes totalMinutes `*.30ui  1 a 1 wreg ]
-"261
+"269
 [v getTotalMinutes@totalMinutes totalMinutes `*.30ui  1 a 1 6 ]
-"267
+"275
 } 0
 "304 D:\Work\GitHub\BOLID-C2000-BI\main.c
 [v _LightLed LightLed `(v  1 e 1 0 ]
@@ -1168,294 +1172,306 @@ CHECKSUM_SIZE 2
 [v LightLed@ststusIndex ststusIndex `uc  1 a 1 12 ]
 "304
 [v LightLed@ledNum ledNum `uc  1 a 1 wreg ]
-[v LightLed@ledState ledState `E2430  1 p 1 6 ]
+[v LightLed@ledState ledState `E2431  1 p 1 6 ]
 [v LightLed@blink blink `uc  1 p 1 7 ]
 "306
 [v LightLed@ledNum ledNum `uc  1 a 1 11 ]
 "341
 } 0
-"404 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
+"405 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
 [v _ModbusPoll ModbusPoll `(c  1 e 1 0 ]
 {
-"444
+"454
 [v ModbusPoll@u8exception u8exception `uc  1 a 1 52 ]
-"434
+"433
 [v ModbusPoll@i8state i8state `uc  1 a 1 51 ]
-"417
+"418
 [v ModbusPoll@u8current u8current `uc  1 a 1 50 ]
-"404
+"405
 [v ModbusPoll@discreteInputs discreteInputs `us  1 p 2 41 ]
 [v ModbusPoll@coils coils `*.30us  1 p 1 43 ]
 [v ModbusPoll@inputRegs inputRegs `*.39us  1 p 2 44 ]
 [v ModbusPoll@inputRegsCount inputRegsCount `Cuc  1 p 1 46 ]
-"405
+"406
 [v ModbusPoll@holdingRegs holdingRegs `*.39us  1 p 2 47 ]
 [v ModbusPoll@holdingRegsCount holdingRegsCount `Cuc  1 p 1 49 ]
-"490
+"500
 } 0
-"691
+"77 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
+[v _PortClearReadBuffer PortClearReadBuffer `(v  1 e 1 0 ]
+{
+"82
+} 0
+"712 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
 [v _ModbusValidateRequest ModbusValidateRequest `(uc  1 e 1 0 ]
 {
-"775
+"796
 [v ModbusValidateRequest@recLenBytes recLenBytes `ul  1 a 4 27 ]
-"774
+"795
 [v ModbusValidateRequest@startAddrBytes startAddrBytes `ul  1 a 4 23 ]
-"783
+"804
 [v ModbusValidateRequest@readDevId readDevId `uc  1 a 1 37 ]
-"705
+"726
 [v ModbusValidateRequest@i i `uc  1 a 1 36 ]
-"720
+"741
 [v ModbusValidateRequest@u16regs u16regs `us  1 a 2 39 ]
-"721
+"742
 [v ModbusValidateRequest@u16count u16count `us  1 a 2 34 ]
-"694
+"715
 [v ModbusValidateRequest@u16MsgCRC u16MsgCRC `us  1 a 2 31 ]
-"722
+"743
 [v ModbusValidateRequest@u8regs u8regs `uc  1 a 1 38 ]
-"704
+"725
 [v ModbusValidateRequest@isSupported isSupported `uc  1 a 1 33 ]
-"792
+"813
 } 0
-"973
+"994
 [v _ModbusProcess_FC7 ModbusProcess_FC7 `(uc  1 e 1 0 ]
 {
-"977
+"998
 [v ModbusProcess_FC7@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 21 ]
-"980
+"1001
 } 0
-"953
+"974
 [v _ModbusProcess_FC6 ModbusProcess_FC6 `(uc  1 e 1 0 ]
 {
-"955
+"976
 [v ModbusProcess_FC6@u16add u16add `us  1 a 2 29 ]
-"959
+"980
 [v ModbusProcess_FC6@u16val u16val `us  1 a 2 26 ]
-"958
+"979
 [v ModbusProcess_FC6@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 28 ]
-"953
+"974
 [v ModbusProcess_FC6@regs regs `*.39us  1 p 2 21 ]
 [v ModbusProcess_FC6@u8size u8size `uc  1 p 1 23 ]
-"970
+"991
 } 0
-"918
+"939
 [v _ModbusProcess_FC5 ModbusProcess_FC5 `(uc  1 e 1 0 ]
 {
 [v ModbusProcess_FC5@regs regs `*.30us  1 a 1 wreg ]
-"923
+"944
 [v ModbusProcess_FC5@u16coil u16coil `us  1 a 2 27 ]
-"921
+"942
 [v ModbusProcess_FC5@u8currentBit u8currentBit `uc  1 a 1 30 ]
-"922
-[v ModbusProcess_FC5@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 26 ]
-"918
-[v ModbusProcess_FC5@regs regs `*.30us  1 a 1 wreg ]
-"923
-[v ModbusProcess_FC5@regs regs `*.30us  1 a 1 29 ]
 "943
+[v ModbusProcess_FC5@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 26 ]
+"939
+[v ModbusProcess_FC5@regs regs `*.30us  1 a 1 wreg ]
+"944
+[v ModbusProcess_FC5@regs regs `*.30us  1 a 1 29 ]
+"964
 } 0
-"1152
+"1173
 [v _ModbusProcess_FC43 ModbusProcess_FC43 `(uc  1 e 1 0 ]
 {
-"1162
+"1183
 [v ModbusProcess_FC43@objId objId `uc  1 a 1 23 ]
-"1229
+"1250
 [v ModbusProcess_FC43@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 22 ]
-"1154
+"1175
 [v ModbusProcess_FC43@devIdCode devIdCode `uc  1 a 1 21 ]
-"1233
+"1254
 } 0
-"1143
+"1164
 [v _CopyStringToBuffer CopyStringToBuffer `(v  1 e 1 0 ]
 {
 [v CopyStringToBuffer@objId objId `uc  1 a 1 wreg ]
-"1148
+"1169
 [v CopyStringToBuffer@i i `uc  1 a 1 10 ]
-"1143
+"1164
 [v CopyStringToBuffer@objId objId `uc  1 a 1 wreg ]
 [v CopyStringToBuffer@src src `*.31Cuc  1 p 1 6 ]
 [v CopyStringToBuffer@len len `uc  1 p 1 7 ]
-"1145
+"1166
 [v CopyStringToBuffer@objId objId `uc  1 a 1 9 ]
-"1150
+"1171
 } 0
-"885
+"906
 [v _ModbusProcess_FC3 ModbusProcess_FC3 `(uc  1 e 1 0 ]
 {
-"889
+"910
 [v ModbusProcess_FC3@u16regsno u16regsno `us  1 a 2 29 ]
-"892
+"913
 [v ModbusProcess_FC3@i i `uc  1 a 1 32 ]
-"887
+"908
 [v ModbusProcess_FC3@u8StartAdd u8StartAdd `uc  1 a 1 31 ]
-"891
+"912
 [v ModbusProcess_FC3@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 28 ]
-"885
+"906
 [v ModbusProcess_FC3@regs regs `*.39us  1 p 2 21 ]
 [v ModbusProcess_FC3@u8size u8size `uc  1 p 1 23 ]
-"908
+"929
 } 0
-"1111
+"1132
 [v _ModbusProcess_FC21 ModbusProcess_FC21 `(uc  1 e 1 0 ]
 {
-"1119
+"1140
 [v ModbusProcess_FC21@recLenBytes recLenBytes `us  1 a 2 27 ]
-"1117
+"1138
 [v ModbusProcess_FC21@startAddrsBytes startAddrsBytes `us  1 a 2 25 ]
-"1122
+"1143
 [v ModbusProcess_FC21@i i `uc  1 a 1 29 ]
-"1121
+"1142
 [v ModbusProcess_FC21@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 24 ]
-"1115
+"1136
 [v ModbusProcess_FC21@requestDataLen requestDataLen `uc  1 a 1 23 ]
-"1141
+"1162
 } 0
-"1086
+"1107
 [v _ModbusProcess_FC17 ModbusProcess_FC17 `(uc  1 e 1 0 ]
 {
-"1092
+"1113
 [v ModbusProcess_FC17@i i `uc  1 a 1 23 ]
-"1097
+"1118
 [v ModbusProcess_FC17@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 22 ]
-"1101
+"1122
 } 0
-"1047
+"1068
 [v _ModbusProcess_FC16 ModbusProcess_FC16 `(uc  1 e 1 0 ]
 {
-"1050
+"1071
 [v ModbusProcess_FC16@u16StartAdd u16StartAdd `us  1 a 2 31 ]
-"1056
+"1077
 [v ModbusProcess_FC16@temp temp `us  1 a 2 28 ]
-"1055
+"1076
 [v ModbusProcess_FC16@i i `uc  1 a 1 34 ]
-"1052
+"1073
 [v ModbusProcess_FC16@u8regsno u8regsno `uc  1 a 1 33 ]
-"1054
+"1075
 [v ModbusProcess_FC16@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 30 ]
-"1047
+"1068
 [v ModbusProcess_FC16@regs regs `*.39us  1 p 2 21 ]
 [v ModbusProcess_FC16@u8size u8size `uc  1 p 1 23 ]
-"1076
+"1097
 } 0
-"989
+"1010
 [v _ModbusProcess_FC15 ModbusProcess_FC15 `(uc  1 e 1 0 ]
 {
 [v ModbusProcess_FC15@regs regs `*.30us  1 a 1 wreg ]
-"994
+"1015
 [v ModbusProcess_FC15@u16currentCoil u16currentCoil `us  1 a 2 37 ]
-"1000
+"1021
 [v ModbusProcess_FC15@u16Coilno u16Coilno `us  1 a 2 33 ]
-"998
+"1019
 [v ModbusProcess_FC15@u16StartCoil u16StartCoil `us  1 a 2 31 ]
-"994
+"1015
 [v ModbusProcess_FC15@u16coil u16coil `us  1 a 2 26 ]
-"992
+"1013
 [v ModbusProcess_FC15@u8bitsno u8bitsno `uc  1 a 1 39 ]
 [v ModbusProcess_FC15@u8currentBit u8currentBit `uc  1 a 1 36 ]
 [v ModbusProcess_FC15@u8frameByte u8frameByte `uc  1 a 1 30 ]
-"995
+"1016
 [v ModbusProcess_FC15@bTemp bTemp `uc  1 a 1 29 ]
-"993
+"1014
 [v ModbusProcess_FC15@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 28 ]
-"989
+"1010
 [v ModbusProcess_FC15@regs regs `*.30us  1 a 1 wreg ]
-"998
+"1019
 [v ModbusProcess_FC15@regs regs `*.30us  1 a 1 35 ]
-"1037
+"1058
 } 0
-"828
+"849
 [v _ModbusProcess_FC1 ModbusProcess_FC1 `(uc  1 e 1 0 ]
 {
-"838
+"859
 [v ModbusProcess_FC1@u16Coilno u16Coilno `us  1 a 2 36 ]
-"833
+"854
 [v ModbusProcess_FC1@u16currentCoil u16currentCoil `us  1 a 2 33 ]
-"836
+"857
 [v ModbusProcess_FC1@u16StartCoil u16StartCoil `us  1 a 2 31 ]
-"833
+"854
 [v ModbusProcess_FC1@u16coil u16coil `us  1 a 2 26 ]
-"831
+"852
 [v ModbusProcess_FC1@u8bitsno u8bitsno `uc  1 a 1 35 ]
 [v ModbusProcess_FC1@u8bytesno u8bytesno `uc  1 a 1 30 ]
-"832
+"853
 [v ModbusProcess_FC1@u8CopyBufferSize u8CopyBufferSize `uc  1 a 1 29 ]
-"831
+"852
 [v ModbusProcess_FC1@u8currentBit u8currentBit `uc  1 a 1 28 ]
-"828
+"849
 [v ModbusProcess_FC1@regs regs `us  1 p 2 21 ]
-"875
+"896
 } 0
-"549
+"570
 [v _ModbusSendTxBuffer ModbusSendTxBuffer `(v  1 e 1 0 ]
 {
-"554
-[v ModbusSendTxBuffer@u16crc u16crc `us  1 a 2 19 ]
 "575
+[v ModbusSendTxBuffer@u16crc u16crc `us  1 a 2 19 ]
+"596
 } 0
-"239 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
+"247 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
 [v _millis millis `(ul  1 e 4 0 ]
 {
-"243
+"251
 [v millis@ret ret `ul  1 a 4 10 ]
-"246
+"254
 } 0
-"94
+"101
 [v _PortWrite PortWrite `(v  1 e 1 0 ]
 {
-"98
+"105
 [v PortWrite@i i `uc  1 a 1 9 ]
-"94
+"101
 [v PortWrite@buf buf `*.39uc  1 p 2 6 ]
 [v PortWrite@buflen buflen `uc  1 p 1 8 ]
-"105
+"112
 } 0
-"659 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
+"680 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
 [v _ModbusCalcCRC ModbusCalcCRC `(us  1 e 2 0 ]
 {
 [v ModbusCalcCRC@u8length u8length `uc  1 a 1 wreg ]
-"666
+"687
 [v ModbusCalcCRC@j j `uc  1 a 1 16 ]
-"663
+"684
 [v ModbusCalcCRC@i i `uc  1 a 1 15 ]
-"661
+"682
 [v ModbusCalcCRC@temp temp `ui  1 a 2 17 ]
 [v ModbusCalcCRC@flag flag `ui  1 a 2 12 ]
 [v ModbusCalcCRC@temp2 temp2 `ui  1 a 2 10 ]
-"659
+"680
 [v ModbusCalcCRC@u8length u8length `uc  1 a 1 wreg ]
-"662
+"683
 [v ModbusCalcCRC@u8length u8length `uc  1 a 1 14 ]
-"681
+"702
 } 0
-"509
+"513
+[v _ModbusGetRxBufferHeader ModbusGetRxBufferHeader `(uc  1 e 1 0 ]
+{
+"516
+[v ModbusGetRxBufferHeader@i i `uc  1 a 1 8 ]
+"524
+} 0
+"533
 [v _ModbusGetRxBuffer ModbusGetRxBuffer `(uc  1 e 1 0 ]
 {
-"511
-[v ModbusGetRxBuffer@bBuffOverflow bBuffOverflow `uc  1 a 1 8 ]
 "535
+[v ModbusGetRxBuffer@bBuffOverflow bBuffOverflow `uc  1 a 1 8 ]
+"556
 } 0
-"58 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
+"57 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
 [v _PortRead PortRead `(uc  1 e 1 0 ]
 {
-"64
+"63
 [v PortRead@ret ret `uc  1 a 1 6 ]
-"75
+"74
 } 0
-"53
+"52
 [v _PortAvailable PortAvailable `(uc  1 e 1 0 ]
 {
-"56
+"55
 } 0
-"800 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
+"821 D:\Work\GitHub\BOLID-C2000-BI\ModbusRtu.c
 [v _ModbusBuildException ModbusBuildException `(v  1 e 1 0 ]
 {
 [v ModbusBuildException@u8exception u8exception `uc  1 a 1 wreg ]
-"802
+"823
 [v ModbusBuildException@u8func u8func `uc  1 a 1 7 ]
-"800
+"821
 [v ModbusBuildException@u8exception u8exception `uc  1 a 1 wreg ]
-"802
+"823
 [v ModbusBuildException@u8exception u8exception `uc  1 a 1 6 ]
-"808
+"829
 } 0
 "66 D:\Work\GitHub\BOLID-C2000-BI\user.c
 [v _InitApp InitApp `(v  1 e 1 0 ]
@@ -1472,7 +1488,7 @@ CHECKSUM_SIZE 2
 "44 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
 [v _InitUartBuffer InitUartBuffer `(v  1 e 1 0 ]
 {
-"50
+"49
 } 0
 "86 D:\Work\GitHub\BOLID-C2000-BI\system.c
 [v _ConfigureOscillator ConfigureOscillator `(v  1 e 1 0 ]
@@ -1484,15 +1500,15 @@ CHECKSUM_SIZE 2
 {
 "195
 } 0
-"175 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
+"183 D:\Work\GitHub\BOLID-C2000-BI\interrupts.c
 [v _low_isr low_isr `IIL(v  1 e 1 0 ]
 {
-"203
+"211
 [v low_isr@c c `uc  1 a 1 5 ]
-"237
+"245
 } 0
-"114
+"122
 [v _high_isr high_isr `II(v  1 e 1 0 ]
 {
-"171
+"179
 } 0
