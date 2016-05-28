@@ -1343,6 +1343,9 @@ int8_t ModbusProcess_FC100()
             #endasm
             break;
         case MB_COMMAND_SET_ADDRESS:
+            _u8id = _au8Buffer[COM_DATA];
+            _EEREG_EEPROM_WRITE(EE_MODBUS_ID, _u8id);
+            ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
             break;  
         case MB_COMMAND_SET_TIME:
             SetHourMin(&(_au8Buffer[COM_ADD1_HI]), &(_au8Buffer[COM_ADD1_LO]), &(_au8Buffer[COM_ADD2_LO]));

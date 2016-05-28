@@ -2742,9 +2742,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.c: 168: }
 [; ;interrupts.c: 169: }
 [; ;interrupts.c: 170: }
-[; ;interrupts.c: 171: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + - 10) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + - 10) * 6)&0xFF)));
+[; ;interrupts.c: 171: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + -1) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + -1) * 6)&0xFF)));
 "171
-[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 10 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 10 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
+[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 1 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 1 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
 [; ;interrupts.c: 172: return;
 "172
 [e $UE 269  ]
@@ -2977,9 +2977,9 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _secToNext6Sec `uc ~T0 @X0 1 a ]
 [; ;interrupts.c: 287: uint8_t secToNext6Sec = 6 - (tmpSec % 6);
 [e = _secToNext6Sec -> - -> 6 `i % -> _tmpSec `i -> 6 `i `uc ]
-[; ;interrupts.c: 288: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + - 10) * secToNext6Sec)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + - 10) * secToNext6Sec)&0xFF)));
+[; ;interrupts.c: 288: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + -1) * secToNext6Sec)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + -1) * secToNext6Sec)&0xFF)));
 "288
-[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 10 `i `l -> _secToNext6Sec `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 10 `i `l -> _secToNext6Sec `l -> -> 255 `i `l `uc ]
+[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 1 `i `l -> _secToNext6Sec `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 1 `i `l -> _secToNext6Sec `l -> -> 255 `i `l `uc ]
 [; ;interrupts.c: 290: T0CONbits.TMR0ON = 1;
 "290
 [e = . . _T0CONbits 0 5 -> -> 1 `i `uc ]

@@ -2955,7 +2955,7 @@ typedef unsigned char bool;
 # 110
 void ConfigureOscillator(void);
 
-# 99 "ModbusRtu.h"
+# 103 "ModbusRtu.h"
 enum MB_FC
 {
 MB_FC_NONE = 0,
@@ -3975,6 +3975,9 @@ case 0x7F:
 #endasm 
             break;
 case 0x01:
+_u8id = _au8Buffer[COM_DATA];
+do{ while (WR) { continue; } EEADR = (1); EEDATA = (_u8id); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
+ModbusSetExceptionStatusBit(0, 1);
 break;
 case 0x10:
 SetHourMin(&(_au8Buffer[COM_ADD1_HI]), &(_au8Buffer[COM_ADD1_LO]), &(_au8Buffer[COM_ADD2_LO]));

@@ -53,29 +53,22 @@ bool IsBusserOn = false;
 #define BUTTON_INTRUSION PORTCbits.RC3
 #define BUTTON_RESET PORTCbits.RC1
 
+#define BLINK_DURATION 384
+#define BLINK_PERIOD 576
 
-#define EE_BUZZER_LOUD_DURATION 2
-#define EE_BUZZER_QUIET_DURATION 3
-#define EE_BUZZER_INFO_PERIOD 4
-#define EE_BUZZER_ALARM_PERIOD 5
-#define EE_BUZZER_ON_OFF_DURATION 6
-#define EE_BUZZER_ON_OFF_PERIOD 7
-#define EE_BUZZER_ESCALADE_TIME 8
-#define EE_BUZZER_START_DURATION_DIV 9
-#define EE_EVENT_ACCEPT_TIME 10
-#define EE_EVENING_TIME_HOUR 11
-#define EE_NIGHT_START_HOUR 12
-#define EE_NIGHT_END_HOUR 13
-#define EE_MORNING_TIME_HOUR 14
-#define EE_BLINK_DURATION 15
-#define EE_BLINK_PERIOD 16
+#define EE_EVENT_ACCEPT_TIME 2
 
-#define MAX_EVENTS 60
-#define EE_EVENT_COUNT 18
-#define EE_FIRST_EVENT EE_EVENT_COUNT + 1 // 60 events * 2 bytes = 120 bytes
+//#define EE_BLINK_DURATION 3
+//#define EE_BLINK_PERIOD 4
+
+#define MAX_LED_NUM 60
+#define EE_MAX_EVENTS 3
+//#define MAX_LED_FOR_COMMAND 4 // Max led num for lighting from modbus
+#define EE_EVENT_COUNT 10
+#define EE_FIRST_EVENT EE_EVENT_COUNT + 1 // 12 events * 2 bytes = 24 bytes
 
 // Sounds
-#define EE_SOUNDS_COUNT 140
+//#define EE_SOUNDS_COUNT 40
 
 #define PLAY_INFINITE USHRT_MAX
 
@@ -131,10 +124,12 @@ bool IsBusserOn = false;
 
 // Custom Commands
 #define MB_COMMAND_CLEAR_ALL_EVENTS 0x80
-#define MB_COMMAND_ADD_EVENT 0x81
+//#define MB_COMMAND_ADD_EVENT 0x81
 #define MB_COMMAND_SET_LED 0x82
 #define MB_COMMAND_SET_STATUS_LED 0x83 // Data - HighBit - On/Off, low 3 bits: FIRE, WARNING, Alarm, Napadeniye, NOT_RESPONSE
 // Additional: HI - sound Id, LO playDuration * 256msec 0 - once
+
+
 
 #define MB_COMMAND_TEST_SOUND 0x90 // Play sound 2 seconds LO: Period, Additional: duration (10 bit))
 #define MB_COMMAND_PLAY_SOUND_NUM 0x91 // Data - sound id, additional data - s
@@ -173,6 +168,9 @@ bool IsBusserOn = false;
 */
 uint16_t modbusState;
 
+uint8_t _eeFirstSoundAddress;
+uint8_t _eeSoundAddressesList;
+uint8_t _maxDiaryEvents;
 
 //uint16_t buzzerOnOffDuration = 0x100; // 256 ms
 //uint16_t buzzerOnOffPeriod = 0x400; // ~1 sec
@@ -246,8 +244,8 @@ uint8_t statusLedState = 0x00;
 
 uint8_t ledStatuses[LED_STATUSES_LEN];
 
-uint16_t blinkDuration;
-uint16_t blinkPeriod;
+//uint16_t blinkDuration;
+//uint16_t blinkPeriod;
 // 1 - blink
 uint8_t ledBlink[LED_STATUSES_LEN];
 
@@ -395,33 +393,65 @@ void SetBuzzerDuty(uint16_t dc)
     // TOSC * (TMR2 prescale value)
     //u16 tempValue = 0;
     CCP1CONbits.DC1B = dc & 0x03;
-//    CCP1CONbits.DC1B0 = (dc & 0x01) != 0 ? 1 : 0;
-//    CCP1CONbits.DC1B1 = (dc & 0x02) != 0 ? 1 : 0;
-    //tempValue = dc >> 2;
     CCPR1L = (uint8_t)(dc >> 2);
 }
 
-
+void ShowFailure(uint8_t additionalLed)
+{
+    LightStatusLed(LED_STATUS_FAULT, true, true);
+    LightLed(additionalLed, LED_RED, true);  
+}
 
 void InitFromEeprom()
 {
+    SwitchOffAllLeds();
+
     eventAcceptTime         = _EEREG_EEPROM_READ(EE_EVENT_ACCEPT_TIME);
-    blinkDuration           = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_DURATION)) << 6;
-    blinkPeriod             = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_PERIOD)) << 6;
+//    blinkDuration           = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_DURATION)) << 6;
+//    blinkPeriod             = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_PERIOD)) << 6;
     
-    eventCount              = _EEREG_EEPROM_READ(EE_EVENT_COUNT);
+    uint8_t tmpModbusId = _EEREG_EEPROM_READ(EE_MODBUS_ID);
+    if(tmpModbusId == 0xff)
+        tmpModbusId = DEFAULT_MODBUS_ID;
+    Modbus(tmpModbusId, 0, 0);
+   
     
+    _maxDiaryEvents = _EEREG_EEPROM_READ(EE_MAX_EVENTS);
+    if(_maxDiaryEvents == 0xff)
+        _maxDiaryEvents = 0;
+    if(_maxDiaryEvents > MAX_LED_NUM)
+    {
+        ShowFailure(2);
+        return;
+    }
+    eventCount = _EEREG_EEPROM_READ(EE_EVENT_COUNT);
+    if(eventCount == 0xff)
+        eventCount = 0;
+    if(eventCount > _maxDiaryEvents)
+    {
+        ShowFailure(3);
+        return;
+    }    
 //    SetBuzzerDuty(buzzeLoudDuration); //!!!!!
 //    PR2 = buzzerAlarmPeriod;
     
     // First 3 sounds - are for diary
-    _soundCount = _EEREG_EEPROM_READ(EE_SOUNDS_COUNT);
+    uint8_t eeSoundCountAddress = EE_FIRST_EVENT + eventCount * 2;    
+    _soundCount = _EEREG_EEPROM_READ(eeSoundCountAddress);
     if(_soundCount == 0xFF)
         _soundCount = 0;
+    else
+    {
+        _eeSoundAddressesList = eeSoundCountAddress + 1;
+        _eeFirstSoundAddress = _eeSoundAddressesList + _soundCount;
+        if(_eeFirstSoundAddress >= _EEPROMSIZE)
+        {
+            ShowFailure(5);
+            return;
+        }
+    }   
     _MODBUSInputRegs[INPUT_REG_SOUND_CNT_EVENT_COUNT] = word(_soundCount, eventCount);
     
-    Modbus(_EEREG_EEPROM_READ(EE_MODBUS_ID), 0, 0);
-    SwitchOffAllLeds();
 
     
     curEventNum = 0xff;
@@ -430,6 +460,11 @@ void InitFromEeprom()
     LoadNextEvent();
     
     //_MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
+}
+
+uint8_t GetCurrentEventDiodeNum()
+{
+    return MAX_LED_NUM - _maxDiaryEvents + currentAlarmedEventNum + 1;
 }
 
 #define LightBlock(stat, reg)   \
@@ -448,12 +483,12 @@ bool blinkOn = false;
 void ProcessLightBlock(unsigned long *curMs)
 {
     diffTime = *curMs - oldBlinkOnTime;
-    if(diffTime > blinkPeriod)
+    if(diffTime > BLINK_PERIOD)
     {
         blinkOn = true;
         oldBlinkOnTime = *curMs;
     }
-    else if(blinkOn && diffTime > blinkDuration)
+    else if(blinkOn && diffTime > BLINK_DURATION)
     {
         blinkOn = false;
     }
@@ -531,7 +566,9 @@ void SoundPlayNextStep()
             return;
         }
     }
-    _playingEndMs = millis() + word(_EEREG_EEPROM_READ(_playingSoundStartPosInEe + _playingSoundCurPos * 3), 0);
+    uint16_t stepDuty = _EEREG_EEPROM_READ(_playingSoundStartPosInEe + _playingSoundCurPos * 3);
+    stepDuty <<= 6; // * 64
+    _playingEndMs = millis() + stepDuty;
     PR2 = _EEREG_EEPROM_READ(_playingSoundStartPosInEe + _playingSoundCurPos * 3 + 1);
     uint8_t duration = _EEREG_EEPROM_READ(_playingSoundStartPosInEe + _playingSoundCurPos * 3 + 2);
     _playingSoundCurPos++;        
@@ -575,13 +612,13 @@ bool PlaySound(uint8_t soundId, uint16_t playDuration)
     else 
         soundTestEnd = *GetTime() + playDuration;
     
-    uint8_t soundAddr = _EEREG_EEPROM_READ(EE_SOUNDS_COUNT + 1 + soundId);
-    if(EE_SOUNDS_COUNT + _soundCount + soundAddr >= _EEPROMSIZE)
+    uint8_t soundAddr = _EEREG_EEPROM_READ(_eeSoundAddressesList + soundId);
+    if(_eeFirstSoundAddress + soundAddr >= _EEPROMSIZE)
         return false;
     
-    _playingSoundSteps = _EEREG_EEPROM_READ(EE_SOUNDS_COUNT + 1 + _soundCount + soundAddr); // * 3 bytes
+    _playingSoundSteps = _EEREG_EEPROM_READ(_eeFirstSoundAddress + soundAddr); // * 3 bytes
     
-    _playingSoundStartPosInEe = EE_SOUNDS_COUNT + 1 + _soundCount + soundAddr + 1;
+    _playingSoundStartPosInEe = _eeFirstSoundAddress + soundAddr + 1;
     _MODBUSInputRegs[INPUT_REG_PL_LEN_POS_IN_EE] = word(_playingSoundSteps, _playingSoundStartPosInEe);
     if(_playingSoundStartPosInEe + _playingSoundSteps * 3 >= _EEPROMSIZE)
         return false;
@@ -600,7 +637,9 @@ bool PlaySound(uint8_t soundId, uint16_t playDuration)
 // state: true - user pressed reset button
 void ResetEvent(bool state)
 {
-    LightLed(currentAlarmedEventNum + 1, state ? LED_GREEN : LED_RED, false);  
+    if(currentAlarmedEventNum == 0xff)
+        return;
+    LightLed(GetCurrentEventDiodeNum(), state ? LED_GREEN : LED_RED, false);  
     currentAlarmedEventNum = 0xff;
     eventResetSecond = 0;
     StopPlaying();
@@ -613,20 +652,10 @@ void LoadNextEvent()
 {
     if(eventCount == 0)
         return;
-//    uint8_t hour, minute;
     uint16_t totalMinutes;
-//    if(!getHourMin(&hour, &minute))
-//        return;
     if(!getTotalMinutes(&totalMinutes))
         return;
     
-//    uint8_t *hour = GetHour();
-//    if(*hour == HOUR_NOT_SET) // time not set 
-//    {
-//        return;
-//    }
-//
-//    uint8_t *minute = GetMinute();
     do
     {
         if(curEventNum == 0xff)
@@ -715,13 +744,13 @@ void ProcessDiary()
         // old Event Is Alarmd yet
         if(currentAlarmedEventNum != 0xff)
         {
-            LightLed(currentAlarmedEventNum + 1, LED_RED, false);  
+            LightLed(GetCurrentEventDiodeNum(), LED_RED, false);  
         }
         
         {
             currentAlarmedEventNum = curEventNum;
             //curEventProcessState == CUR_EVENT_ALARMED;
-            LightLed(currentAlarmedEventNum + 1, LED_ORANGE, true);  
+            LightLed(GetCurrentEventDiodeNum(), LED_ORANGE, true);  
             if(_nextEventSoundId != 0)
             {
                 PlaySound(_nextEventSoundId - 1, _nextEventPlayDuration);
@@ -785,7 +814,7 @@ void main(void)
     //ledStatuses[0] = 0x15;
     //ledStatuses[7] = 0x29;
     //bool rg = false;
-    unsigned long oldBuzzerOnTime = 0;
+//    unsigned long oldBuzzerOnTime = 0;
     uint8_t oldMinute = 0xff;
     //uint16_t lastMinSec = 0; // Secund counter value
     LightStatusLed(LED_STATUS_WORK, true, false);
@@ -876,23 +905,50 @@ void SetTimeCommand()
     bitSet(_MODBUSDiscreteInputs, INPUT_TIME_SET);
 }*/
 
+void CommandSetLed()
+{
+    // Data - 7bit - On/Off, 6bit - blink, low 2 bits: Led Color
+    // Additional1: HI - sound Id(if lef off adn soundId != 0xff = stop playing), LO playDuration,sec 0 - once
+    // Additional2: HI - LedNum, 
+    //              LO - BlinkDuration(s) - if > 0 like event user can press reset button
+    //              Led Color ignored
+    uint8_t commandData = *ModbusGetUserCommandData();
+    uint8_t soundId = *ModbusGetUserCommandAdditional1Hi();
+    uint8_t led = commandData & 0x3F;
+    if(led == 0 || led > MAX_LED_NUM - _maxDiaryEvents)
+        return;
+    uint8_t ledColor = commandData & 0x03;
+    if(bitRead(commandData, 7) == 0 || ledColor == 0)
+    {
+        LightLed(led, LED_OFF, false);
+        if(soundId != 0xff)
+            StopPlaying();
+        return;
+    }
+    LightLed(led, ledColor, bitRead(commandData, 6));
+    PlaySound(soundId, *ModbusGetUserCommandAdditional1Lo());
+    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+}
+
 void CommandSetStatusLed()
 {
     // Data - 7bit - On/Off, 6bit - blink low 3 bits: FIRE, WARNING, Alarm, Napadeniye, NOT_RESPONSE
     // Additional: HI - sound Id, LO playDuration,sec 0 - once
     uint8_t commandData = *ModbusGetUserCommandData();
+    uint8_t soundId = *ModbusGetUserCommandAdditional1Hi();
     uint8_t led = commandData & 0x07;
     if(led >= LED_STATUS_BLOCKING)
         return;
     if(bitRead(commandData, 7) == 0)
     {
         LightStatusLed(led, false, false);
-        StopPlaying();
+        if(soundId != 0xff)
+            StopPlaying();
         return;
     }
     LightStatusLed(led, true, bitRead(commandData, 6));
-    PlaySound(*ModbusGetUserCommandAdditional1Hi(), *ModbusGetUserCommandAdditional1Lo());
-   ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+    PlaySound(soundId, *ModbusGetUserCommandAdditional1Lo());
+    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
 }
 
 void ProcessUserCommands()
@@ -906,19 +962,9 @@ void ProcessUserCommands()
             ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
             break;
         case MB_COMMAND_SET_LED:
-            // 0 Holding reg - First byte - Led num [1..60]
-            // Second byte Value 0 - OFF, 1 - GREEN, 2 - RED 
-            v1 = *ModbusGetUserCommandAdditional1Lo();
-            // 2 bit - blink status
-            LightLed(*ModbusGetUserCommandAdditional1Hi(), v1 & 0x03, bitRead(v1, 2));
-            ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
+            CommandSetLed();
             break;   
-//                case MB_COMMAND_TEST_SOUND:
-//                    SetBuzzerDuty(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]); //!!!!!
-//                    PR2 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
-//                    //soundTestEnd = *GetTime() + 2; // 2 sec
-//                    //StartBuzzer;
-//                    break;
+
         case MB_COMMAND_PLAY_SOUND_NUM:                    
             //soundTestEnd = *GetTime() + _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]; 
             PlaySound(*ModbusGetUserCommandData(), *ModbusGetUserCommandAdditional1Lo());

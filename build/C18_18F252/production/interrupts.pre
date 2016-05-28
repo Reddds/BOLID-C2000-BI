@@ -3211,7 +3211,7 @@ globalHours = 0;
 }
 }
 }
-((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + - 10) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + - 10) * 6)&0xFF)));
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + -1) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + -1) * 6)&0xFF)));
 return;
 }
 
@@ -3299,7 +3299,7 @@ _totalMinutesFromDayStart = globalHours * 60 + globalMinutes;
 uint8_t tmpSec = *sec;
 _6sCounter = tmpSec / 6;
 uint8_t secToNext6Sec = 6 - (tmpSec % 6);
-((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + - 10) * secToNext6Sec)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + - 10) * secToNext6Sec)&0xFF)));
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + -1) * secToNext6Sec)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + -1) * secToNext6Sec)&0xFF)));
 
 T0CONbits.TMR0ON = 1;
 }

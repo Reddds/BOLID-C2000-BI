@@ -58,6 +58,8 @@
 #define MODBUS_ON 0xff
 #define MODBUS_OFF 0x00
 
+#define DEFAULT_MODBUS_ID 0x7F
+
 #define DEVICE_TYPE_INDICATOR 0x01
 
 #define SLAVE_ID_DEVICE_TYPE DEVICE_TYPE_INDICATOR // Indicator
@@ -80,6 +82,8 @@
 
 //#define HOLDING_COMMAND 0 // HI - command Lo - data
 //#define HOLDING_COMMAND_ADDITIONAL_DATA 1
+
+#define EE_MODBUS_ID 1
 
 #define MB_COMMAND_RESET 0x7F
 #define MB_COMMAND_SET_ADDRESS 0x01

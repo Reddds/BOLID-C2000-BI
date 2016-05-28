@@ -21,9 +21,9 @@
 
 __EEPROM_DATA(0x11, //0
         MODBUD_ID, 
-        0x80, //EE_BUZZER_LOUD_DURATION
-        0x0f, //EE_BUZZER_QUIET_DURATION
-        0x80, // EE_BUZZER_INFO_PERIOD
+        0xff, //EE_EVENT_ACCEPT_TIME
+        0x06, //EE_BLINK_DURATION * 64 ms
+        0x09, // EE_BLINK_PERIOD * 64 ms
         0xff, // EE_BUZZER_ALARM_PERIOD
         0x01, //EE_BUZZER_ON_OFF_DURATION * 256 ms
         0x04); //EE_BUZZER_ON_OFF_PERIOD * 256 ms

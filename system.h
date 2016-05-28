@@ -49,12 +49,12 @@
 // 1/10 min = FCY * 6 = 15 000 000
 #define WATCH_TIMER_PRESCALER 256
 #define WATCH_TIMER_CORRECTION_ZERO 127
-#define WATCH_TIMER_CORRECTION  - 10
+#define WATCH_TIMER_CORRECTION -1
 
 #define WATCH_TIMER_TICKS_IN_1_SEC (FCY / WATCH_TIMER_PRESCALER + WATCH_TIMER_CORRECTION)
 #define WATCH_TIMER_TICKS_TO_END_6S 0x10000 - WATCH_TIMER_TICKS_IN_1_SEC * 6
 
-#define MODBUD_ID       10
+#define MODBUD_ID       0x7F
 
 
 
@@ -77,7 +77,7 @@ typedef unsigned long uint32_t;
 typedef unsigned char boolean;
 typedef unsigned char bool;
 
-#define EE_MODBUS_ID 1
+
 
 /*
 define HOLDING_BUZZER_LOUD_QUIET_DURATION 1 // Day|Evening buzzer duration
