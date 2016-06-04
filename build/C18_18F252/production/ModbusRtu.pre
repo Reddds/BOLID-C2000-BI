@@ -2955,7 +2955,7 @@ typedef unsigned char bool;
 # 110
 void ConfigureOscillator(void);
 
-# 103 "ModbusRtu.h"
+# 104 "ModbusRtu.h"
 enum MB_FC
 {
 MB_FC_NONE = 0,
@@ -3076,7 +3076,7 @@ bool getHourMin(uint8_t *hour, uint8_t *min);
 bool getTotalMinutes(uint16_t *totalMinutes);
 void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
 
-# 17 "ModbusRtu.c"
+# 18 "ModbusRtu.c"
 typedef struct
 {
 uint8_t u8id;
@@ -3094,7 +3094,7 @@ EXCEPTION_SIZE = 3,
 CHECKSUM_SIZE = 2
 };
 
-# 39
+# 40
 enum MESSAGE
 {
 ID = 0,
@@ -3269,7 +3269,7 @@ return (((uint16_t)ModbusUserCommandAdditional3Hi<<8)|ModbusUserCommandAdditiona
 uint8_t *ModbusGetUserCommandAdditional3Hi(){return &ModbusUserCommandAdditional3Hi;}
 uint8_t *ModbusGetUserCommandAdditional3Lo(){return &ModbusUserCommandAdditional3Lo;}
 
-# 227
+# 228
 void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
 {
 ModbusInit(u8id, u8serno, u8txenpin);
@@ -3280,7 +3280,7 @@ void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value)
 (value ? ((_exceptionStatus) |= ((unsigned short)1 << (bitNum))) : ((_exceptionStatus) &= ~((unsigned short)1 << (bitNum))));
 }
 
-# 461
+# 462
 uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
 uint16_t *holdingRegs, const uint8_t holdingRegsCount)
 {
@@ -3322,7 +3322,6 @@ if (_au8Buffer[ ID ] != _u8id)
 PortClearReadBuffer();
 return 0;
 }
-
 i8state = ModbusGetRxBuffer();
 PortClearReadBuffer();
 _u8lastError = i8state;
@@ -3344,6 +3343,11 @@ return u8exception;
 
 _u32timeOut = millis() + (long) _u16timeOut;
 _u8lastError = 0;
+
+
+if(_au8Buffer[ FUNC ] != MB_FC_READ_EXCEPTION_STATUS)
+ModbusSetExceptionStatusBit(0, 0);
+
 
 
 switch (_au8Buffer[ FUNC ])
@@ -3390,6 +3394,8 @@ return i8state;
 void ModbusInit(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
 {
 _deviceStatus = 0;
+if(1)
+((_deviceStatus) |= ((unsigned short)1 << (1)));
 _u8id = u8id;
 _u8serno = (u8serno > 3) ? 0 : u8serno;
 _u8txenpin = u8txenpin;
@@ -3410,7 +3416,7 @@ _u8BufferSize++;
 return _u8BufferSize;
 }
 
-# 597
+# 604
 int8_t ModbusGetRxBuffer()
 {
 bool bBuffOverflow = 0;
@@ -3436,7 +3442,7 @@ return ERR_BUFF_OVERFLOW;
 return _u8BufferSize;
 }
 
-# 634
+# 641
 void ModbusSendTxBuffer()
 {
 
@@ -3452,7 +3458,7 @@ _u8BufferSize++;
 
 PortWrite(_au8Buffer, _u8BufferSize);
 
-# 653
+# 660
 _u8BufferSize = 0;
 
 
@@ -3462,7 +3468,7 @@ _u32timeOut = millis() + (unsigned long) _u16timeOut;
 _u16OutCnt++;
 }
 
-# 744
+# 751
 uint16_t ModbusCalcCRC(uint8_t u8length)
 {
 unsigned int temp, temp2, flag;
@@ -3487,7 +3493,7 @@ temp &= 0xFFFF;
 return temp;
 }
 
-# 776
+# 783
 uint8_t ModbusValidateRequest()
 {
 
@@ -3602,7 +3608,7 @@ _lastFunction = _au8Buffer[ FUNC ];
 return 0;
 }
 
-# 896
+# 903
 void ModbusBuildException(uint8_t u8exception)
 {
 uint8_t u8func = _au8Buffer[ FUNC ];
@@ -3625,7 +3631,7 @@ if(command != (0))
 return &_lastFunction;
 }
 
-# 926
+# 933
 int8_t ModbusProcess_FC1(uint16_t regs)
 {
 
@@ -3656,7 +3662,7 @@ u8currentBit = (uint8_t) u16coil;
 
 ((((regs) >> (u8currentBit)) & 0x01) ? ((_au8Buffer[ _u8BufferSize ]) |= ((unsigned short)1 << (u8bitsno))) : ((_au8Buffer[ _u8BufferSize ]) &= ~((unsigned short)1 << (u8bitsno))));
 
-# 958
+# 965
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3674,7 +3680,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 983
+# 990
 int8_t ModbusProcess_FC3(uint16_t *regs, uint8_t u8size)
 {
 uint8_t u8StartAdd = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
@@ -3700,7 +3706,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1016
+# 1023
 int8_t ModbusProcess_FC5(uint16_t *regs)
 {
 
@@ -3716,7 +3722,7 @@ u8currentBit = (uint8_t) (u16coil % 16);
 
 (_au8Buffer[ NB_HI ] == 0xff ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 1036
+# 1043
 _u8BufferSize = 6;
 u8CopyBufferSize = _u8BufferSize + 2;
 ModbusSendTxBuffer();
@@ -3724,7 +3730,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1051
+# 1058
 int8_t ModbusProcess_FC6(uint16_t *regs, uint8_t u8size)
 {
 uint16_t u16add = (((uint16_t)_au8Buffer[ ADD_HI ]<<8)|_au8Buffer[ ADD_LO ]);
@@ -3754,7 +3760,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1087
+# 1094
 int8_t ModbusProcess_FC15(uint16_t *regs)
 {
 
@@ -3781,10 +3787,10 @@ u8currentBit = (uint8_t) u16coil;
 
 bTemp = (((_au8Buffer[ u8frameByte ]) >> (u8bitsno)) & 0x01);
 
-# 1115
+# 1122
 (bTemp ? ((*regs) |= ((unsigned short)1 << (u8currentBit))) : ((*regs) &= ~((unsigned short)1 << (u8currentBit))));
 
-# 1120
+# 1127
 u8bitsno++;
 
 if (u8bitsno > 7)
@@ -3802,7 +3808,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1145
+# 1152
 int8_t ModbusProcess_FC16(uint16_t *regs, uint8_t u8size)
 {
 
@@ -3824,7 +3830,7 @@ for (i = 0; i < u8regsno && (u16StartAdd + i) < u8size; i++)
 {
 temp = (((uint16_t)_au8Buffer[ (BYTE_CNT + 1) + i * 2 ]<<8)|_au8Buffer[ (BYTE_CNT + 2) + i * 2 ]);
 
-# 1168
+# 1175
 regs[ u16StartAdd + i ] = temp;
 }
 u8CopyBufferSize = _u8BufferSize + 2;
@@ -3833,7 +3839,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1184
+# 1191
 int8_t ModbusProcess_FC17()
 {
 _au8Buffer[ 2 ] = 4;
@@ -3842,7 +3848,7 @@ _u8BufferSize = 3;
 _au8Buffer[_u8BufferSize++] = 0x01;
 _au8Buffer[_u8BufferSize++] = 0x01;
 _au8Buffer[_u8BufferSize++] = 0x01;
-_au8Buffer[_u8BufferSize++] = 0x01;
+_au8Buffer[_u8BufferSize++] = 0x00;
 
 _au8Buffer[_u8BufferSize++] = 0xff;
 uint8_t u8CopyBufferSize = _u8BufferSize;
@@ -3851,7 +3857,7 @@ ModbusSendTxBuffer();
 return u8CopyBufferSize;
 }
 
-# 1209
+# 1216
 int8_t ModbusProcess_FC21()
 {
 
@@ -3865,7 +3871,7 @@ _lastCount = recLenBytes;
 uint8_t u8CopyBufferSize;
 uint8_t i;
 
-# 1226
+# 1233
 _u8BufferSize = requestDataLen + 1;
 
 
@@ -3894,10 +3900,10 @@ int8_t ModbusProcess_FC43()
 {
 uint8_t devIdCode = _au8Buffer[ 3 ];
 
-# 1260
+# 1267
 uint8_t objId = _au8Buffer[ 4 ];
 
-# 1271
+# 1278
 _au8Buffer[ 5 ] = 0x00;
 _au8Buffer[ 6 ] = 0x00;
 
@@ -3969,7 +3975,7 @@ switch(_lastCommand)
 {
 case 0x7F:
 
-# 1341
+# 1348
 #asm
                 RESET;
 #endasm 
@@ -3993,7 +3999,7 @@ newTime.tm_sec = _au8Buffer[COM_ADD2_LO];
 time_t newRawTime = mktime(&newTime);
 SetTime(&newRawTime);
 
-((_deviceStatus) |= ((unsigned short)1 << (0x00)));
+((_deviceStatus) |= ((unsigned short)1 << (0)));
 ModbusSetExceptionStatusBit(0, 1);
 break;
 }

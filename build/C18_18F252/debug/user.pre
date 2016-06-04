@@ -3109,7 +3109,7 @@ bool getHourMin(uint8_t *hour, uint8_t *min);
 bool getTotalMinutes(uint16_t *totalMinutes);
 void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
 
-# 104 "ModbusRtu.h"
+# 103 "ModbusRtu.h"
 enum MB_FC
 {
 MB_FC_NONE = 0,

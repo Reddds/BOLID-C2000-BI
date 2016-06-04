@@ -100,6 +100,8 @@ bool IsBusserOn = false;
 #define INPUT_REG_SOUND_CNT_EVENT_COUNT 6
 #define INPUT_REG_PL_LEN_POS_IN_EE 7
 
+#define INPUT_REG_TOTAL_MINUTES 8
+
 
 //#define HOLDING_REG_SETLED 0 // Set led stste HI - Led number [1..60] Lo - state 
 //#define HOLDING_BUZZER_LOUD_QUIET_DURATION 1 // Day|Evening buzzer duration
@@ -187,17 +189,17 @@ uint8_t eventAcceptTime;
 //uint8_t morningTimeHour;
 
 uint8_t eventCount;
-uint8_t currentEvent = 0;
-uint16_t currentEventMinetesFromMidnight = 0; // Minutes when event signal
-uint8_t currentEventType = 0; // Alarm(1) Info(0)
+//uint8_t currentEvent = 0;
+//uint16_t currentEventMinetesFromMidnight = 0; // Minutes when event signal
+//uint8_t currentEventType = 0; // Alarm(1) Info(0)
         
 
 //uint8_t curEventHour;
 //uint8_t curEventMinute;
-uint16_t curEventTotalMinutes;
+//uint16_t curEventTotalMinutes;
 //uint8_t curEventType; // 0 - info 1 - alarm
-uint8_t currentAlarmedEventNum = 0xff;
-uint8_t curEventNum = 0xff;
+//!!!uint8_t currentAlarmedEventNum = 0xff;
+//uint8_t curEventNum = 0xff;
 
 bool _isSoundPlaying = false;
 uint8_t _soundCount = 0;
@@ -210,7 +212,7 @@ uint16_t _nextEventPlayDuration = 0;
 //EVENT_PROCESS_STATES_t curEventProcessState = CUR_EVENT_NOT_PROCESSED;
 //uint8_t oldEventEndAlarmHour = HOUR_NOT_SET;
 //uint8_t oldEventEndAlarmMinute = 0;
-time_t eventResetSecond = 0; // Absolute second? before? to reset event
+//time_t eventResetSecond = 0; // Absolute second? before? to reset event
 
 // diagnose and test
 time_t soundTestEnd = 0; // Absolute second? before? to reset event
@@ -248,6 +250,26 @@ uint8_t ledStatuses[LED_STATUSES_LEN];
 //uint16_t blinkPeriod;
 // 1 - blink
 uint8_t ledBlink[LED_STATUSES_LEN];
+
+
+typedef struct 
+{
+    bool IsFire; // LED blink? waiting user
+    uint8_t FiredEventNum; // 
+    uint16_t NextEventTotalMinutes;
+    time_t ResetSecond;// total second when event auto reset 
+    uint8_t NextEventNum; // 
+}DiaryEvent;
+
+DiaryEvent _currenDiaryEvent;
+
+typedef struct 
+{
+    bool IsFire; // LED blink? waiting user
+    uint8_t LedNum; //
+    time_t ResetSecond;// total second when event auto reset 
+}EventFromCommand;
+EventFromCommand _eventFromCommand;
 
 void io_poll();
 void SetTimeFromRegs(uint16_t *hourMin, uint16_t *daySec, uint16_t *yearMonth);
@@ -295,6 +317,8 @@ void SwitchOffAllLeds()
         ledBlink[i] = 0;
     }
 }
+
+
 // 5 columns 0-5
 // 12 rows 0 - 11
 // ledNum [1..60]
@@ -337,7 +361,13 @@ void LightLed(uint8_t ledNum, LED_STATES ledState, bool blink)
     
 }
 
-
+void SwitchOffAllDiaryLeds()
+{
+    for(uint8_t i = MAX_LED_NUM - _maxDiaryEvents + 1; i <= MAX_LED_NUM; i++)
+    {
+        LightLed(i, LED_OFF, false);
+    }
+}
 // light on|off status diodes
 void LightStatusLed(uint8_t row, bool on, bool blink)
 {
@@ -453,18 +483,24 @@ void InitFromEeprom()
     _MODBUSInputRegs[INPUT_REG_SOUND_CNT_EVENT_COUNT] = word(_soundCount, eventCount);
     
 
+    _eventFromCommand.IsFire = false;
     
-    curEventNum = 0xff;
-    curEventTotalMinutes = 0;
-    currentAlarmedEventNum = 0xff;
+    //curEventNum = 0xff;
+    _currenDiaryEvent.NextEventTotalMinutes = 0;
+    _currenDiaryEvent.IsFire = false;
+    _currenDiaryEvent.FiredEventNum = 0xff;
+    _currenDiaryEvent.NextEventNum = 0xff;
+    //currentAlarmedEventNum = 0xff;
     LoadNextEvent();
+    
+    
     
     //_MODBUSInputRegs[INPUT_REG_SOUND_LEN_IS_PLAYING] = word(_soundCount, _isSoundPlaying);
 }
 
 uint8_t GetCurrentEventDiodeNum()
 {
-    return MAX_LED_NUM - _maxDiaryEvents + currentAlarmedEventNum + 1;
+    return MAX_LED_NUM - _maxDiaryEvents + _currenDiaryEvent.FiredEventNum + 1;
 }
 
 #define LightBlock(stat, reg)   \
@@ -637,15 +673,26 @@ bool PlaySound(uint8_t soundId, uint16_t playDuration)
 // state: true - user pressed reset button
 void ResetEvent(bool state)
 {
-    if(currentAlarmedEventNum == 0xff)
+    if(!_currenDiaryEvent.IsFire)
         return;
     LightLed(GetCurrentEventDiodeNum(), state ? LED_GREEN : LED_RED, false);  
-    currentAlarmedEventNum = 0xff;
-    eventResetSecond = 0;
+    _currenDiaryEvent.IsFire = false;
+    _currenDiaryEvent.FiredEventNum = 0xff;
+    _currenDiaryEvent.ResetSecond = 0;
     StopPlaying();
-    _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
+    _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(_currenDiaryEvent.FiredEventNum, _currenDiaryEvent.NextEventNum);
     
     //curEventProcessState = CUR_EVENT_NOT_PROCESSED;
+}
+
+void ResetEventFromCommand(bool state)
+{
+    if(!_eventFromCommand.IsFire)
+        return;
+    LightLed(_eventFromCommand.LedNum, state ? LED_GREEN : LED_RED, false); 
+    _eventFromCommand.IsFire = false;
+    _eventFromCommand.ResetSecond = 0;
+    StopPlaying();
 }
 
 void LoadNextEvent()
@@ -658,17 +705,17 @@ void LoadNextEvent()
     
     do
     {
-        if(curEventNum == 0xff)
-            curEventNum = 0;
+        if(_currenDiaryEvent.NextEventNum == 0xff)
+            _currenDiaryEvent.NextEventNum = 0;
         else 
-            curEventNum++;    
-        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
-        if(curEventNum >= eventCount)
+            _currenDiaryEvent.NextEventNum++;    
+        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(_currenDiaryEvent.FiredEventNum, _currenDiaryEvent.NextEventNum);
+        if(_currenDiaryEvent.NextEventNum >= eventCount)
         {
-            curEventNum = 0xff;
-            curEventTotalMinutes = 0;
+            _currenDiaryEvent.NextEventNum = 0xff;
+            _currenDiaryEvent.NextEventTotalMinutes = 0;
             _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = 0;            
-            _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
+            _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(_currenDiaryEvent.FiredEventNum, _currenDiaryEvent.NextEventNum);
             return;
         }
         // HI: 5-7 - alarmDuration, 0-4 bits - hour | LO: 5-7 soundId 0-5 minute
@@ -681,8 +728,8 @@ void LoadNextEvent()
         // 5 - 12 min
         // 6 - 30 min
         // 7 - infinite
-        uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + curEventNum * 2);
-        curEventTotalMinutes = (v1 & 0x1F) * 60;
+        uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + _currenDiaryEvent.NextEventNum * 2);
+        _currenDiaryEvent.NextEventTotalMinutes = (v1 & 0x1F) * 60;
         //curEventType = bitRead(v1, 5);
         _nextEventPlayDuration = (v1 >> 5);
         switch(_nextEventPlayDuration)
@@ -709,19 +756,19 @@ void LoadNextEvent()
                 _nextEventPlayDuration = PLAY_INFINITE;
                 break;
         }
-        uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + curEventNum * 2 + 1);        
-        curEventTotalMinutes += v1 & 0x3F;
+        uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + _currenDiaryEvent.NextEventNum * 2 + 1);        
+        _currenDiaryEvent.NextEventTotalMinutes += v1 & 0x3F;
         _nextEventSoundId = v1 >> 6;
         
-    }while(curEventTotalMinutes <= totalMinutes);
-    _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = curEventTotalMinutes;
+    }while(_currenDiaryEvent.NextEventTotalMinutes <= totalMinutes);
+    _MODBUSInputRegs[INPUT_REG_EVENT_HOUR_MIN] = _currenDiaryEvent.NextEventTotalMinutes;
     
 }
 // Fires every minute
 void ProcessDiary()
 {
     // If no event loaded
-    if(curEventNum == 0xff)
+    if(_currenDiaryEvent.NextEventNum == 0xff)
         return;
     uint16_t totalMinutes;
 //    uint8_t hour, minute;
@@ -729,26 +776,19 @@ void ProcessDiary()
 //        return;
     if(!getTotalMinutes(&totalMinutes))
         return;
-    // If midnight reset all diodes
-    if(totalMinutes == 0)
-    {
-        SwitchOffAllLeds(); //TODO process if event alarmed yet
-        curEventNum = 0xff;
-        LoadNextEvent();
-        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
-    }
     
     
-    if(curEventTotalMinutes == totalMinutes) // Event is equal
+    if(_currenDiaryEvent.NextEventTotalMinutes == totalMinutes) // Event is equal
     {
         // old Event Is Alarmd yet
-        if(currentAlarmedEventNum != 0xff)
+        if(_currenDiaryEvent.IsFire)
         {
             LightLed(GetCurrentEventDiodeNum(), LED_RED, false);  
         }
         
         {
-            currentAlarmedEventNum = curEventNum;
+            _currenDiaryEvent.FiredEventNum = _currenDiaryEvent.NextEventNum;
+            _currenDiaryEvent.IsFire = true;
             //curEventProcessState == CUR_EVENT_ALARMED;
             LightLed(GetCurrentEventDiodeNum(), LED_ORANGE, true);  
             if(_nextEventSoundId != 0)
@@ -763,11 +803,11 @@ void ProcessDiary()
 //            {
 //                LightLed(currentAlarmedEventNum + 1, LED_RED, true);  
 //            }
-            eventResetSecond = *GetTime() + eventAcceptTime;
+            _currenDiaryEvent.ResetSecond = *GetTime() + eventAcceptTime;
             
             LoadNextEvent();
         }
-        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(currentAlarmedEventNum, curEventNum);
+        _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(_currenDiaryEvent.FiredEventNum, _currenDiaryEvent.NextEventNum);
 
     }
 //        
@@ -797,11 +837,7 @@ void main(void)
     
 
     InitFromEeprom();
-    
-
-    
-    
-    
+        
 
     /* TODO <INSERT USER APPLICATION CODE HERE> */
 
@@ -811,11 +847,25 @@ void main(void)
     pwm_init();
     
     
+    
+    bool buttonPressed;
+    unsigned long buttonPressedTime;
+
+    uint8_t buttonState = 1;             // the current reading from the input pin
+    uint8_t lastButtonPinState = 1;   // the previous reading from the input pin
+    
+    							 // the following variables are long's because the time, measured in miliseconds,
+							 // will quickly become a bigger number than can be stored in an int.
+    unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
+    uint8_t debounceDelay = 50;    // the debounce time; increase if the output flickers
+
+    
+    
     //ledStatuses[0] = 0x15;
     //ledStatuses[7] = 0x29;
     //bool rg = false;
 //    unsigned long oldBuzzerOnTime = 0;
-    uint8_t oldMinute = 0xff;
+    uint16_t oldMinute = 0xFFFF;
     //uint16_t lastMinSec = 0; // Secund counter value
     LightStatusLed(LED_STATUS_WORK, true, false);
     LightStatusLed(LED_STATUS_BLOCKING, true, true); // Time not set yet
@@ -829,11 +879,68 @@ void main(void)
             SoundPlayNextStep();
         }
         
-        
-        if(BUTTON_RESET == 0)
+        // read the state of the switch into a local variable:
+        uint8_t buttonPinCurState = BUTTON_RESET;
+        // check to see if you just pressed the button
+        // (i.e. the input went from LOW to HIGH),  and you've waited
+        // long enough since the last press to ignore any noise:
+
+        // If the switch changed, due to noise or pressing:
+        if (buttonPinCurState != lastButtonPinState)
         {
+            // reset the debouncing timer
+            lastDebounceTime = curMs;
+            lastButtonPinState = buttonPinCurState;
+        }
+        else
+        {
+            if ((curMs - lastDebounceTime) > debounceDelay)
+            {
+                // whatever the reading is at, it's been there for longer
+                // than the debounce delay, so take it as the actual current state:
+
+                // if the button state has changed:
+                if (buttonPinCurState != buttonState) 
+                {
+                    buttonState = buttonPinCurState;
+
+                    //Serial.println(kakPinCurState);
+                    // only toggle the LED if the new button state is LOW
+                    if (buttonState == 0) 
+                    {
+                        buttonPressed = true;
+                        
+                        if(_eventFromCommand.IsFire)
+                        {
+                            ResetEventFromCommand(true);
+                        }
+                        // reset alarmed event
+                        else if(_currenDiaryEvent.IsFire)
+                        {
+                            ResetEvent(true);
+                        }
+                        else
+                        {
+                            StopPlaying();
+                        }
+
+                    }
+                    else
+                    {
+                        buttonPressed = false;
+                    }
+                }            
+            }
+        }
+        
+/*        if(BUTTON_RESET == 0)
+        {
+            if(_eventFromCommand.IsFire)
+            {
+                ResetEventFromCommand(true);
+            }
             // reset alarmed event
-            if(currentAlarmedEventNum != 0xff)
+            else if(_currenDiaryEvent.IsFire)
             {
                 ResetEvent(true);
             }
@@ -843,29 +950,44 @@ void main(void)
             }
    
         }
-
+*/
         
         if(curMs - lastMs >= 1000)
         {            
             AddSecond();
             
-            if(currentAlarmedEventNum != 0xff && *GetTime() >= eventResetSecond)
+            if(_eventFromCommand.IsFire && *GetTime() >= _eventFromCommand.ResetSecond)
+            {
+                ResetEventFromCommand(false);
+            }
+            if(_currenDiaryEvent.IsFire && *GetTime() >= _currenDiaryEvent.ResetSecond)
             {
                 ResetEvent(false);
             }
             
             _MODBUSInputRegs[INPUT_REG_SECONDS] = *GetTime();
-            uint8_t hour = 0, minute = 0;
             
-            if(getHourMin(&hour, &minute) && oldMinute != minute)
+            uint16_t totalMinutes;
+            if(getTotalMinutes(&totalMinutes) && (oldMinute != totalMinutes))
             {
+                _MODBUSInputRegs[INPUT_REG_TOTAL_MINUTES] = totalMinutes;
+                uint8_t hour = 0, minute = 0;
+                getHourMin(&hour, &minute);
                 _MODBUSInputRegs[INPUT_REG_CURRENT_HOUR_MIN] = word(hour, minute);
                 
-                oldMinute = minute;
+                // If midnight reset all diodes
+                if(totalMinutes == 0)
+                {
+                    SwitchOffAllDiaryLeds(); //TODO process if event alarmed yet
+                    _currenDiaryEvent.NextEventNum = 0xff;
+                    LoadNextEvent();
+                    _MODBUSInputRegs[INPUT_REG_EVENT_OLD_CUR_NUM] = word(_currenDiaryEvent.FiredEventNum, _currenDiaryEvent.NextEventNum);
+                }
+                oldMinute = totalMinutes;
                 ProcessDiary();
             }
             
-            _MODBUSInputRegs[INPUT_REG_CURRENT_HOUR_MIN_2] = word(hour, minute);
+            //_MODBUSInputRegs[INPUT_REG_CURRENT_HOUR_MIN_2] = word(hour, minute);
             
             lastMs = curMs;
 
@@ -908,13 +1030,13 @@ void SetTimeCommand()
 void CommandSetLed()
 {
     // Data - 7bit - On/Off, 6bit - blink, low 2 bits: Led Color
-    // Additional1: HI - sound Id(if lef off adn soundId != 0xff = stop playing), LO playDuration,sec 0 - once
-    // Additional2: HI - LedNum, 
+    // Additional1: HI - sound Id(if lef off and soundId != 0xff = stop playing), LO playDuration,sec 0 - once
+    // Additional2: HI - LedNum, 1..
     //              LO - BlinkDuration(s) - if > 0 like event user can press reset button
     //              Led Color ignored
     uint8_t commandData = *ModbusGetUserCommandData();
     uint8_t soundId = *ModbusGetUserCommandAdditional1Hi();
-    uint8_t led = commandData & 0x3F;
+    uint8_t led = *ModbusGetUserCommandAdditional2Hi();
     if(led == 0 || led > MAX_LED_NUM - _maxDiaryEvents)
         return;
     uint8_t ledColor = commandData & 0x03;
@@ -925,7 +1047,19 @@ void CommandSetLed()
             StopPlaying();
         return;
     }
-    LightLed(led, ledColor, bitRead(commandData, 6));
+    //_eventFromCommand
+    uint8_t blinkSeconds = *ModbusGetUserCommandAdditional2Lo();
+    if(blinkSeconds == 0)
+    {
+        LightLed(led, ledColor, bitRead(commandData, 6));
+    }
+    else
+    {
+        _eventFromCommand.LedNum = led;
+        _eventFromCommand.IsFire = true;
+        _eventFromCommand.ResetSecond = *GetTime() + blinkSeconds;
+        LightLed(led, LED_ORANGE, bitRead(commandData, 6));
+    }
     PlaySound(soundId, *ModbusGetUserCommandAdditional1Lo());
     ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
 }
@@ -1006,80 +1140,7 @@ void io_poll()
     
     if(*lastFunction == MB_FC_WRITE_REGISTER || *lastFunction == MB_FC_WRITE_MULTIPLE_REGISTERS)
     {
-//        // Command received
-//        if(lastAddress == HOLDING_COMMAND)
-//        {
-//            uint8_t command = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
-//            uint16_t hourMin;
-//            switch(command)
-//            {
-////                case MB_COMMAND_RESET:
-////                    #asm
-////                        RESET; 
-////                    #endasm
-////                    return;
-////                case MB_COMMAND_SET_ADDRESS:
-////                    break;
-////                case MB_COMMAND_SET_TIME:
-////                    SetTimeCommand();
-////                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
-////                    break;
-////                    
-////                    
-//                case MB_COMMAND_CLEAR_ALL_EVENTS:
-//                    eventCount = 0;
-//                    _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, 0);
-//                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
-//                    break;
-////                case MB_COMMAND_ADD_EVENT:
-////                    // HI: 5 bit - alarm(1) | info(0),  0-4 bits - hour | LO: minute
-////                    if(eventCount < MAX_EVENTS)
-////                    {
-////                        uint8_t eventEeAddr = EE_FIRST_EVENT + (eventCount << 1);
-////                        v1 = HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
-////                        _EEREG_EEPROM_WRITE(eventEeAddr, v1);
-////                        v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
-////                        _EEREG_EEPROM_WRITE(eventEeAddr + 1, v1);
-////                        // 2 bit - blink status
-////
-////                        LightLed(eventCount, LED_GREEN, false);
-////
-////                        eventCount++;
-////                        _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, eventCount);
-////
-////                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
-////                    }
-////                    else
-////                        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, false);
-////                    
-////                    break;
-//                case MB_COMMAND_SET_LED:
-//                    // 0 Holding reg - First byte - Led num [1..60]
-//                    // Second byte Value 0 - OFF, 1 - GREEN, 2 - RED 
-//                    v1 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]);
-//                    // 2 bit - blink status
-//                    LightLed(HIGH_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]), v1 & 0x03, bitRead(v1, 2));
-//                    _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA] = 0;
-//                    ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
-//                    break;   
-////                case MB_COMMAND_TEST_SOUND:
-////                    SetBuzzerDuty(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]); //!!!!!
-////                    PR2 = LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]);
-////                    //soundTestEnd = *GetTime() + 2; // 2 sec
-////                    //StartBuzzer;
-////                    break;
-//                case MB_COMMAND_PLAY_SOUND_NUM:                    
-//                    //soundTestEnd = *GetTime() + _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]; 
-//                    PlaySound(LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND]), LOW_BYTE(_MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA]));
-//                    break;       
-//            
-//                case MB_COMMAND_SET_STATUS_LED:  
-//                    CommandSetStatusLed();
-//                    break; 
-//            }
-//            _MODBUSHoldingRegs[HOLDING_COMMAND] = 0;
-//            _MODBUSHoldingRegs[HOLDING_COMMAND_ADDITIONAL_DATA] = 0;
-//        }
+
     }
     
 

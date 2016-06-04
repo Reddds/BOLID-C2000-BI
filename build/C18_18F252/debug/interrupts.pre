@@ -1,5 +1,5 @@
 
-# 1 "user.c"
+# 1 "interrupts.c"
 
 # 26 "C:\Program Files (x86)\Microchip\xc8\v1.37\include\htc.h"
 extern const char __xc8_OPTIM_SPEED;
@@ -3109,185 +3109,197 @@ bool getHourMin(uint8_t *hour, uint8_t *min);
 bool getTotalMinutes(uint16_t *totalMinutes);
 void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
 
-# 104 "ModbusRtu.h"
-enum MB_FC
+# 28 "interrupts.c"
+static volatile unsigned long millisecondsFromStart = 0;
+static volatile uint8_t globalMinutes = 0;
+static volatile uint16_t _totalMinutesFromDayStart = 0;
+static volatile uint8_t _6sCounter = 0;
+static volatile uint8_t globalHours = 0xFF;
+
+# 39
+static volatile uint8_t UartBufferHead;
+static volatile uint8_t UartBufferTail;
+static volatile uint8_t UartBufferLen;
+static volatile uint8_t UartRingBuffer[256u];
+
+void InitUartBuffer()
 {
-MB_FC_NONE = 0,
-MB_FC_READ_COILS = 1,
-MB_FC_READ_DISCRETE_INPUT = 2,
-MB_FC_READ_REGISTERS = 3,
-MB_FC_READ_INPUT_REGISTER = 4,
-MB_FC_WRITE_COIL = 5,
-MB_FC_WRITE_REGISTER = 6,
-MB_FC_READ_EXCEPTION_STATUS = 7,
-MB_FC_WRITE_MULTIPLE_COILS = 15,
-MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
-MB_FC_REPORT_SLAVE_ID = 17,
-MB_FC_WRITE_FILE_RECORD = 21,
-MB_FC_READ_DEVICE_ID = 43,
-
-MB_FC_SYSTEM_COMMAND = 100,
-MB_FC_USER_COMMAND = 101,
-MB_FC_READ_DEVICE_STATUS = 102
-};
-
-
-
-
-void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
-void ModbusBegin(long u32speed);
-
-void ModbusSetTimeOut( uint16_t u16timeout);
-uint16_t ModbusGetTimeOut();
-boolean ModbusGetTimeOutState();
-
-
-
-int8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs, const uint8_t inputRegsCount,
-uint16_t *holdingRegs, const uint8_t holdingRegsCount);
-
-uint16_t ModbusGetInCnt();
-uint16_t ModbusGetOutCnt();
-uint16_t ModbusGetErrCnt();
-uint8_t ModbusGetID();
-uint8_t ModbusGetState();
-uint8_t ModbusGetLastError();
-void ModbusSetID( uint8_t u8id );
-void ModbusEnd();
-uint8_t *ModbusGetLastCommand(uint16_t *address, uint16_t *count, uint8_t *command);
-void ModbusSetExceptionStatusBit(uint8_t bitNum, boolean value);
-
-uint8_t *ModbusGetUserCommandId();
-uint8_t *ModbusGetUserCommandData();
-uint16_t ModbusGetUserCommandAdditional1();
-uint8_t *ModbusGetUserCommandAdditional1Hi();
-uint8_t *ModbusGetUserCommandAdditional1Lo();
-uint16_t ModbusGetUserCommandAdditional2();
-uint8_t *ModbusGetUserCommandAdditional2Hi();
-uint8_t *ModbusGetUserCommandAdditional2Lo();
-uint16_t ModbusGetUserCommandAdditional3();
-uint8_t *ModbusGetUserCommandAdditional3Hi();
-uint8_t *ModbusGetUserCommandAdditional3Lo();
-
-# 42 "user.c"
-time_t currentTime = 0;
-
-# 48
-void PortBegin()
-{
-TXSTA = 0;
-TXSTAbits.TXEN = 1;
-TXSTAbits.BRGH = 1;
-
-SPBRG = ( (((10000000L / 9600) / 8) - 1) / 2 );
-RCSTA = 0;
-RCSTAbits.SPEN = 1;
-RCSTAbits.CREN = 1;
-
-TRISCbits.RC5 = 0;
-LATCbits.LATC5 = 0;
-
-
+UartBufferHead = 0;
+UartBufferTail = 0;
+UartBufferLen = 0;
 }
 
 
-void InitApp(void)
+uint8_t PortAvailable()
+{
+return UartBufferLen;
+}
+
+uint8_t PortRead()
+{
+(INTCONbits.GIE = 0);
+if(UartBufferLen > 0)
 {
 
-# 77
-INTCONbits.PEIE = 1;
+uint8_t ret = UartRingBuffer[UartBufferTail];
+UartBufferLen--;
+if(UartBufferTail == 256u - 1)
+UartBufferTail = 0;
+else
+UartBufferTail++;
 (INTCONbits.GIE = 1);
-RCONbits.IPEN = 1;
+return ret;
+}
+(INTCONbits.GIE = 1);
+return 0;
+}
 
 
-
-
-T1CONbits.RD16 = 1;
-T1CONbits.T1SYNC = 0;
-T1CONbits.TMR1CS = 0;
-
-T1CONbits.T1CKPS = 0;
-
-
-
-PIE1bits.TMR1IE = 1;
-IPR1bits.TMR1IP = 1;
-((void)(TMR1H=((0x10000 - 10000000L/4 / 1000)>>8),TMR1L=((0x10000 - 10000000L/4 / 1000)&0xFF)));
-
-
-PIR1bits.TMR1IF = 0;
-
-T1CONbits.TMR1ON = 1;
-
-
-
-T0CONbits.T08BIT = 0;
-T0CONbits.T0CS = 0;
-
-T0CONbits.PSA = 0;
-
-# 117
-T0CONbits.T0PS = 7;
-
-
-
-INTCONbits.TMR0IE = 1;
-INTCON2bits.TMR0IP = 1;
-((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + -1) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + -1) * 6)&0xFF)));
-
-
-INTCONbits.TMR0IF = 0;
-
-# 133
+void PortClearReadBuffer()
+{
+(INTCONbits.GIE = 0);
 InitUartBuffer();
-
-PortBegin();
-PIE1bits.RCIE = 1;
-
-IPR1bits.RCIP = 0;
-
-
-
-for (unsigned char i = 0; i < 15; i++)
-_MODBUSInputRegs[i] = 0;
-
-# 149
-TRISB = 0;
-
-
-LATAbits.LATA0 = 0;
-LATAbits.LATA1 = 0;
-LATAbits.LATA2 = 0;
-LATAbits.LATA3 = 0;
-TRISAbits.RA0 = 0;
-TRISAbits.RA1 = 0;
-TRISAbits.RA2 = 0;
-TRISAbits.RA3 = 0;
-
-TRISCbits.RC3 = 1;
-TRISCbits.RC1 = 1;
-TRISCbits.RC0 = 0;
-
-LATCbits.LATC2 = 0;
-
+(INTCONbits.GIE = 1);
 }
 
-void SetTime(time_t *newTime)
+# 101
+void PortWrite(uint8_t *buf, uint8_t buflen)
 {
-currentTime = *newTime;
-}
-
-# 180
-void AddSecond()
+LATCbits.LATC5 = 1;
+_delay((unsigned long)((10)*(10000000L/4000000.0)));
+for(uint8_t i = 0; i < buflen; i++)
 {
-currentTime++;
-
-# 195
+while(!TRMT);
+TXREG = buf[i];
+}
+while(!TRMT);
+LATCbits.LATC5 = 0;
 }
 
-# 207
-time_t *GetTime()
+# 122
+void interrupt high_isr(void)
+
+# 131
 {
-return &currentTime;
+
+# 143
+if(PIR1bits.TMR1IF && PIE1bits.TMR1IE)
+{
+PIR1bits.TMR1IF = 0;
+millisecondsFromStart++;
+((void)(TMR1H=((0x10000 - 10000000L/4 / 1000)>>8),TMR1L=((0x10000 - 10000000L/4 / 1000)&0xFF)));
+return;
 }
 
+if(INTCONbits.TMR0IF)
+{
+INTCONbits.TMR0IF = 0;
+_6sCounter++;
+if(_6sCounter == 10)
+{
+_6sCounter = 0;
+globalMinutes++;
+_totalMinutesFromDayStart++;
+if(globalMinutes == 60)
+{
+globalMinutes = 0;
+globalHours++;
+if(globalHours == 24)
+{
+_totalMinutesFromDayStart = 0;
+globalHours = 0;
+}
+}
+}
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + -1) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + -1) * 6)&0xFF)));
+return;
+}
+
+# 179
+}
+
+
+
+void low_priority interrupt low_isr(void)
+
+# 191
+{
+
+# 197
+if (PIR1bits.RCIF && PIE1bits.RCIE)
+{
+
+
+
+
+if(UartBufferLen == 256u)
+{
+while(!RCIF);
+PIR1bits.RCIF = 0;
+return;
+}
+
+while(!RCIF);
+uint8_t c = RCREG;
+
+
+UartRingBuffer[UartBufferHead] = c;
+UartBufferLen++;
+if(UartBufferHead == 256u - 1)
+UartBufferHead = 0;
+else
+UartBufferHead++;
+
+
+PIR1bits.RCIF = 0;
+return;
+}
+
+# 245
+}
+
+unsigned long millis()
+{
+
+(INTCONbits.GIE = 0);
+unsigned long ret = millisecondsFromStart;
+(INTCONbits.GIE = 1);
+return ret;
+}
+
+bool getHourMin(uint8_t *hour, uint8_t *min)
+{
+if(globalHours == 0xFF)
+return 0;
+(INTCONbits.GIE = 0);
+*hour = globalHours;
+*min = globalMinutes;
+(INTCONbits.GIE = 1);
+return 1;
+}
+
+bool getTotalMinutes(uint16_t *totalMinutes)
+{
+if(globalHours == 0xFF)
+return 0;
+(INTCONbits.GIE = 0);
+*totalMinutes = _totalMinutesFromDayStart;
+(INTCONbits.GIE = 1);
+return 1;
+}
+
+void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec)
+{
+T0CONbits.TMR0ON = 0;
+
+globalHours = *newHour;
+globalMinutes = *newMin;
+_totalMinutesFromDayStart = globalHours * 60 + globalMinutes;
+
+uint8_t tmpSec = *sec;
+_6sCounter = tmpSec / 6;
+uint8_t secToNext6Sec = 6 - (tmpSec % 6);
+((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + -1) * secToNext6Sec)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + -1) * secToNext6Sec)&0xFF)));
+
+T0CONbits.TMR0ON = 1;
+}

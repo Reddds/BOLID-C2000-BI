@@ -12,7 +12,8 @@
 #include "user.h"
 #include "interrupts.h"
 
-#define INPUT_TIME_SET 0x00
+#define INPUT_TIME_SET 0
+#define INPUT_NEED_TIME_SET 1
 
 typedef struct
 {
@@ -499,7 +500,6 @@ uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs
         PortClearReadBuffer();
         return 0;
     }
-    
     i8state = ModbusGetRxBuffer();
     PortClearReadBuffer();
     _u8lastError = i8state;
@@ -522,6 +522,11 @@ uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs
     _u32timeOut = millis() + (long) _u16timeOut;
     _u8lastError = 0;
 
+    // Before read exception ststus not change value
+    if(_au8Buffer[ FUNC ] != MB_FC_READ_EXCEPTION_STATUS)
+        ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, false);
+
+    
     // process message
     switch (_au8Buffer[ FUNC ])
     {
@@ -567,6 +572,8 @@ uint8_t ModbusPoll(uint16_t discreteInputs, uint16_t *coils, uint16_t *inputRegs
 void ModbusInit(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin)
 {
     _deviceStatus = 0;
+    if(DEVICE_NEED_TIME_SET)
+        bitSet(_deviceStatus, INPUT_NEED_TIME_SET);
     _u8id = u8id;
     _u8serno = (u8serno > 3) ? 0 : u8serno;
     _u8txenpin = u8txenpin;
@@ -1189,7 +1196,7 @@ int8_t ModbusProcess_FC17()
     _au8Buffer[_u8BufferSize++] = SLAVE_ID_DEVICE_TYPE;
     _au8Buffer[_u8BufferSize++] = SLAVE_ID_DEVICE_SUB_TYPE;
     _au8Buffer[_u8BufferSize++] = SLAVE_ID_DEVICE_REVISION;
-    _au8Buffer[_u8BufferSize++] = SLAVE_ID_DEVICE_TYPE;
+    _au8Buffer[_u8BufferSize++] = SLAVE_ID_DEVICE_NUMBER;
     
     _au8Buffer[_u8BufferSize++] = MODBUS_ON;
     uint8_t u8CopyBufferSize = _u8BufferSize;
