@@ -3086,7 +3086,7 @@ uint16_t _MODBUSCoils = 0;
 uint16_t _MODBUSInputRegs[15];
 uint16_t _MODBUSHoldingRegs[15];
 
-# 79
+# 107
 void InitApp(void);
 
 void SetTime(time_t *newTime);
@@ -3094,7 +3094,7 @@ void SetTime(time_t *newTime);
 void AddSecond();
 time_t *GetTime();
 
-# 104 "ModbusRtu.h"
+# 103 "ModbusRtu.h"
 enum MB_FC
 {
 MB_FC_NONE = 0,
@@ -3108,6 +3108,7 @@ MB_FC_READ_EXCEPTION_STATUS = 7,
 MB_FC_WRITE_MULTIPLE_COILS = 15,
 MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
 MB_FC_REPORT_SLAVE_ID = 17,
+MB_FC_READ_FILE_RECORD = 20,
 MB_FC_WRITE_FILE_RECORD = 21,
 MB_FC_READ_DEVICE_ID = 43,
 
@@ -3119,7 +3120,7 @@ MB_FC_READ_DEVICE_STATUS = 102
 
 
 
-void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
+void Modbus(uint8_t u8serno, uint8_t u8txenpin);
 void ModbusBegin(long u32speed);
 
 void ModbusSetTimeOut( uint16_t u16timeout);
@@ -3169,23 +3170,23 @@ bool getHourMin(uint8_t *hour, uint8_t *min);
 bool getTotalMinutes(uint16_t *totalMinutes);
 void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
 
-# 46 "main.c"
+# 49 "main.c"
 bool IsBusserOn = 0;
 
-# 171
+# 174
 uint16_t modbusState;
 
 uint8_t _eeFirstSoundAddress;
 uint8_t _eeSoundAddressesList;
 uint8_t _maxDiaryEvents;
 
-# 185
+# 188
 uint8_t eventAcceptTime;
 
-# 191
+# 194
 uint8_t eventCount;
 
-# 204
+# 207
 bool _isSoundPlaying = 0;
 uint8_t _soundCount = 0;
 uint8_t _playingSoundSteps = 0;
@@ -3195,7 +3196,7 @@ uint8_t _playingSoundCurPos = 0;
 uint8_t _nextEventSoundId = 0;
 uint16_t _nextEventPlayDuration = 0;
 
-# 218
+# 221
 time_t soundTestEnd = 0;
 
 
@@ -3203,7 +3204,7 @@ time_t soundTestEnd = 0;
 
 uint8_t statusLedState = 0x00;
 
-# 247
+# 250
 uint8_t ledStatuses[16];
 
 
@@ -3278,7 +3279,7 @@ ledBlink[i] = 0;
 }
 }
 
-# 325
+# 328
 void LightLed(uint8_t ledNum, LED_STATES ledState, bool blink)
 {
 if(ledNum < 1 || ledNum > 60)
@@ -3340,10 +3341,10 @@ return;
 void pwm_init(void)
 {
 
-# 395
+# 398
 CCP1CONbits.CCP1M = 0x0f;
 
-# 402
+# 407
 PR2 = 255;
 
 
@@ -3357,7 +3358,7 @@ TRISCbits.RC2 = 0;
 
 }
 
-# 420
+# 425
 void SetBuzzerDuty(uint16_t dc)
 {
 
@@ -3379,12 +3380,8 @@ SwitchOffAllLeds();
 
 eventAcceptTime = ( EEADR = 2, (void)0, RD = 1, EEDATA);
 
-
-
-uint8_t tmpModbusId = ( EEADR = 1, (void)0, RD = 1, EEDATA);
-if(tmpModbusId == 0xff)
-tmpModbusId = 0x7F;
-Modbus(tmpModbusId, 0, 0);
+# 451
+Modbus(0, 0);
 
 
 _maxDiaryEvents = ( EEADR = 3, (void)0, RD = 1, EEDATA);
@@ -3444,7 +3441,7 @@ uint8_t GetCurrentEventDiodeNum()
 return 60 - _maxDiaryEvents + _currenDiaryEvent.FiredEventNum + 1;
 }
 
-# 514
+# 519
 uint8_t currentLedBlock = 0;
 unsigned long diffTime;
 unsigned long oldBlinkOnTime = 0;
@@ -3508,7 +3505,7 @@ currentLedBlock &= 0xFB;
 
 }
 
-# 583
+# 588
 unsigned long _playingEndMs = 0;
 
 
@@ -3546,7 +3543,7 @@ SetBuzzerDuty(duration);
 TRISCbits.TRISC2 = 0; T2CONbits.TMR2ON = 1; IsBusserOn = 1;;
 }
 
-# 639
+# 644
 bool PlaySound(uint8_t soundId, uint16_t playDuration)
 {
 if(soundId >= _soundCount)
@@ -3630,7 +3627,7 @@ _MODBUSInputRegs[2] = (((uint16_t)_currenDiaryEvent.FiredEventNum<<8)|_currenDia
 return;
 }
 
-# 731
+# 736
 uint8_t v1 = ( EEADR = 10 + 1 + _currenDiaryEvent.NextEventNum * 2, (void)0, RD = 1, EEDATA);
 _currenDiaryEvent.NextEventTotalMinutes = (v1 & 0x1F) * 60;
 
@@ -3699,7 +3696,7 @@ if(_nextEventSoundId != 0)
 PlaySound(_nextEventSoundId - 1, _nextEventPlayDuration);
 }
 
-# 806
+# 811
 _currenDiaryEvent.ResetSecond = *GetTime() + eventAcceptTime;
 
 LoadNextEvent();
@@ -3708,7 +3705,7 @@ _MODBUSInputRegs[2] = (((uint16_t)_currenDiaryEvent.FiredEventNum<<8)|_currenDia
 
 }
 
-# 827
+# 832
 }
 
 void main(void)
@@ -3744,7 +3741,7 @@ uint8_t lastButtonPinState = 1;
 unsigned long lastDebounceTime = 0;
 uint8_t debounceDelay = 50;
 
-# 868
+# 873
 uint16_t oldMinute = 0xFFFF;
 
 LightStatusLed(0x07, 1, 0);
@@ -3762,7 +3759,7 @@ SoundPlayNextStep();
 
 uint8_t buttonPinCurState = PORTCbits.RC1;
 
-# 889
+# 894
 if (buttonPinCurState != lastButtonPinState)
 {
 
@@ -3810,7 +3807,7 @@ buttonPressed = 0;
 }
 }
 
-# 955
+# 960
 if(curMs - lastMs >= 1000)
 {
 AddSecond();
@@ -3858,11 +3855,11 @@ io_poll();
 
 }
 
-# 1030
+# 1035
 void CommandSetLed()
 {
 
-# 1037
+# 1042
 uint8_t commandData = *ModbusGetUserCommandData();
 uint8_t soundId = *ModbusGetUserCommandAdditional1Hi();
 uint8_t led = *ModbusGetUserCommandAdditional2Hi();
@@ -3921,7 +3918,10 @@ switch(*ModbusGetUserCommandId())
 {
 case 0x80:
 eventCount = 0;
-do{ while (WR) { continue; } EEADR = (10); EEDATA = (0); (void)0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
+do{ while (WR) { continue; } EEADR = (10); EEDATA = (0); EEPGD = 0; CFGS = 0; CARRY = 0; if (GIE) { CARRY = 1; } GIE = 0; WREN = 1; EECON2 = 0x55; EECON2 = 0xAA; WR = 1; WREN = 0; if (CARRY) { GIE = 1; } } while (0);
+while(WR)
+continue;
+InitFromEeprom();
 ModbusSetExceptionStatusBit(0, 1);
 break;
 case 0x82:

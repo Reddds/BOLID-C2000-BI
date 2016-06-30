@@ -2412,10 +2412,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 "21
 [v __MODBUSHoldingRegs `ui ~T0 @X0 -> 15 `i e ]
 [; ;user.h: 21: uint16_t _MODBUSHoldingRegs[15];
-[; ;user.h: 79: void InitApp(void);
-[; ;user.h: 81: void SetTime(time_t *newTime);
-[; ;user.h: 83: void AddSecond();
-[; ;user.h: 84: time_t *GetTime();
+[; ;user.h: 107: void InitApp(void);
+[; ;user.h: 109: void SetTime(time_t *newTime);
+[; ;user.h: 111: void AddSecond();
+[; ;user.h: 112: time_t *GetTime();
 [; ;interrupts.h: 66: void InitUartBuffer();
 [; ;interrupts.h: 68: uint8_t PortAvailable();
 [; ;interrupts.h: 70: uint8_t PortRead();

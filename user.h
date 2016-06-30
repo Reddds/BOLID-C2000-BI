@@ -74,6 +74,34 @@ uint16_t _MODBUSHoldingRegs[modbusHoldingBufLen];
             _MODBUSInputRegs[INPUT_REG_LAST_COMMAND_STATE] = MODBUS_RESULT_SUCCESS;\
         }
 
+
+
+#define _EEREG_EEPROM_WRITE(addr, value)	\
+do{											\
+	while (WR) { 							\
+		continue; 							\
+	} 										\
+	EEADR = (addr);							\
+	EEDATA = (value);						\
+	EEPGD = 0;                              \
+    CFGS = 0;                               \
+	CARRY = 0;								\
+	if (GIE) {								\
+		CARRY = 1;							\
+	}										\
+	GIE = 0;								\
+	WREN = 1;								\
+	EECON2 = 0x55;							\
+	EECON2 = 0xAA;							\
+	WR = 1;									\
+	WREN = 0;								\
+	if (CARRY) {							\
+		GIE = 1;							\
+	}										\
+} while (0)
+
+#define eeprom_read(a) _EEREG_EEPROM_READ(a)
+#define eeprom_write(a, v) _EEREG_EEPROM_WRITE(a, v)
 //void SetRS485TxPin(bool value);
 
 void InitApp(void);         /* I/O and Peripheral Initialization */

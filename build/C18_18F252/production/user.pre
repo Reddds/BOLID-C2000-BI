@@ -3086,7 +3086,7 @@ uint16_t _MODBUSCoils = 0;
 uint16_t _MODBUSInputRegs[15];
 uint16_t _MODBUSHoldingRegs[15];
 
-# 79
+# 107
 void InitApp(void);
 
 void SetTime(time_t *newTime);
@@ -3109,7 +3109,7 @@ bool getHourMin(uint8_t *hour, uint8_t *min);
 bool getTotalMinutes(uint16_t *totalMinutes);
 void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
 
-# 104 "ModbusRtu.h"
+# 103 "ModbusRtu.h"
 enum MB_FC
 {
 MB_FC_NONE = 0,
@@ -3123,6 +3123,7 @@ MB_FC_READ_EXCEPTION_STATUS = 7,
 MB_FC_WRITE_MULTIPLE_COILS = 15,
 MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
 MB_FC_REPORT_SLAVE_ID = 17,
+MB_FC_READ_FILE_RECORD = 20,
 MB_FC_WRITE_FILE_RECORD = 21,
 MB_FC_READ_DEVICE_ID = 43,
 
@@ -3134,7 +3135,7 @@ MB_FC_READ_DEVICE_STATUS = 102
 
 
 
-void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
+void Modbus(uint8_t u8serno, uint8_t u8txenpin);
 void ModbusBegin(long u32speed);
 
 void ModbusSetTimeOut( uint16_t u16timeout);

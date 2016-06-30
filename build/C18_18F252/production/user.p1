@@ -2605,10 +2605,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 "21
 [v __MODBUSHoldingRegs `ui ~T0 @X0 -> 15 `i e ]
 [; ;user.h: 21: uint16_t _MODBUSHoldingRegs[15];
-[; ;user.h: 79: void InitApp(void);
-[; ;user.h: 81: void SetTime(time_t *newTime);
-[; ;user.h: 83: void AddSecond();
-[; ;user.h: 84: time_t *GetTime();
+[; ;user.h: 107: void InitApp(void);
+[; ;user.h: 109: void SetTime(time_t *newTime);
+[; ;user.h: 111: void AddSecond();
+[; ;user.h: 112: time_t *GetTime();
 [; ;interrupts.h: 66: void InitUartBuffer();
 [; ;interrupts.h: 68: uint8_t PortAvailable();
 [; ;interrupts.h: 70: uint8_t PortRead();
@@ -2619,26 +2619,27 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;interrupts.h: 76: bool getHourMin(uint8_t *hour, uint8_t *min);
 [; ;interrupts.h: 77: bool getTotalMinutes(uint16_t *totalMinutes);
 [; ;interrupts.h: 78: void SetHourMin(uint8_t *newHour, uint8_t *newMin, uint8_t *sec);
-[; ;ModbusRtu.h: 104: enum MB_FC
-[; ;ModbusRtu.h: 105: {
-[; ;ModbusRtu.h: 106: MB_FC_NONE = 0,
-[; ;ModbusRtu.h: 107: MB_FC_READ_COILS = 1,
-[; ;ModbusRtu.h: 108: MB_FC_READ_DISCRETE_INPUT = 2,
-[; ;ModbusRtu.h: 109: MB_FC_READ_REGISTERS = 3,
-[; ;ModbusRtu.h: 110: MB_FC_READ_INPUT_REGISTER = 4,
-[; ;ModbusRtu.h: 111: MB_FC_WRITE_COIL = 5,
-[; ;ModbusRtu.h: 112: MB_FC_WRITE_REGISTER = 6,
-[; ;ModbusRtu.h: 113: MB_FC_READ_EXCEPTION_STATUS = 7,
-[; ;ModbusRtu.h: 114: MB_FC_WRITE_MULTIPLE_COILS = 15,
-[; ;ModbusRtu.h: 115: MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
-[; ;ModbusRtu.h: 116: MB_FC_REPORT_SLAVE_ID = 17,
+[; ;ModbusRtu.h: 103: enum MB_FC
+[; ;ModbusRtu.h: 104: {
+[; ;ModbusRtu.h: 105: MB_FC_NONE = 0,
+[; ;ModbusRtu.h: 106: MB_FC_READ_COILS = 1,
+[; ;ModbusRtu.h: 107: MB_FC_READ_DISCRETE_INPUT = 2,
+[; ;ModbusRtu.h: 108: MB_FC_READ_REGISTERS = 3,
+[; ;ModbusRtu.h: 109: MB_FC_READ_INPUT_REGISTER = 4,
+[; ;ModbusRtu.h: 110: MB_FC_WRITE_COIL = 5,
+[; ;ModbusRtu.h: 111: MB_FC_WRITE_REGISTER = 6,
+[; ;ModbusRtu.h: 112: MB_FC_READ_EXCEPTION_STATUS = 7,
+[; ;ModbusRtu.h: 113: MB_FC_WRITE_MULTIPLE_COILS = 15,
+[; ;ModbusRtu.h: 114: MB_FC_WRITE_MULTIPLE_REGISTERS = 16,
+[; ;ModbusRtu.h: 115: MB_FC_REPORT_SLAVE_ID = 17,
+[; ;ModbusRtu.h: 116: MB_FC_READ_FILE_RECORD = 20,
 [; ;ModbusRtu.h: 117: MB_FC_WRITE_FILE_RECORD = 21,
 [; ;ModbusRtu.h: 118: MB_FC_READ_DEVICE_ID = 43,
 [; ;ModbusRtu.h: 120: MB_FC_SYSTEM_COMMAND = 100,
 [; ;ModbusRtu.h: 121: MB_FC_USER_COMMAND = 101,
 [; ;ModbusRtu.h: 122: MB_FC_READ_DEVICE_STATUS = 102
 [; ;ModbusRtu.h: 123: };
-[; ;ModbusRtu.h: 128: void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
+[; ;ModbusRtu.h: 128: void Modbus(uint8_t u8serno, uint8_t u8txenpin);
 [; ;ModbusRtu.h: 129: void ModbusBegin(long u32speed);
 [; ;ModbusRtu.h: 131: void ModbusSetTimeOut( uint16_t u16timeout);
 [; ;ModbusRtu.h: 132: uint16_t ModbusGetTimeOut();

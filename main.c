@@ -3,7 +3,10 @@
 /******************************************************************************/
 
 #if defined(__XC)
+
     #include <xc.h>        /* XC8 General Include File */
+    //#include <plib.h>
+    //#include <EEP.h>
 #elif defined(HI_TECH_C)
     #include <htc.h>       /* HiTech General Include File */
 #elif defined(__18CXX)
@@ -133,7 +136,7 @@ bool IsBusserOn = false;
 
 
 
-#define MB_COMMAND_TEST_SOUND 0x90 // Play sound 2 seconds LO: Period, Additional: duration (10 bit))
+//#define MB_COMMAND_TEST_SOUND 0x90 // Play sound 2 seconds LO: Period, Additional: duration (10 bit))
 #define MB_COMMAND_PLAY_SOUND_NUM 0x91 // Data - sound id, additional data - s
 
 #define D7CLC_PIN RC1
@@ -398,7 +401,9 @@ void pwm_init(void)
     //Period = 4 * (1/SYS_FREQ) * 16 * (scaling value + 1)
     //PWM period=[(PR2)+1]*4*Tosc*(TMR2 preScalevalue)
     // 0x90 3229 ??
-    // [144 + 1] * 4 * 1/10 000 000 * 16 = 0,000928 = 1/1077  1/3229
+    // [144 + 1] * 4/10 000 000 * 16 = 0,000928 = 1/1077  1/3229
+    // 
+    // 
     PR2 = 255;
 
     // Set the prescaler to 16
@@ -436,17 +441,17 @@ void InitFromEeprom()
 {
     SwitchOffAllLeds();
 
-    eventAcceptTime         = _EEREG_EEPROM_READ(EE_EVENT_ACCEPT_TIME);
+    eventAcceptTime         = eeprom_read(EE_EVENT_ACCEPT_TIME);
 //    blinkDuration           = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_DURATION)) << 6;
 //    blinkPeriod             = ((uint16_t)_EEREG_EEPROM_READ(EE_BLINK_PERIOD)) << 6;
     
-    uint8_t tmpModbusId = _EEREG_EEPROM_READ(EE_MODBUS_ID);
-    if(tmpModbusId == 0xff)
-        tmpModbusId = DEFAULT_MODBUS_ID;
-    Modbus(tmpModbusId, 0, 0);
+//    uint8_t tmpModbusId = _EEREG_EEPROM_READ(EE_MODBUS_ID);
+//    if(tmpModbusId == 0xff)
+//        tmpModbusId = DEFAULT_MODBUS_ID;
+    Modbus(0, 0);
    
     
-    _maxDiaryEvents = _EEREG_EEPROM_READ(EE_MAX_EVENTS);
+    _maxDiaryEvents = eeprom_read(EE_MAX_EVENTS);
     if(_maxDiaryEvents == 0xff)
         _maxDiaryEvents = 0;
     if(_maxDiaryEvents > MAX_LED_NUM)
@@ -454,7 +459,7 @@ void InitFromEeprom()
         ShowFailure(2);
         return;
     }
-    eventCount = _EEREG_EEPROM_READ(EE_EVENT_COUNT);
+    eventCount = eeprom_read(EE_EVENT_COUNT);
     if(eventCount == 0xff)
         eventCount = 0;
     if(eventCount > _maxDiaryEvents)
@@ -467,7 +472,7 @@ void InitFromEeprom()
     
     // First 3 sounds - are for diary
     uint8_t eeSoundCountAddress = EE_FIRST_EVENT + eventCount * 2;    
-    _soundCount = _EEREG_EEPROM_READ(eeSoundCountAddress);
+    _soundCount = eeprom_read(eeSoundCountAddress);
     if(_soundCount == 0xFF)
         _soundCount = 0;
     else
@@ -602,11 +607,11 @@ void SoundPlayNextStep()
             return;
         }
     }
-    uint16_t stepDuty = _EEREG_EEPROM_READ(_playingSoundStartPosInEe + _playingSoundCurPos * 3);
+    uint16_t stepDuty = eeprom_read(_playingSoundStartPosInEe + _playingSoundCurPos * 3);
     stepDuty <<= 6; // * 64
     _playingEndMs = millis() + stepDuty;
-    PR2 = _EEREG_EEPROM_READ(_playingSoundStartPosInEe + _playingSoundCurPos * 3 + 1);
-    uint8_t duration = _EEREG_EEPROM_READ(_playingSoundStartPosInEe + _playingSoundCurPos * 3 + 2);
+    PR2 = eeprom_read(_playingSoundStartPosInEe + _playingSoundCurPos * 3 + 1);
+    uint8_t duration = eeprom_read(_playingSoundStartPosInEe + _playingSoundCurPos * 3 + 2);
     _playingSoundCurPos++;        
     if(duration == 0 || PR2 == 0)
     {
@@ -648,11 +653,11 @@ bool PlaySound(uint8_t soundId, uint16_t playDuration)
     else 
         soundTestEnd = *GetTime() + playDuration;
     
-    uint8_t soundAddr = _EEREG_EEPROM_READ(_eeSoundAddressesList + soundId);
+    uint8_t soundAddr = eeprom_read(_eeSoundAddressesList + soundId);
     if(_eeFirstSoundAddress + soundAddr >= _EEPROMSIZE)
         return false;
     
-    _playingSoundSteps = _EEREG_EEPROM_READ(_eeFirstSoundAddress + soundAddr); // * 3 bytes
+    _playingSoundSteps = eeprom_read(_eeFirstSoundAddress + soundAddr); // * 3 bytes
     
     _playingSoundStartPosInEe = _eeFirstSoundAddress + soundAddr + 1;
     _MODBUSInputRegs[INPUT_REG_PL_LEN_POS_IN_EE] = word(_playingSoundSteps, _playingSoundStartPosInEe);
@@ -728,7 +733,7 @@ void LoadNextEvent()
         // 5 - 12 min
         // 6 - 30 min
         // 7 - infinite
-        uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + _currenDiaryEvent.NextEventNum * 2);
+        uint8_t v1 = eeprom_read(EE_FIRST_EVENT + _currenDiaryEvent.NextEventNum * 2);
         _currenDiaryEvent.NextEventTotalMinutes = (v1 & 0x1F) * 60;
         //curEventType = bitRead(v1, 5);
         _nextEventPlayDuration = (v1 >> 5);
@@ -756,7 +761,7 @@ void LoadNextEvent()
                 _nextEventPlayDuration = PLAY_INFINITE;
                 break;
         }
-        uint8_t v1 = _EEREG_EEPROM_READ(EE_FIRST_EVENT + _currenDiaryEvent.NextEventNum * 2 + 1);        
+        uint8_t v1 = eeprom_read(EE_FIRST_EVENT + _currenDiaryEvent.NextEventNum * 2 + 1);        
         _currenDiaryEvent.NextEventTotalMinutes += v1 & 0x3F;
         _nextEventSoundId = v1 >> 6;
         
@@ -1092,7 +1097,10 @@ void ProcessUserCommands()
     {
         case MB_COMMAND_CLEAR_ALL_EVENTS:
             eventCount = 0;
-            _EEREG_EEPROM_WRITE(EE_EVENT_COUNT, 0);
+            eeprom_write(EE_EVENT_COUNT, 0);
+            while(WR)
+                continue;
+            InitFromEeprom();
             ModbusSetExceptionStatusBit(MB_EXCEPTION_LAST_COMMAND_STATE, true);
             break;
         case MB_COMMAND_SET_LED:

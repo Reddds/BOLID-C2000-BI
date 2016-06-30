@@ -84,7 +84,6 @@
 //#define HOLDING_COMMAND 0 // HI - command Lo - data
 //#define HOLDING_COMMAND_ADDITIONAL_DATA 1
 
-#define EE_MODBUS_ID 1
 
 #define MB_COMMAND_RESET 0x7F
 #define MB_COMMAND_SET_ADDRESS 0x01
@@ -114,6 +113,7 @@ enum MB_FC
     MB_FC_WRITE_MULTIPLE_COILS = 15,        /*!< FCT=15 -> write multiple coils or outputs */
     MB_FC_WRITE_MULTIPLE_REGISTERS = 16,    /*!< FCT=16 -> write multiple registers */
     MB_FC_REPORT_SLAVE_ID = 17,             /*!< FCT=17 -> Report Slave ID */
+    MB_FC_READ_FILE_RECORD = 20,
     MB_FC_WRITE_FILE_RECORD = 21,           // (0x15) Write File Record
     MB_FC_READ_DEVICE_ID = 43,               //43 / 14 (0x2B / 0x0E) Read Device Identification
     
@@ -125,7 +125,7 @@ enum MB_FC
 
 //  Modbus();
 //  Modbus(uint8_t u8id, uint8_t u8serno);
-  void Modbus(uint8_t u8id, uint8_t u8serno, uint8_t u8txenpin);
+  void Modbus(uint8_t u8serno, uint8_t u8txenpin);
   void ModbusBegin(long u32speed);
   //void ModbusBegin();
   void ModbusSetTimeOut( uint16_t u16timeout); //!<write communication watch-dog timer

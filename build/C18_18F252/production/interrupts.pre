@@ -3086,7 +3086,7 @@ uint16_t _MODBUSCoils = 0;
 uint16_t _MODBUSInputRegs[15];
 uint16_t _MODBUSHoldingRegs[15];
 
-# 79
+# 107
 void InitApp(void);
 
 void SetTime(time_t *newTime);
