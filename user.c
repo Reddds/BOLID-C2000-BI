@@ -73,6 +73,9 @@ void InitApp(void)
 
     /* Configure the IPEN bit (1=on) in RCON to turn on/off int priorities */
 
+    BOR = 1;
+    POR = 1;
+    
     /* ????????? ?????????? */
     INTCONbits.PEIE = 1; // Peripheral Interrupt Enable
     ei(); // Global Interrupt Enable

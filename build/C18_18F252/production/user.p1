@@ -112,6 +112,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [n S37 . . . . . . . . . . ]
 "783
 [v _LATCbits `VS37 ~T0 @X0 0 e@3979 ]
+"5047
+[v _BOR `Vb ~T0 @X0 0 e@32384 ]
+"5419
+[v _POR `Vb ~T0 @X0 0 e@32385 ]
 "4565
 [s S239 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
 [n S239 . RBIF INT0IF TMR0IF RBIE INT0IE TMR0IE PEIE_GIEL GIE_GIEH ]
@@ -2720,184 +2724,190 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;user.c: 67: {
 [e :U _InitApp ]
 [f ]
-[; ;user.c: 77: INTCONbits.PEIE = 1;
+[; ;user.c: 76: BOR = 1;
+"76
+[e = _BOR -> -> 1 `i `b ]
+[; ;user.c: 77: POR = 1;
 "77
+[e = _POR -> -> 1 `i `b ]
+[; ;user.c: 80: INTCONbits.PEIE = 1;
+"80
 [e = . . _INTCONbits 1 6 -> -> 1 `i `uc ]
-[; ;user.c: 78: (INTCONbits.GIE = 1);
-"78
+[; ;user.c: 81: (INTCONbits.GIE = 1);
+"81
 [e = . . _INTCONbits 1 7 -> -> 1 `i `uc ]
-[; ;user.c: 79: RCONbits.IPEN = 1;
-"79
+[; ;user.c: 82: RCONbits.IPEN = 1;
+"82
 [e = . . _RCONbits 5 6 -> -> 1 `i `uc ]
-[; ;user.c: 84: T1CONbits.RD16 = 1;
-"84
+[; ;user.c: 87: T1CONbits.RD16 = 1;
+"87
 [e = . . _T1CONbits 1 6 -> -> 1 `i `uc ]
-[; ;user.c: 85: T1CONbits.T1SYNC = 0;
-"85
-[e = . . _T1CONbits 2 1 -> -> 0 `i `uc ]
-[; ;user.c: 86: T1CONbits.TMR1CS = 0;
-"86
-[e = . . _T1CONbits 1 1 -> -> 0 `i `uc ]
-[; ;user.c: 88: T1CONbits.T1CKPS = 0;
+[; ;user.c: 88: T1CONbits.T1SYNC = 0;
 "88
+[e = . . _T1CONbits 2 1 -> -> 0 `i `uc ]
+[; ;user.c: 89: T1CONbits.TMR1CS = 0;
+"89
+[e = . . _T1CONbits 1 1 -> -> 0 `i `uc ]
+[; ;user.c: 91: T1CONbits.T1CKPS = 0;
+"91
 [e = . . _T1CONbits 1 4 -> -> 0 `i `uc ]
-[; ;user.c: 92: PIE1bits.TMR1IE = 1;
-"92
+[; ;user.c: 95: PIE1bits.TMR1IE = 1;
+"95
 [e = . . _PIE1bits 0 0 -> -> 1 `i `uc ]
-[; ;user.c: 93: IPR1bits.TMR1IP = 1;
-"93
+[; ;user.c: 96: IPR1bits.TMR1IP = 1;
+"96
 [e = . . _IPR1bits 0 0 -> -> 1 `i `uc ]
-[; ;user.c: 94: ((void)(TMR1H=((0x10000 - 10000000L/4 / 1000)>>8),TMR1L=((0x10000 - 10000000L/4 / 1000)&0xFF)));
-"94
-[e ; = _TMR1H -> >> - -> 65536 `l / / -> 10000000 `l -> -> 4 `i `l -> -> 1000 `i `l -> 8 `i `uc = _TMR1L -> & - -> 65536 `l / / -> 10000000 `l -> -> 4 `i `l -> -> 1000 `i `l -> -> 255 `i `l `uc ]
-[; ;user.c: 97: PIR1bits.TMR1IF = 0;
+[; ;user.c: 97: ((void)(TMR1H=((0x10000 - 10000000L/4 / 1000)>>8),TMR1L=((0x10000 - 10000000L/4 / 1000)&0xFF)));
 "97
+[e ; = _TMR1H -> >> - -> 65536 `l / / -> 10000000 `l -> -> 4 `i `l -> -> 1000 `i `l -> 8 `i `uc = _TMR1L -> & - -> 65536 `l / / -> 10000000 `l -> -> 4 `i `l -> -> 1000 `i `l -> -> 255 `i `l `uc ]
+[; ;user.c: 100: PIR1bits.TMR1IF = 0;
+"100
 [e = . . _PIR1bits 0 0 -> -> 0 `i `uc ]
-[; ;user.c: 99: T1CONbits.TMR1ON = 1;
-"99
+[; ;user.c: 102: T1CONbits.TMR1ON = 1;
+"102
 [e = . . _T1CONbits 1 0 -> -> 1 `i `uc ]
-[; ;user.c: 103: T0CONbits.T08BIT = 0;
-"103
-[e = . . _T0CONbits 0 4 -> -> 0 `i `uc ]
-[; ;user.c: 104: T0CONbits.T0CS = 0;
-"104
-[e = . . _T0CONbits 0 3 -> -> 0 `i `uc ]
-[; ;user.c: 106: T0CONbits.PSA = 0;
+[; ;user.c: 106: T0CONbits.T08BIT = 0;
 "106
+[e = . . _T0CONbits 0 4 -> -> 0 `i `uc ]
+[; ;user.c: 107: T0CONbits.T0CS = 0;
+"107
+[e = . . _T0CONbits 0 3 -> -> 0 `i `uc ]
+[; ;user.c: 109: T0CONbits.PSA = 0;
+"109
 [e = . . _T0CONbits 0 1 -> -> 0 `i `uc ]
-[; ;user.c: 117: T0CONbits.T0PS = 7;
-"117
+[; ;user.c: 120: T0CONbits.T0PS = 7;
+"120
 [e = . . _T0CONbits 0 0 -> -> 7 `i `uc ]
-[; ;user.c: 121: INTCONbits.TMR0IE = 1;
-"121
+[; ;user.c: 124: INTCONbits.TMR0IE = 1;
+"124
 [e = . . _INTCONbits 0 5 -> -> 1 `i `uc ]
-[; ;user.c: 122: INTCON2bits.TMR0IP = 1;
-"122
+[; ;user.c: 125: INTCON2bits.TMR0IP = 1;
+"125
 [e = . . _INTCON2bits 1 2 -> -> 1 `i `uc ]
-[; ;user.c: 123: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + -1) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + -1) * 6)&0xFF)));
-"123
-[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 1 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 1 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
-[; ;user.c: 126: INTCONbits.TMR0IF = 0;
+[; ;user.c: 126: ((void)(TMR0H=((0x10000 - (10000000L/4 / 256 + -1) * 6)>>8),TMR0L=((0x10000 - (10000000L/4 / 256 + -1) * 6)&0xFF)));
 "126
+[e ; = _TMR0H -> >> - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 1 `i `l -> -> 6 `i `l -> 8 `i `uc = _TMR0L -> & - -> 65536 `l * + / / -> 10000000 `l -> -> 4 `i `l -> -> 256 `i `l -> -U -> 1 `i `l -> -> 6 `i `l -> -> 255 `i `l `uc ]
+[; ;user.c: 129: INTCONbits.TMR0IF = 0;
+"129
 [e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]
-[; ;user.c: 133: InitUartBuffer();
-"133
-[e ( _InitUartBuffer ..  ]
-[; ;user.c: 135: PortBegin();
-"135
-[e ( _PortBegin ..  ]
-[; ;user.c: 136: PIE1bits.RCIE = 1;
+[; ;user.c: 136: InitUartBuffer();
 "136
-[e = . . _PIE1bits 0 5 -> -> 1 `i `uc ]
-[; ;user.c: 138: IPR1bits.RCIP = 0;
+[e ( _InitUartBuffer ..  ]
+[; ;user.c: 138: PortBegin();
 "138
+[e ( _PortBegin ..  ]
+[; ;user.c: 139: PIE1bits.RCIE = 1;
+"139
+[e = . . _PIE1bits 0 5 -> -> 1 `i `uc ]
+[; ;user.c: 141: IPR1bits.RCIP = 0;
+"141
 [e = . . _IPR1bits 0 5 -> -> 0 `i `uc ]
-[; ;user.c: 142: for (unsigned char i = 0; i < 15; i++)
-"142
+[; ;user.c: 145: for (unsigned char i = 0; i < 15; i++)
+"145
 {
 [v _i `uc ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `uc ]
 [e $ < -> _i `i -> 15 `i 253  ]
 [e $U 254  ]
-"143
+"146
 [e :U 253 ]
-[; ;user.c: 143: _MODBUSInputRegs[i] = 0;
+[; ;user.c: 146: _MODBUSInputRegs[i] = 0;
 [e = *U + &U __MODBUSInputRegs * -> _i `ux -> -> # *U &U __MODBUSInputRegs `ui `ux -> -> 0 `i `ui ]
-"142
+"145
 [e ++ _i -> -> 1 `i `uc ]
 [e $ < -> _i `i -> 15 `i 253  ]
 [e :U 254 ]
-"143
+"146
 }
-[; ;user.c: 149: TRISB = 0;
-"149
-[e = _TRISB -> -> 0 `i `uc ]
-[; ;user.c: 152: LATAbits.LATA0 = 0;
+[; ;user.c: 152: TRISB = 0;
 "152
-[e = . . _LATAbits 0 0 -> -> 0 `i `uc ]
-[; ;user.c: 153: LATAbits.LATA1 = 0;
-"153
-[e = . . _LATAbits 0 1 -> -> 0 `i `uc ]
-[; ;user.c: 154: LATAbits.LATA2 = 0;
-"154
-[e = . . _LATAbits 0 2 -> -> 0 `i `uc ]
-[; ;user.c: 155: LATAbits.LATA3 = 0;
+[e = _TRISB -> -> 0 `i `uc ]
+[; ;user.c: 155: LATAbits.LATA0 = 0;
 "155
-[e = . . _LATAbits 0 3 -> -> 0 `i `uc ]
-[; ;user.c: 156: TRISAbits.RA0 = 0;
+[e = . . _LATAbits 0 0 -> -> 0 `i `uc ]
+[; ;user.c: 156: LATAbits.LATA1 = 0;
 "156
-[e = . . _TRISAbits 1 0 -> -> 0 `i `uc ]
-[; ;user.c: 157: TRISAbits.RA1 = 0;
+[e = . . _LATAbits 0 1 -> -> 0 `i `uc ]
+[; ;user.c: 157: LATAbits.LATA2 = 0;
 "157
-[e = . . _TRISAbits 1 1 -> -> 0 `i `uc ]
-[; ;user.c: 158: TRISAbits.RA2 = 0;
+[e = . . _LATAbits 0 2 -> -> 0 `i `uc ]
+[; ;user.c: 158: LATAbits.LATA3 = 0;
 "158
-[e = . . _TRISAbits 1 2 -> -> 0 `i `uc ]
-[; ;user.c: 159: TRISAbits.RA3 = 0;
+[e = . . _LATAbits 0 3 -> -> 0 `i `uc ]
+[; ;user.c: 159: TRISAbits.RA0 = 0;
 "159
-[e = . . _TRISAbits 1 3 -> -> 0 `i `uc ]
-[; ;user.c: 161: TRISCbits.RC3 = 1;
+[e = . . _TRISAbits 1 0 -> -> 0 `i `uc ]
+[; ;user.c: 160: TRISAbits.RA1 = 0;
+"160
+[e = . . _TRISAbits 1 1 -> -> 0 `i `uc ]
+[; ;user.c: 161: TRISAbits.RA2 = 0;
 "161
-[e = . . _TRISCbits 1 3 -> -> 1 `i `uc ]
-[; ;user.c: 162: TRISCbits.RC1 = 1;
+[e = . . _TRISAbits 1 2 -> -> 0 `i `uc ]
+[; ;user.c: 162: TRISAbits.RA3 = 0;
 "162
-[e = . . _TRISCbits 1 1 -> -> 1 `i `uc ]
-[; ;user.c: 163: TRISCbits.RC0 = 0;
-"163
-[e = . . _TRISCbits 1 0 -> -> 0 `i `uc ]
-[; ;user.c: 165: LATCbits.LATC2 = 0;
+[e = . . _TRISAbits 1 3 -> -> 0 `i `uc ]
+[; ;user.c: 164: TRISCbits.RC3 = 1;
+"164
+[e = . . _TRISCbits 1 3 -> -> 1 `i `uc ]
+[; ;user.c: 165: TRISCbits.RC1 = 1;
 "165
+[e = . . _TRISCbits 1 1 -> -> 1 `i `uc ]
+[; ;user.c: 166: TRISCbits.RC0 = 0;
+"166
+[e = . . _TRISCbits 1 0 -> -> 0 `i `uc ]
+[; ;user.c: 168: LATCbits.LATC2 = 0;
+"168
 [e = . . _LATCbits 0 2 -> -> 0 `i `uc ]
-[; ;user.c: 167: }
-"167
+[; ;user.c: 170: }
+"170
 [e :UE 252 ]
 }
-"169
-[v _SetTime `(v ~T0 @X0 1 ef1`*l ]
-"170
-{
-[; ;user.c: 169: void SetTime(time_t *newTime)
-[; ;user.c: 170: {
-[e :U _SetTime ]
-"169
-[v _newTime `*l ~T0 @X0 1 r1 ]
-"170
-[f ]
-[; ;user.c: 171: currentTime = *newTime;
-"171
-[e = _currentTime *U _newTime ]
-[; ;user.c: 172: }
 "172
+[v _SetTime `(v ~T0 @X0 1 ef1`*l ]
+"173
+{
+[; ;user.c: 172: void SetTime(time_t *newTime)
+[; ;user.c: 173: {
+[e :U _SetTime ]
+"172
+[v _newTime `*l ~T0 @X0 1 r1 ]
+"173
+[f ]
+[; ;user.c: 174: currentTime = *newTime;
+"174
+[e = _currentTime *U _newTime ]
+[; ;user.c: 175: }
+"175
 [e :UE 256 ]
 }
-"180
+"183
 [v _AddSecond `(v ~T0 @X0 1 ef ]
-"181
+"184
 {
-[; ;user.c: 180: void AddSecond()
-[; ;user.c: 181: {
+[; ;user.c: 183: void AddSecond()
+[; ;user.c: 184: {
 [e :U _AddSecond ]
 [f ]
-[; ;user.c: 182: currentTime++;
-"182
+[; ;user.c: 185: currentTime++;
+"185
 [e ++ _currentTime -> -> 1 `i `l ]
-[; ;user.c: 195: }
-"195
+[; ;user.c: 198: }
+"198
 [e :UE 257 ]
 }
-"207
+"210
 [v _GetTime `(*l ~T0 @X0 1 ef ]
-"208
+"211
 {
-[; ;user.c: 207: time_t *GetTime()
-[; ;user.c: 208: {
+[; ;user.c: 210: time_t *GetTime()
+[; ;user.c: 211: {
 [e :U _GetTime ]
 [f ]
-[; ;user.c: 209: return &currentTime;
-"209
+[; ;user.c: 212: return &currentTime;
+"212
 [e ) &U _currentTime ]
 [e $UE 258  ]
-[; ;user.c: 210: }
-"210
+[; ;user.c: 213: }
+"213
 [e :UE 258 ]
 }

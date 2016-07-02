@@ -3195,7 +3195,11 @@ LATCbits.LATC5 = 0;
 void InitApp(void)
 {
 
-# 77
+# 76
+BOR = 1;
+POR = 1;
+
+
 INTCONbits.PEIE = 1;
 (INTCONbits.GIE = 1);
 RCONbits.IPEN = 1;
@@ -3227,7 +3231,7 @@ T0CONbits.T0CS = 0;
 
 T0CONbits.PSA = 0;
 
-# 117
+# 120
 T0CONbits.T0PS = 7;
 
 
@@ -3239,7 +3243,7 @@ INTCON2bits.TMR0IP = 1;
 
 INTCONbits.TMR0IF = 0;
 
-# 133
+# 136
 InitUartBuffer();
 
 PortBegin();
@@ -3252,7 +3256,7 @@ IPR1bits.RCIP = 0;
 for (unsigned char i = 0; i < 15; i++)
 _MODBUSInputRegs[i] = 0;
 
-# 149
+# 152
 TRISB = 0;
 
 
@@ -3278,15 +3282,15 @@ void SetTime(time_t *newTime)
 currentTime = *newTime;
 }
 
-# 180
+# 183
 void AddSecond()
 {
 currentTime++;
 
-# 195
+# 198
 }
 
-# 207
+# 210
 time_t *GetTime()
 {
 return &currentTime;
